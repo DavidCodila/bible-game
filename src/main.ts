@@ -1,18 +1,27 @@
 import * as THREE from 'three';
 
+const fieldOfView = 75;
+const aspectRatio = window.innerWidth / window.innerHeight;
+const origin = 0;
+const yOffset = 5;
+const zOffset = 10;
+const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio);
+camera.position.set(origin, yOffset, zOffset);
+camera.rotation.order = 'YXZ';
+camera.lookAt(origin, origin, origin);
+
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
+
+
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-function renderSky() {
   const skyBlueColour = 0x87ceeb;
   scene.background = new THREE.Color(skyBlueColour); // Sky blue
-}
 
-function renderGround() {
   const width = 50;
   const depth = 50;
   const greenColour = 0x3a9b3f;
@@ -22,26 +31,37 @@ function renderGround() {
 
   ground.rotation.x = -Math.PI / 2; //rotate plate about the x axis 90 degrees
   scene.add(ground);
-}
 
-function createCamera() : THREE.PerspectiveCamera {
-  const fieldOfView = 75;
-  const aspectRatio = window.innerWidth / window.innerHeight;
-  const nearClip = 0.1;
-  const farClip = 1000;
+let yaw = 0;
+let pitch = 0;
+const sensitivity = 0.002;
 
-  const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearClip, farClip);
+let deltaYaw = 0;
+let deltaPitch = 0;
 
-  camera.position.set(0, 5, 10);
-  camera.lookAt(0, 0, 0);
-  return camera;
-}
+document.addEventListener('mousemove', (event) => {
+  if (document.pointerLockElement === renderer.domElement) {
+    deltaYaw += event.movementX;
+    deltaPitch += event.movementY;
+  }
+});
+
+renderer.domElement.addEventListener('click', () => {
+  renderer.domElement.requestPointerLock();
+});
 
 function render() {
-  renderSky();
-  renderGround();
   requestAnimationFrame(render);
-  renderer.render(scene, createCamera());
+  yaw -= deltaYaw * sensitivity;
+  pitch -= deltaPitch * sensitivity;
+  pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+  
+  camera.rotation.y = yaw;
+  camera.rotation.x = pitch;
+  
+  deltaYaw = 0;
+  deltaPitch = 0;
+  renderer.render(scene, camera);
 }
 
 render();
