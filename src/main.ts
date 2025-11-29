@@ -26,15 +26,7 @@ const ground = new THREE.Mesh(
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-const bladeGeometry = new THREE.BufferGeometry();
-
-const vertices = new Float32Array([
-  -0.15, 0, 0,
-  0.15, 0, 0,
-  0, 1, 0
-]);
-
-bladeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+const bladeGeometry = createCurvedBlade();
 
 const bladeMaterial = new THREE.MeshBasicMaterial({ 
   color: 0x00ff00,
@@ -43,26 +35,79 @@ const bladeMaterial = new THREE.MeshBasicMaterial({
   depthTest: true
 });
 
-const patchSize = 10; // 1 unit square
-const bladesPerRow = 18;
+const patchSize = 10;
+const bladesPerRow = 35;
 const spacing = patchSize / bladesPerRow;
 
 for (let x = 0; x < bladesPerRow; x++) {
   for (let z = 0; z < bladesPerRow; z++) {
-    const blade = new THREE.Mesh(bladeGeometry, bladeMaterial);
+    // Clone material for each blade so they can have different colors
+    const material = bladeMaterial.clone();
     
-    // Add random offset to position
+    // Vary green shade
+    const greenShade = 0.3 + Math.random() * 0.3; // 0.3 to 0.6
+    material.color.setRGB(0, greenShade, 0);
+    
+    const blade = new THREE.Mesh(bladeGeometry, material);
+    
     blade.position.x = x * spacing - patchSize / 2 + (Math.random() - 0.5) * spacing * 0.8;
     blade.position.z = z * spacing - patchSize / 2 + (Math.random() - 0.5) * spacing * 0.8;
     
-    // Random rotation
     blade.rotation.y = Math.random() * 0.1 * Math.PI * 2;
-    
-    // Random height variation
-    blade.scale.y = 0.7 + Math.random() * 0.6;
+    blade.scale.y = 1 + Math.random() * 0.5;
     
     scene.add(blade);
   }
+}
+
+// Creates a curved, tapered grass blade geometry
+function createCurvedBlade() {
+  // Initialize empty geometry container
+  const geometry = new THREE.BufferGeometry();
+  
+  // Blade dimensions
+  const width = 0.15;   // Width at base
+  const height = 1;     // Total height
+  const segments = 3;   // Number of vertical segments (more = smoother curve)
+  
+  const vertices = [];  // Will hold XYZ coordinates for each vertex
+  const indices = [];   // Will define which vertices form triangles
+  
+  // Create vertices from bottom to top
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;  // Progress from 0 (bottom) to 1 (top)
+    const y = t * height;    // Current height position
+    
+    // Curve forward as it goes up (bends the blade)
+    const curve = Math.pow(t, 1.5) * 0.2;
+    
+    // Taper width toward tip (blade gets thinner at top)
+    const currentWidth = width * (1 - t);
+    
+    // Add left vertex
+    vertices.push(-currentWidth / 2, y, curve);
+    // Add right vertex
+    vertices.push(currentWidth / 2, y, curve);
+  }
+  
+  // Connect vertices into triangles (2 triangles per segment)
+  for (let i = 0; i < segments; i++) {
+    const base = i * 2;  // Index of current segment's bottom-left vertex
+    
+    // First triangle (bottom-left, bottom-right, top-left)
+    indices.push(base, base + 1, base + 2);
+    // Second triangle (bottom-right, top-right, top-left)
+    indices.push(base + 1, base + 3, base + 2);
+  }
+  
+  // Assign vertex positions to geometry
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+  // Assign triangle indices to geometry
+  geometry.setIndex(indices);
+  // Calculate normals for lighting (if we add it later)
+  geometry.computeVertexNormals();
+  
+  return geometry;
 }
 
 // Mouse controls
