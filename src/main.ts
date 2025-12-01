@@ -27,7 +27,7 @@ ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
 const patchSize = 10;
-const bladesPerRow = 80;
+const bladesPerRow = 100;
 const totalBlades = bladesPerRow * bladesPerRow;
 const bladeHeight = 1.0;
 const segmentsPerBlade = 6; // Need to change
@@ -64,7 +64,8 @@ const instanced = new THREE.InstancedMesh(bladeGeom, undefined as any, totalBlad
 
 // We'll use a ShaderMaterial so we can bend per-vertex in vertex shader
 const uniforms = {
-  time: { value: 0 }
+  time: { value: 0 },
+  sunDirection: { value: new THREE.Vector3(1, 2, 0.5).normalize() }
 };
 
 const vertexShader = `
@@ -74,9 +75,11 @@ const vertexShader = `
   attribute float instanceBendF;
   attribute float instanceBendS;
   attribute vec3 instanceColor;
+  attribute float instanceAO;
   uniform float time;
   varying vec3 vColor;
   varying float vHeightT;
+  varying float vAO;
 
   vec2 rot2(in vec2 p, in float a){
     float s = sin(a), c = cos(a);
@@ -113,6 +116,8 @@ const vertexShader = `
 
     vColor = instanceColor;
 
+    vAO = instanceAO;
+
     gl_Position = projectionMatrix * viewMatrix * worldPos;
   }
 `;
@@ -120,11 +125,20 @@ const vertexShader = `
 const fragmentShader = `
   varying vec3 vColor;
   varying float vHeightT;
-  
+  varying float vAO;
+  uniform vec3 sunDirection;
+
   void main(){
-    // Height-based gradient only
-    float brightness = mix(0.5, 1.0, vHeightT);
-    vec3 col = vColor * brightness;
+    float sunExposure = 0.3 + 0.7 * vHeightT;
+    float directional = 0.9 + 0.1 * sunDirection.x;
+    
+    // This is the "darken base" part:
+    float baseAO = mix(0.4, 1.0, pow(vHeightT, 0.5));
+    
+    // Multiply everything together (including vAO from grid calculation):
+    float lighting = sunExposure * directional * baseAO * vAO;
+    
+    vec3 col = vColor * lighting;
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -179,9 +193,9 @@ for (let x = 0; x < bladesPerRow; x++) {
     bendS[idx] = (Math.random() - 0.5) * 0.18;     // left/right
 
     // color variation (mix base and tip)
-    const g = 0.35 + Math.random() * 0.4; // wider range
-    const r = 0.05 + Math.random() * 0.1;
-    const b = 0.05 + Math.random() * 0.1;
+    const g = 0.25 + Math.random() * 0.35;
+    const r = 0.08 + Math.random() * 0.08; 
+    const b = 0.03 + Math.random() * 0.05;
     colors[ idx*3 + 0 ] = r;
     colors[ idx*3 + 1 ] = g;
     colors[ idx*3 + 2 ] = b;
@@ -189,6 +203,81 @@ for (let x = 0; x < bladesPerRow; x++) {
     i++;
   }
 }
+
+// ---- Calculate density-based AO using spatial grid (O(n)) ----
+const densities = new Float32Array(totalBlades);
+const searchRadius = spacing * 2.5;
+
+// Create spatial grid for fast neighbor lookup
+const gridSize = 20;
+const cellSize = patchSize / gridSize;
+const grid: number[][][] = [];
+
+// Initialize grid
+for (let i = 0; i < gridSize; i++) {
+  grid[i] = [];
+  for (let j = 0; j < gridSize; j++) {
+    grid[i][j] = [];
+  }
+}
+
+// Populate grid with blade indices
+for (let i = 0; i < totalBlades; i++) {
+  const px = offsets[i * 3 + 0];
+  const pz = offsets[i * 3 + 2];
+  
+  const gridX = Math.floor((px + patchSize / 2) / cellSize);
+  const gridZ = Math.floor((pz + patchSize / 2) / cellSize);
+  
+  const gx = Math.max(0, Math.min(gridSize - 1, gridX));
+  const gz = Math.max(0, Math.min(gridSize - 1, gridZ));
+  
+  grid[gx][gz].push(i);
+}
+
+// Calculate density for each blade
+for (let i = 0; i < totalBlades; i++) {
+  const px = offsets[i * 3 + 0];
+  const pz = offsets[i * 3 + 2];
+  
+  const gridX = Math.floor((px + patchSize / 2) / cellSize);
+  const gridZ = Math.floor((pz + patchSize / 2) / cellSize);
+  
+  let neighborCount = 0;
+  
+  // Check 3x3 grid around current cell
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dz = -1; dz <= 1; dz++) {
+      const gx = gridX + dx;
+      const gz = gridZ + dz;
+      
+      if (gx < 0 || gx >= gridSize || gz < 0 || gz >= gridSize) continue;
+      
+      for (const j of grid[gx][gz]) {
+        if (i === j) continue;
+        
+        const ox = offsets[j * 3 + 0];
+        const oz = offsets[j * 3 + 2];
+        
+        const dx2 = px - ox;
+        const dz2 = pz - oz;
+        const dist = Math.sqrt(dx2 * dx2 + dz2 * dz2);
+        
+        if (dist < searchRadius) {
+          neighborCount++;
+        }
+      }
+    }
+  }
+  
+  // Convert to AO factor
+  const maxNeighbors = 15;
+  const densityFactor = Math.min(neighborCount / maxNeighbors, 1.0);
+  densities[i] = 1.0 - (densityFactor * 0.3);
+}
+
+// Add density AO attribute
+bladeGeom.setAttribute("instanceAO", new THREE.InstancedBufferAttribute(densities, 1));
 
 bladeGeom.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(offsets, 3));
 bladeGeom.setAttribute("instanceRot", new THREE.InstancedBufferAttribute(rots, 1));
