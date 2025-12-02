@@ -14,7 +14,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
 // Ground
@@ -38,16 +37,16 @@ function createStraightBladeGeometry(width = 0.05, height = bladeHeight, segment
   const vertices: number[] = [];
   const indices: number[] = [];
 
-  for (let i = 0; i <= segments; i++) {
-    const heightProgress = i / segments;
+  for (let segmentIndex = 0; segmentIndex <= segments; segmentIndex++) {
+    const heightProgress = segmentIndex / segments;
     const yPosition = heightProgress * height;
     const currentWidth = width * (1 - heightProgress * heightProgress);
     vertices.push(-currentWidth / 2, yPosition, 0);
     vertices.push(currentWidth / 2, yPosition, 0);
   }
   
-  for (let i = 0; i < segments; i++) {
-    const baseIndex = i * 2;
+  for (let segmentIndex = 0; segmentIndex < segments; segmentIndex++) {
+    const baseIndex = segmentIndex * 2;
     indices.push(baseIndex, baseIndex + 1, baseIndex + 2);
     indices.push(baseIndex + 1, baseIndex + 3, baseIndex + 2);
   }
