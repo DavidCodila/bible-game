@@ -97,7 +97,7 @@ const vertexShader = `
     vHeightT = t;
 
     // Per-instance wind
-    float wind = sin(time * 0.8 + instanceOffset.x * 1.5 + instanceOffset.z * 1.2) * 0.02;
+    float wind = sin(time * 0.8 + instanceOffset.x * 1.5 + instanceOffset.z * 1.2) * 0.05;
 
     // Compute bias
     float bias = pow(t, 1.6);
@@ -132,13 +132,14 @@ const fragmentShader = `
     float sunExposure = 0.3 + 0.7 * vHeightT;
     float directional = 0.9 + 0.1 * sunDirection.x;
     
-    // This is the "darken base" part:
-    float baseAO = mix(0.4, 1.0, pow(vHeightT, 0.5));
+    float baseAO = mix(0.5, 1.0, pow(vHeightT, 0.5));
     
-    // Multiply everything together (including vAO from grid calculation):
     float lighting = sunExposure * directional * baseAO * vAO;
     
-    vec3 col = vColor * lighting;
+    // Add warm tint (slightly yellow/golden)
+    vec3 warmTint = vec3(0.95, 0.95, 1.0); // Warm sunlight color
+    
+    vec3 col = vColor * lighting * warmTint;
     gl_FragColor = vec4(col, 1.0);
   }
 `;
