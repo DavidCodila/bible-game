@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 
+// For FPS calculation
+const stats = { frameCount: 0, frameStart: performance.now(), frameEnd: performance.now(), lastTime: performance.now(), currentTime: performance.now(), fps: 0, frameTime: 0, oneSecondInMilliseconds: 1000};
+
 // Scene setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87ceeb);
@@ -35,10 +38,11 @@ const grassPatchSize = 10;
 const bladesPerRow = 100;
 const totalBlades = bladesPerRow * bladesPerRow;
 const bladeHeight = 1.0;
+const bladeWidth = 0.05;
 const segmentsPerBlade = 6;
 
 // ---- helper: create a straight blade geometry in local space ----
-function createStraightBladeGeometry(width = 0.05, height = bladeHeight, segments = segmentsPerBlade) {
+function createStraightBladeGeometry(width = bladeWidth, height = bladeHeight, segments = segmentsPerBlade) {
   const geometry = new THREE.BufferGeometry();
   const vertices: number[] = [];
   const indices: number[] = [];
@@ -64,7 +68,7 @@ function createStraightBladeGeometry(width = 0.05, height = bladeHeight, segment
 }
 
 // ---- create instanced attributes ----
-const bladeGeometry = createStraightBladeGeometry(0.05, bladeHeight, segmentsPerBlade);
+const bladeGeometry = createStraightBladeGeometry();
 const instancedGrassMesh = new THREE.InstancedMesh(bladeGeometry, undefined as any, totalBlades);
 
 // We'll use a ShaderMaterial so we can bend per-vertex in vertex shader
@@ -310,6 +314,7 @@ const clock = new THREE.Clock();
 
 // Render loop
 (function renderLoop() {
+  stats.frameStart = performance.now();
   requestAnimationFrame(renderLoop);
   
   cameraYaw -= deltaYaw * 0.002;
@@ -323,4 +328,26 @@ const clock = new THREE.Clock();
   shaderUniforms.time.value += clock.getDelta();
   
   renderer.render(scene, camera);
+  stats.currentTime = performance.now();
+  stats.frameCount++;
+  if (stats.currentTime >= stats.lastTime + stats.oneSecondInMilliseconds) {
+    calculateFrameMetrics();
+    logFrameMetrics();
+    resetFrameMetrics();
+  }
 })();
+
+function calculateFrameMetrics() {
+  stats.frameEnd = performance.now();
+  stats.frameTime = stats.frameEnd - stats.frameStart;
+  stats.fps = Math.round(stats.frameCount * stats.oneSecondInMilliseconds / (stats.currentTime - stats.lastTime));
+}
+
+function logFrameMetrics() {
+  console.log(`FPS: ${stats.fps} | Frame time: ${stats.frameTime.toFixed(2)}ms`);
+}
+
+function resetFrameMetrics() {
+  stats.frameCount = 0;
+  stats.lastTime = stats.currentTime;
+}
