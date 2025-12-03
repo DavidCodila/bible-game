@@ -1,7 +1,13 @@
 import * as THREE from 'three';
 
-// For FPS calculation
-const stats = { frameCount: 0, frameStart: performance.now(), frameEnd: performance.now(), lastTime: performance.now(), currentTime: performance.now(), fps: 0, frameTime: 0, oneSecondInMilliseconds: 1000};
+const ONE_SECOND_IN_MILLISECONDS = 1000;
+
+// For frame metric calculations
+const stats = { 
+  frameCount: 0, frameStartTime: performance.now(), frameEndTime: performance.now(), timePerFrame: 0, fps: 0, 
+  gpuStartTime: performance.now(), gpuEndTime: performance.now(), gpuTimePerRender: performance.now(),
+  lastTime: performance.now(), currentTime: performance.now(), oneSecondInMilliseconds: 1000
+};
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -312,39 +318,61 @@ onmousemove = mouseEvent => {
 onclick = () => renderer.domElement.requestPointerLock();
 const clock = new THREE.Clock();
 
-// Render loop
 (function renderLoop() {
-  stats.frameStart = performance.now();
   requestAnimationFrame(renderLoop);
-  
-  cameraYaw -= deltaYaw * 0.002;
-  cameraPitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraPitch - deltaPitch * 0.002));
-  
-  camera.rotation.y = cameraYaw;
-  camera.rotation.x = cameraPitch;
-  
-  deltaYaw = deltaPitch = 0;
+  captureFrameTimestamp();
+  updateCameraRotation();
 
   shaderUniforms.time.value += clock.getDelta();
   
   renderer.render(scene, camera);
+
+  trackFrameMetrics();
+})();
+
+function captureFrameTimestamp() {
+  stats.gpuStartTime = performance.now();
+  stats.frameEndTime = performance.now();
+}
+
+function updateCameraRotation() {
+  cameraYaw -= deltaYaw * 0.002;
+  cameraPitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraPitch - deltaPitch * 0.002));
+
+  camera.rotation.y = cameraYaw;
+  camera.rotation.x = cameraPitch;
+
+  deltaYaw = deltaPitch = 0;
+}
+
+function trackFrameMetrics() {
   stats.currentTime = performance.now();
   stats.frameCount++;
-  if (stats.currentTime >= stats.lastTime + stats.oneSecondInMilliseconds) {
+  calculateTimePerFrame();
+  if (oneSecondHasPassed()) {
     calculateFrameMetrics();
     logFrameMetrics();
     resetFrameMetrics();
   }
-})();
+}
+
+function oneSecondHasPassed() {
+  return stats.currentTime >= stats.lastTime + ONE_SECOND_IN_MILLISECONDS;
+}
+
+function calculateTimePerFrame() {
+  stats.timePerFrame = stats.frameEndTime - stats.frameStartTime;
+  stats.frameStartTime = stats.frameEndTime;
+}
 
 function calculateFrameMetrics() {
-  stats.frameEnd = performance.now();
-  stats.frameTime = stats.frameEnd - stats.frameStart;
-  stats.fps = Math.round(stats.frameCount * stats.oneSecondInMilliseconds / (stats.currentTime - stats.lastTime));
+  stats.gpuEndTime = performance.now();
+  stats.gpuTimePerRender = stats.gpuEndTime - stats.gpuStartTime;
+  stats.fps = Math.round(stats.frameCount * ONE_SECOND_IN_MILLISECONDS / (stats.currentTime - stats.lastTime));
 }
 
 function logFrameMetrics() {
-  console.log(`FPS: ${stats.fps} | Frame time: ${stats.frameTime.toFixed(2)}ms`);
+  console.log(`FPS: ${stats.fps} | Frame time: ${stats.timePerFrame.toFixed(2)}ms`);
 }
 
 function resetFrameMetrics() {
