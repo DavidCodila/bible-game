@@ -14,7 +14,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87ceeb);
 
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight);
-camera.position.set(0, 5, 10);
+camera.position.set(0, 1.8, 1);
 camera.rotation.order = 'YXZ';
 
 const renderer = new THREE.WebGLRenderer({ 
@@ -41,9 +41,9 @@ ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
 const grassPatchSize = 10;
-const bladesPerRow = 100;
+const bladesPerRow = 150;
 const totalBlades = bladesPerRow * bladesPerRow;
-const bladeHeight = 1.0;
+const bladeHeight = 0.4;
 const bladeWidth = 0.05;
 const segmentsPerBlade = 6;
 
