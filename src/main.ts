@@ -49,34 +49,44 @@ const bladesPerRow = 150;
 const totalBlades = bladesPerRow * bladesPerRow;
 const bladeHeight = 0.4; // Thing about how to redo this
 
+/**
+ * Defines the width scaling (taper) along the height of the grass blade.
+ * Input: normalizedHeight (0.0 at base, 1.0 at tip)
+ * Output: widthFactor (1.0 to 0)
+ */
+const defaultBladeTaper = (normalizedHeight: number): number => 1.0 - (normalizedHeight * normalizedHeight);
+
 // ---- helper: create a straight blade geometry in local space ----
-function createStraightBladeGeometry(bladeWidth: number = 0.05, bladeHeight: number = 0.4, segmentCount: number = 6) {
-  const bladeGeometry = new THREE.BufferGeometry();
-  const vertices: number[] = [];
-  const triangleindices: number[] = [];
+function createStraightBladeGeometry( bladeWidth: number = 0.05, bladeHeight: number = 0.4, segmentCount: number = 6, taperFunction: (h: number) => number = defaultBladeTaper) {
+    const bladeGeometry = new THREE.BufferGeometry();
+    const vertices: number[] = [];
+    const triangleIndices: number[] = [];
 
-  for (let segmentIndex = 0; segmentIndex <= segmentCount; segmentIndex++) {
-    const heightProgress = segmentIndex / segmentCount;
-    const yPosition = heightProgress * bladeHeight;
-    const currentWidth = bladeWidth * (1 - heightProgress * heightProgress);
-    vertices.push(-currentWidth / 2, yPosition, 0);
-    vertices.push(currentWidth / 2, yPosition, 0);
-  }
+    for (let segmentIndex = 0; segmentIndex <= segmentCount; segmentIndex++) {
+        const normalizedHeight = segmentIndex / segmentCount; 
+        const yPosition = normalizedHeight * bladeHeight;
+        
+        const widthScaleFactor = taperFunction(normalizedHeight);
+        const currentWidth = bladeWidth * widthScaleFactor;
+        
+        vertices.push(-currentWidth / 2, yPosition, 0);
+        vertices.push(currentWidth / 2, yPosition, 0);
+    }
   
-  for (let segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
-    const lowerSegmentLeftIndex = segmentIndex * 2;
-    const lowerSegmentRightIndex = lowerSegmentLeftIndex + 1;
-    const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;
-    const upperSegmentRightIndex = lowerSegmentLeftIndex + 3;
+    for (let segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
+        const lowerSegmentLeftIndex = segmentIndex * 2;
+        const lowerSegmentRightIndex = lowerSegmentLeftIndex + 1;
+        const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;
+        const upperSegmentRightIndex = lowerSegmentLeftIndex + 3;
 
-    triangleindices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);
-    triangleindices.push(lowerSegmentRightIndex, upperSegmentRightIndex, upperSegmentLeftIndex);
-  }
+        triangleIndices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);
+        triangleIndices.push(lowerSegmentRightIndex, upperSegmentRightIndex, upperSegmentLeftIndex);
+    }
 
-  bladeGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vertices), 3));
-  bladeGeometry.setIndex(triangleindices);
-  bladeGeometry.computeVertexNormals();
-  return bladeGeometry;
+    bladeGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vertices), 3));
+    bladeGeometry.setIndex(triangleIndices);
+    bladeGeometry.computeVertexNormals();
+    return bladeGeometry;
 }
 
 // ---- create instanced attributes ----
@@ -325,15 +335,15 @@ onclick = () => renderer.domElement.requestPointerLock();
 const clock = new THREE.Clock();
 
 (function renderLoop() {
-  requestAnimationFrame(renderLoop);
-  calculateRunningAverage(); 
-  updateCameraRotation();
+  requestAnimationFrame(renderLoop);
+  calculateRunningAverage(); 
+  updateCameraRotation();
 
-  shaderUniforms.time.value += clock.getDelta();
- 
-  renderer.render(scene, camera);
+  shaderUniforms.time.value += clock.getDelta();
+ 
+  renderer.render(scene, camera);
 
-  trackFrameMetrics(); // <--- Removed: captureFrameTimestamp() call
+  trackFrameMetrics(); // <--- Removed: captureFrameTimestamp() call
 })();
 
 
@@ -348,14 +358,14 @@ function updateCameraRotation() {
 }
 
 function trackFrameMetrics() {
-  stats.currentTime = performance.now();
-  stats.frameCount++;
+  stats.currentTime = performance.now();
+  stats.frameCount++;
 
-  // Only log the results once per second
-  if (twoSecondHavePassed()) {
-    logFrameMetrics();
-    resetFrameMetrics();
-  }
+  // Only log the results once per second
+  if (twoSecondHavePassed()) {
+    logFrameMetrics();
+    resetFrameMetrics();
+  }
 }
 
 function twoSecondHavePassed() {
@@ -363,12 +373,12 @@ function twoSecondHavePassed() {
 }
 
 function logFrameMetrics() {
-  console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.avgFrameTime.toFixed(2)}ms`); // Logs the smooth average
+  console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.avgFrameTime.toFixed(2)}ms`); // Logs the smooth average
 }
 
 function resetFrameMetrics() {
-  stats.frameCount = 0; // Keep the frame count reset
-  stats.lastTime = stats.currentTime; // Keep the time reset
+  stats.frameCount = 0; // Keep the frame count reset
+  stats.lastTime = stats.currentTime; // Keep the time reset
 }
 
 function calculateRunningAverage() {
