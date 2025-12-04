@@ -43,34 +43,36 @@ scene.add(ground);
 const grassPatchSize = 10;
 const bladesPerRow = 150;
 const totalBlades = bladesPerRow * bladesPerRow;
-const bladeHeight = 0.4;
-const bladeWidth = 0.05;
-const segmentsPerBlade = 6;
+const bladeHeight = 0.4; // Thing about how to redo this
 
 // ---- helper: create a straight blade geometry in local space ----
-function createStraightBladeGeometry(width = bladeWidth, height = bladeHeight, segments = segmentsPerBlade) {
-  const geometry = new THREE.BufferGeometry();
+function createStraightBladeGeometry(bladeWidth: number = 0.05, bladeHeight: number = 0.4, segmentCount: number = 6) {
+  const bladeGeometry = new THREE.BufferGeometry();
   const vertices: number[] = [];
-  const indices: number[] = [];
+  const triangleindices: number[] = [];
 
-  for (let segmentIndex = 0; segmentIndex <= segments; segmentIndex++) {
-    const heightProgress = segmentIndex / segments;
-    const yPosition = heightProgress * height;
-    const currentWidth = width * (1 - heightProgress * heightProgress);
+  for (let segmentIndex = 0; segmentIndex <= segmentCount; segmentIndex++) {
+    const heightProgress = segmentIndex / segmentCount;
+    const yPosition = heightProgress * bladeHeight;
+    const currentWidth = bladeWidth * (1 - heightProgress * heightProgress);
     vertices.push(-currentWidth / 2, yPosition, 0);
     vertices.push(currentWidth / 2, yPosition, 0);
   }
   
-  for (let segmentIndex = 0; segmentIndex < segments; segmentIndex++) {
-    const baseIndex = segmentIndex * 2;
-    indices.push(baseIndex, baseIndex + 1, baseIndex + 2);
-    indices.push(baseIndex + 1, baseIndex + 3, baseIndex + 2);
+  for (let segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
+    const lowerSegmentLeftIndex = segmentIndex * 2;
+    const lowerSegmentRightIndex = lowerSegmentLeftIndex + 1;
+    const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;
+    const upperSegmentRightIndex = lowerSegmentLeftIndex + 3;
+
+    triangleindices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);
+    triangleindices.push(lowerSegmentRightIndex, upperSegmentRightIndex, upperSegmentLeftIndex);
   }
 
-  geometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vertices), 3));
-  geometry.setIndex(indices);
-  geometry.computeVertexNormals();
-  return geometry;
+  bladeGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vertices), 3));
+  bladeGeometry.setIndex(triangleindices);
+  bladeGeometry.computeVertexNormals();
+  return bladeGeometry;
 }
 
 // ---- create instanced attributes ----
