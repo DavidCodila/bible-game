@@ -4,9 +4,13 @@ const ONE_SECOND_IN_MILLISECONDS = 1000;
 
 // For frame metric calculations
 const stats = { 
-  frameCount: 0, frameStartTime: performance.now(), frameEndTime: performance.now(), timePerFrame: 0, fps: 0, 
+  frameCount: 0, frameStartTime: 0, frameEndTime: performance.now(), timePerFrame: 0, fps: 0, 
   gpuStartTime: performance.now(), gpuEndTime: performance.now(), gpuTimePerRender: performance.now(),
-  lastTime: performance.now(), currentTime: performance.now(), oneSecondInMilliseconds: 1000
+  lastTime: performance.now(), currentTime: performance.now(), oneSecondInMilliseconds: 1000,
+  frameTimeHistory: [] as number[], // Store the last N frame times
+  historyCapacity: 120, // Number of frames to average over (e.g., 2 second at 60 FPS)
+  avgFrameTime: 0, // The smoothed average frame time (ms)
+  avgFPS: 0 // The smoothed average FPS
 };
 
 // Scene setup
@@ -321,21 +325,17 @@ onclick = () => renderer.domElement.requestPointerLock();
 const clock = new THREE.Clock();
 
 (function renderLoop() {
-  requestAnimationFrame(renderLoop);
-  captureFrameTimestamp();
-  updateCameraRotation();
+  requestAnimationFrame(renderLoop);
+  calculateRunningAverage(); 
+  updateCameraRotation();
 
-  shaderUniforms.time.value += clock.getDelta();
-  
-  renderer.render(scene, camera);
+  shaderUniforms.time.value += clock.getDelta();
+ 
+  renderer.render(scene, camera);
 
-  trackFrameMetrics();
+  trackFrameMetrics(); // <--- Removed: captureFrameTimestamp() call
 })();
 
-function captureFrameTimestamp() {
-  stats.gpuStartTime = performance.now();
-  stats.frameEndTime = performance.now();
-}
 
 function updateCameraRotation() {
   cameraYaw -= deltaYaw * 0.002;
@@ -348,36 +348,58 @@ function updateCameraRotation() {
 }
 
 function trackFrameMetrics() {
-  stats.currentTime = performance.now();
-  stats.frameCount++;
-  calculateTimePerFrame();
-  if (oneSecondHasPassed()) {
-    calculateFrameMetrics();
-    logFrameMetrics();
-    resetFrameMetrics();
-  }
+  stats.currentTime = performance.now();
+  stats.frameCount++;
+
+  // Only log the results once per second
+  if (twoSecondHavePassed()) {
+    logFrameMetrics();
+    resetFrameMetrics();
+  }
 }
 
-function oneSecondHasPassed() {
-  return stats.currentTime >= stats.lastTime + ONE_SECOND_IN_MILLISECONDS;
-}
-
-function calculateTimePerFrame() {
-  stats.timePerFrame = stats.frameEndTime - stats.frameStartTime;
-  stats.frameStartTime = stats.frameEndTime;
-}
-
-function calculateFrameMetrics() {
-  stats.gpuEndTime = performance.now();
-  stats.gpuTimePerRender = stats.gpuEndTime - stats.gpuStartTime;
-  stats.fps = Math.round(stats.frameCount * ONE_SECOND_IN_MILLISECONDS / (stats.currentTime - stats.lastTime));
+function twoSecondHavePassed() {
+  return stats.currentTime >= stats.lastTime + ONE_SECOND_IN_MILLISECONDS * 2;
 }
 
 function logFrameMetrics() {
-  console.log(`FPS: ${stats.fps} | Frame time: ${stats.timePerFrame.toFixed(2)}ms`);
+  console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.avgFrameTime.toFixed(2)}ms`); // Logs the smooth average
 }
 
 function resetFrameMetrics() {
-  stats.frameCount = 0;
-  stats.lastTime = stats.currentTime;
+  stats.frameCount = 0; // Keep the frame count reset
+  stats.lastTime = stats.currentTime; // Keep the time reset
+}
+
+function calculateRunningAverage() {
+    
+    // 1. Get the current end time (the most accurate timestamp available for this frame's completion)
+    const newFrameEndTime = performance.now();
+    
+    // 2. Calculate the raw time difference since the start of the LAST frame
+    // stats.frameStartTime holds the *end* time of the previous frame.
+    const rawFrameTime = newFrameEndTime - stats.frameStartTime;
+    
+    // 3. Update the start time for the NEXT frame to be the end time of THIS frame
+    stats.frameStartTime = newFrameEndTime; 
+    
+    // GUARD CLAUSE: Ignore suspicious values (like 0 or massive stutters > 100ms)
+    if (rawFrameTime <= 0 || rawFrameTime > 100) {
+        return; // Skip this frame time to prevent averaging issues
+    }
+
+    // 4. Add the new time to the history array
+    stats.frameTimeHistory.push(rawFrameTime);
+    
+    // 5. Keep the history array size capped
+    if (stats.frameTimeHistory.length > stats.historyCapacity) {
+        stats.frameTimeHistory.shift(); 
+    }
+    
+    // 6. Calculate the sum of the history
+    const totalTime = stats.frameTimeHistory.reduce((sum, time) => sum + time, 0);
+    
+    // 7. Compute the final smoothed average
+    stats.avgFrameTime = totalTime / stats.frameTimeHistory.length;
+    stats.avgFPS = ONE_SECOND_IN_MILLISECONDS / stats.avgFrameTime;
 }
