@@ -62,31 +62,38 @@ function createStraightBladeGeometry( bladeWidth: number = 0.05, bladeHeight: nu
     const vertices: number[] = [];
     const triangleIndices: number[] = [];
 
-    for (let segmentIndex = 0; segmentIndex <= segmentCount; segmentIndex++) {
-        const normalizedHeight = segmentIndex / segmentCount; 
-        const yPosition = normalizedHeight * bladeHeight;
-        
-        const widthScaleFactor = taperFunction(normalizedHeight);
-        const currentWidth = bladeWidth * widthScaleFactor;
-        
-        vertices.push(-currentWidth / 2, yPosition, 0);
-        vertices.push(currentWidth / 2, yPosition, 0);
-    }
-  
-    for (let segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
-        const lowerSegmentLeftIndex = segmentIndex * 2;
-        const lowerSegmentRightIndex = lowerSegmentLeftIndex + 1;
-        const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;
-        const upperSegmentRightIndex = lowerSegmentLeftIndex + 3;
-
-        triangleIndices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);
-        triangleIndices.push(lowerSegmentRightIndex, upperSegmentRightIndex, upperSegmentLeftIndex);
-    }
+    loadVertices();
+    loadTriangleIndices();
 
     bladeGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vertices), 3));
     bladeGeometry.setIndex(triangleIndices);
     bladeGeometry.computeVertexNormals();
     return bladeGeometry;
+
+  function loadVertices() {
+    for (let segmentIndex = 0; segmentIndex <= segmentCount; segmentIndex++) {
+      const normalizedHeight = segmentIndex / segmentCount;
+      const yPosition = normalizedHeight * bladeHeight;
+
+      const widthScaleFactor = taperFunction(normalizedHeight);
+      const currentWidth = bladeWidth * widthScaleFactor;
+
+      vertices.push(-currentWidth / 2, yPosition, 0);
+      vertices.push(currentWidth / 2, yPosition, 0);
+    }
+  }
+
+  function loadTriangleIndices() {
+    for (let segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
+      const lowerSegmentLeftIndex = segmentIndex * 2;
+      const lowerSegmentRightIndex = lowerSegmentLeftIndex + 1;
+      const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;
+      const upperSegmentRightIndex = lowerSegmentLeftIndex + 3;
+
+      triangleIndices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);
+      triangleIndices.push(lowerSegmentRightIndex, upperSegmentRightIndex, upperSegmentLeftIndex);
+    }
+  }
 }
 
 // ---- create instanced attributes ----
@@ -96,7 +103,8 @@ const instancedGrassMesh = new THREE.InstancedMesh(bladeGeometry, undefined as a
 // We'll use a ShaderMaterial so we can bend per-vertex in vertex shader
 const shaderUniforms = {
   time: { value: 0 },
-  sunDirection: { value: new THREE.Vector3(1, 2, 0.5).normalize() }
+  sunDirection: { value: new THREE.Vector3(1, 2, 0.5).normalize() },
+  inverseBladeHeight: { value: 1.0 / bladeHeight }
 };
 
 const vertexShader = `
@@ -108,6 +116,7 @@ const vertexShader = `
   attribute vec3 instanceColor;
   attribute float instanceAmbientOcclusion;
   uniform float time;
+  uniform float inverseBladeHeight;
   varying vec3 vColor;
   varying float vHeightProgress;
   varying float vAmbientOcclusion;
@@ -124,8 +133,9 @@ const vertexShader = `
     // Apply vertical scale FIRST
     transformedPosition.y *= instanceScaleY;
 
-    // Recalculate height progress after scaling
-    float heightProgress = transformedPosition.y / (${bladeHeight.toFixed(6)} * instanceScaleY);
+    // Calculates 0.0-1.0 normalized height using fast inverse multiplication.
+    //    (The scale factors cancel out later, making this mathematically equivalent)
+    float heightProgress = position.y * inverseBladeHeight;
     vHeightProgress = heightProgress;
 
     // Per-instance wind
@@ -343,43 +353,8 @@ const clock = new THREE.Clock();
  
   renderer.render(scene, camera);
 
-  trackFrameMetrics(); // <--- Removed: captureFrameTimestamp() call
+  trackFrameMetrics();
 })();
-
-
-function updateCameraRotation() {
-  cameraYaw -= deltaYaw * 0.002;
-  cameraPitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraPitch - deltaPitch * 0.002));
-
-  camera.rotation.y = cameraYaw;
-  camera.rotation.x = cameraPitch;
-
-  deltaYaw = deltaPitch = 0;
-}
-
-function trackFrameMetrics() {
-  stats.currentTime = performance.now();
-  stats.frameCount++;
-
-  // Only log the results once per second
-  if (twoSecondHavePassed()) {
-    logFrameMetrics();
-    resetFrameMetrics();
-  }
-}
-
-function twoSecondHavePassed() {
-  return stats.currentTime >= stats.lastTime + ONE_SECOND_IN_MILLISECONDS * 2;
-}
-
-function logFrameMetrics() {
-  console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.avgFrameTime.toFixed(2)}ms`); // Logs the smooth average
-}
-
-function resetFrameMetrics() {
-  stats.frameCount = 0; // Keep the frame count reset
-  stats.lastTime = stats.currentTime; // Keep the time reset
-}
 
 function calculateRunningAverage() {
     
@@ -412,4 +387,37 @@ function calculateRunningAverage() {
     // 7. Compute the final smoothed average
     stats.avgFrameTime = totalTime / stats.frameTimeHistory.length;
     stats.avgFPS = ONE_SECOND_IN_MILLISECONDS / stats.avgFrameTime;
+}
+
+function updateCameraRotation() {
+  cameraYaw -= deltaYaw * 0.002;
+  cameraPitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraPitch - deltaPitch * 0.002));
+
+  camera.rotation.y = cameraYaw;
+  camera.rotation.x = cameraPitch;
+
+  deltaYaw = deltaPitch = 0;
+}
+
+function trackFrameMetrics() {
+  stats.currentTime = performance.now();
+  stats.frameCount++;
+
+  if (twoSecondHavePassed()) {
+    logFrameMetrics();
+    resetFrameMetrics();
+  }
+}
+
+function twoSecondHavePassed() {
+  return stats.currentTime >= stats.lastTime + ONE_SECOND_IN_MILLISECONDS * 2;
+}
+
+function logFrameMetrics() {
+  console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.avgFrameTime.toFixed(2)}ms`); // Logs the smooth average
+}
+
+function resetFrameMetrics() {
+  stats.frameCount = 0; // Keep the frame count reset
+  stats.lastTime = stats.currentTime; // Keep the time reset
 }
