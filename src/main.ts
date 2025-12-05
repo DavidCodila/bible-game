@@ -111,8 +111,8 @@ const vertexShader = `
   attribute vec3 instanceOffset;
   attribute float instanceRotation;
   attribute float instanceScaleY;
-  attribute float instanceBendForward;
-  attribute float instanceBendSideways;
+  attribute float instanceLeanZ;
+  attribute float instanceLeanX;
   attribute vec3 instanceColor;
   attribute float instanceAmbientOcclusion;
   uniform float time;
@@ -145,13 +145,13 @@ const vertexShader = `
     float bendBias = pow(heightProgress, 1.6);
 
     // Apply bending AFTER scale
-    transformedPosition.z += (instanceBendForward + windEffect) * bendBias;
-    transformedPosition.x += (instanceBendSideways) * bendBias;
+    transformedPosition.z += (instanceLeanZ + windEffect) * bendBias;
+    transformedPosition.x += (instanceLeanX) * bendBias;
 
     // Rotate around Y axis
-    vec2 rotatedXZ = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceRotation);
-    transformedPosition.x = rotatedXZ.x;
-    transformedPosition.z = rotatedXZ.y;
+    vec2 rotatedAroundYAxis = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceRotation);
+    transformedPosition.x = rotatedAroundYAxis.x;
+    transformedPosition.z = rotatedAroundYAxis.y;
 
     // Transform to world space
     vec4 worldPosition = modelMatrix * vec4(transformedPosition + vec3(instanceOffset.x, 0.0, instanceOffset.z), 1.0);
@@ -202,8 +202,8 @@ instancedGrassMesh.material = grassMaterial;
 const instanceOffsets = new Float32Array(totalBlades * 3);
 const instanceRotations = new Float32Array(totalBlades);
 const instanceScales = new Float32Array(totalBlades);
-const instanceBendForward = new Float32Array(totalBlades);
-const instanceBendSideways = new Float32Array(totalBlades);
+const instanceLeanZ = new Float32Array(totalBlades);
+const instanceLeanX = new Float32Array(totalBlades);
 const instanceColors = new Float32Array(totalBlades * 3);
 
 // fill attributes: use grid with jitter
@@ -228,8 +228,8 @@ for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) {
     instanceScales[bladeIndex] = 0.7 + Math.random() * 1.2;
 
     // bend forward & side
-    instanceBendForward[bladeIndex] = 0.02 + Math.random() * 0.2;
-    instanceBendSideways[bladeIndex] = (Math.random() - 0.5) * 0.18;
+    instanceLeanZ[bladeIndex] = 0.02 + Math.random() * 0.2;
+    instanceLeanX[bladeIndex] = (Math.random() - 0.5) * 0.18;
 
     // color variation (mix base and tip)
     const greenChannel = 0.25 + Math.random() * 0.35;
@@ -319,8 +319,8 @@ bladeGeometry.setAttribute("instanceAmbientOcclusion", new THREE.InstancedBuffer
 bladeGeometry.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(instanceOffsets, 3));
 bladeGeometry.setAttribute("instanceRotation", new THREE.InstancedBufferAttribute(instanceRotations, 1));
 bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(instanceScales, 1));
-bladeGeometry.setAttribute("instanceBendForward", new THREE.InstancedBufferAttribute(instanceBendForward, 1));
-bladeGeometry.setAttribute("instanceBendSideways", new THREE.InstancedBufferAttribute(instanceBendSideways, 1));
+bladeGeometry.setAttribute("instanceLeanZ", new THREE.InstancedBufferAttribute(instanceLeanZ, 1));
+bladeGeometry.setAttribute("instanceLeanX", new THREE.InstancedBufferAttribute(instanceLeanX, 1));
 bladeGeometry.setAttribute("instanceColor", new THREE.InstancedBufferAttribute(instanceColors, 3));
 
 instancedGrassMesh.geometry = bladeGeometry;
