@@ -177,10 +177,9 @@ const fragmentShader = `
     
     float totalLighting = sunExposure * directionalLighting * baseAmbientOcclusion * vAmbientOcclusion;
     
-    // Add warm tint (slightly yellow/golden)
-    vec3 warmSunlightTint = vec3(0.95, 0.95, 1.0);
+    vec3 coolSkyTint = vec3(0.7, 0.8, 1);
     
-    vec3 finalColor = vColor * totalLighting * warmSunlightTint;
+    vec3 finalColor = vColor * totalLighting * coolSkyTint;
     gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
