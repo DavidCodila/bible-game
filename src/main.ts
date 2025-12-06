@@ -109,10 +109,10 @@ const shaderUniforms = {
 
 const vertexShader = `
   attribute vec3 instanceOffset;
-  attribute float instanceRotation;
+  attribute float instanceYAxisRotation;
   attribute float instanceScaleY;
-  attribute float instanceLeanZ;
-  attribute float instanceLeanX;
+  attribute float instanceZAxisBend;
+  attribute float instanceXAxisBend;
   attribute vec3 instanceColor;
   attribute float instanceAmbientOcclusion;
   uniform float time;
@@ -145,11 +145,11 @@ const vertexShader = `
     float bendBias = pow(heightProgress, 1.6);
 
     // Apply bending AFTER scale
-    transformedPosition.z += (instanceLeanZ + windEffect) * bendBias;
-    transformedPosition.x += (instanceLeanX) * bendBias;
+    transformedPosition.z += (instanceZAxisBend + windEffect) * bendBias;
+    transformedPosition.x += (instanceXAxisBend) * bendBias;
 
     // Rotate around Y axis
-    vec2 rotatedAroundYAxis = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceRotation);
+    vec2 rotatedAroundYAxis = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceYAxisRotation);
     transformedPosition.x = rotatedAroundYAxis.x;
     transformedPosition.z = rotatedAroundYAxis.y;
 
@@ -171,7 +171,7 @@ const fragmentShader = `
 
   void main(){
     float sunExposure = 0.3 + 0.7 * vHeightProgress;
-    float directionalLighting = 0.9 + 0.1 * sunDirection.x;
+    float directionalLighting = 0.9 + 0.1 * sunDirection.x; //need to change to use the dot product
     
     float baseAmbientOcclusion = mix(0.5, 1.0, pow(vHeightProgress, 0.5));
     
@@ -197,18 +197,23 @@ const grassMaterial = new THREE.ShaderMaterial({
 // attach material after creation
 instancedGrassMesh.material = grassMaterial;
 
-// allocate arrays for instanced buffer attributes
-const instanceOffsets = new Float32Array(totalBlades * 3);
-const instanceRotations = new Float32Array(totalBlades);
-const instanceScales = new Float32Array(totalBlades);
-const instanceLeanZ = new Float32Array(totalBlades);
-const instanceLeanX = new Float32Array(totalBlades);
-const instanceColors = new Float32Array(totalBlades * 3);
+// allocate arrays for instanced buffer attributes // need to think about changing this
+
+// vector attributes
+const VECTOR_3 = 3;
+const instanceOffsets = new Float32Array(totalBlades * VECTOR_3);
+const instanceColors = new Float32Array(totalBlades * VECTOR_3);
+
+// scalar attributes
+const instanceYAxisRotations = new Float32Array(totalBlades);
+const instanceYAxisScales = new Float32Array(totalBlades);
+const instanceZAxisBend = new Float32Array(totalBlades);
+const instanceXAxisBend = new Float32Array(totalBlades);
 
 // fill attributes: use grid with jitter
 const gridSpacing = grassPatchSize / bladesPerRow;
 
-for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) {
+for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) { 
   for (let zIndex = 0; zIndex < bladesPerRow; zIndex++) {
     const bladeIndex = xIndex * bladesPerRow + zIndex;
 
@@ -221,14 +226,14 @@ for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) {
     instanceOffsets[bladeIndex * 3 + 2] = zPosition;
 
     // random slight rotation
-    instanceRotations[bladeIndex] = (Math.random() - 0.5) * 0.6;
+    instanceYAxisRotations[bladeIndex] = (Math.random() - 0.5) * 0.6;
 
     // height variation
-    instanceScales[bladeIndex] = 0.7 + Math.random() * 1.2;
+    instanceYAxisScales[bladeIndex] = 0.7 + Math.random() * 1.2;
 
     // bend forward & side
-    instanceLeanZ[bladeIndex] = 0.02 + Math.random() * 0.2;
-    instanceLeanX[bladeIndex] = (Math.random() - 0.5) * 0.18;
+    instanceZAxisBend[bladeIndex] = 0.02 + Math.random() * 0.17;
+    instanceXAxisBend[bladeIndex] = (Math.random() - 0.5) * 0.18;
 
     // color variation (mix base and tip)
     const greenChannel = 0.25 + Math.random() * 0.35;
@@ -241,7 +246,7 @@ for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) {
 }
 
 // ---- Calculate density-based AO using spatial grid (O(n)) ----
-const instanceAmbientOcclusion = new Float32Array(totalBlades);
+const instanceAmbientOcclusion = new Float32Array(totalBlades); //upto here
 const neighborSearchRadius = gridSpacing * 2.5;
 
 // Create spatial grid for fast neighbor lookup
@@ -316,10 +321,10 @@ for (let bladeIndex = 0; bladeIndex < totalBlades; bladeIndex++) {
 bladeGeometry.setAttribute("instanceAmbientOcclusion", new THREE.InstancedBufferAttribute(instanceAmbientOcclusion, 1));
 
 bladeGeometry.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(instanceOffsets, 3));
-bladeGeometry.setAttribute("instanceRotation", new THREE.InstancedBufferAttribute(instanceRotations, 1));
-bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(instanceScales, 1));
-bladeGeometry.setAttribute("instanceLeanZ", new THREE.InstancedBufferAttribute(instanceLeanZ, 1));
-bladeGeometry.setAttribute("instanceLeanX", new THREE.InstancedBufferAttribute(instanceLeanX, 1));
+bladeGeometry.setAttribute("instanceYAxisRotation", new THREE.InstancedBufferAttribute(instanceYAxisRotations, 1));
+bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(instanceYAxisScales, 1));
+bladeGeometry.setAttribute("instanceZAxisBend", new THREE.InstancedBufferAttribute(instanceZAxisBend, 1));
+bladeGeometry.setAttribute("instanceXAxisBend", new THREE.InstancedBufferAttribute(instanceXAxisBend, 1));
 bladeGeometry.setAttribute("instanceColor", new THREE.InstancedBufferAttribute(instanceColors, 3));
 
 instancedGrassMesh.geometry = bladeGeometry;
