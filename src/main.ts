@@ -226,14 +226,17 @@ for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) {
     instanceOffsets[bladeIndex * 3 + 2] = zPosition;
 
     // random slight rotation
-    instanceYAxisRotations[bladeIndex] = (Math.random() - 0.5) * 0.6;
+    instanceYAxisRotations[bladeIndex] = (Math.random() - 0.5) * (Math.PI / 2);;
 
     // height variation
     instanceYAxisScales[bladeIndex] = 0.7 + Math.random() * 1.2;
 
+    const leanMagnitude = 0.02 + Math.random() * 0.11;
+    const leanDirection = (Math.random() - 0.5) * Math.PI / 3;  // ±30° from forward
+
     // bend forward & side
-    instanceZAxisBend[bladeIndex] = 0.02 + Math.random() * 0.17;
-    instanceXAxisBend[bladeIndex] = (Math.random() - 0.5) * 0.18;
+    instanceZAxisBend[bladeIndex] = leanMagnitude * Math.cos(leanDirection);
+    instanceXAxisBend[bladeIndex] = leanMagnitude * Math.sin(leanDirection);
 
     // color variation (mix base and tip)
     const greenChannel = 0.25 + Math.random() * 0.35;
