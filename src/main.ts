@@ -44,7 +44,7 @@ const ground = new THREE.Mesh(
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-const grassPatchSize = 10;
+const grassPatchSideLength = 10;
 const bladesPerRow = 150;
 const totalBlades = bladesPerRow * bladesPerRow;
 const bladeHeight = 0.4; // Thing about how to redo this
@@ -179,7 +179,9 @@ const fragmentShader = `
     
     vec3 coolSkyTint = vec3(0.7, 0.8, 1);
     
-    vec3 finalColor = vColor * totalLighting * coolSkyTint;
+    float combinedAO = vAmbientOcclusion * baseAmbientOcclusion;
+    vec3 finalColor = vec3(combinedAO);
+    //vec3 finalColor = vColor * totalLighting * coolSkyTint;
     gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
@@ -211,15 +213,15 @@ const instanceZAxisBend = new Float32Array(totalBlades);
 const instanceXAxisBend = new Float32Array(totalBlades);
 
 // fill attributes: use grid with jitter
-const gridSpacing = grassPatchSize / bladesPerRow;
+const gridSpacing = grassPatchSideLength / bladesPerRow;
 
 for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) { 
   for (let zIndex = 0; zIndex < bladesPerRow; zIndex++) {
     const bladeIndex = xIndex * bladesPerRow + zIndex;
 
     // base grid pos + jitter so distribution looks natural
-    const xPosition = xIndex * gridSpacing - grassPatchSize / 2 + (Math.random() - 0.5) * gridSpacing * 0.8;
-    const zPosition = zIndex * gridSpacing - grassPatchSize / 2 + (Math.random() - 0.5) * gridSpacing * 0.8;
+    const xPosition = xIndex * gridSpacing - grassPatchSideLength / 2 + (Math.random() - 0.5) * gridSpacing * 0.8;
+    const zPosition = zIndex * gridSpacing - grassPatchSideLength / 2 + (Math.random() - 0.5) * gridSpacing * 0.8;
 
     instanceOffsets[bladeIndex * 3 + 0] = xPosition;
     instanceOffsets[bladeIndex * 3 + 1] = 0;
@@ -250,18 +252,18 @@ for (let xIndex = 0; xIndex < bladesPerRow; xIndex++) {
 
 // ---- Calculate density-based AO using spatial grid (O(n)) ----
 const instanceAmbientOcclusion = new Float32Array(totalBlades); //upto here
-const neighborSearchRadius = gridSpacing * 2.5;
+const maximumNeighborDistance = gridSpacing * 2.5;
 
 // Create spatial grid for fast neighbor lookup
-const aoGridSize = 20;
-const aoGridCellSize = grassPatchSize / aoGridSize;
-const spatialGrid: number[][][] = [];
+const ambientOcclusionGridCellsPerSide = 20;
+const ambientOcclusionGridCellSize = grassPatchSideLength / ambientOcclusionGridCellsPerSide;
+const ambientOcclusionSpatialGrid: number[][][] = [];
 
 // Initialize grid
-for (let xIndex = 0; xIndex < aoGridSize; xIndex++) {
-  spatialGrid[xIndex] = [];
-  for (let zIndex = 0; zIndex < aoGridSize; zIndex++) {
-    spatialGrid[xIndex][zIndex] = [];
+for (let xIndex = 0; xIndex < ambientOcclusionGridCellsPerSide; xIndex++) {
+  ambientOcclusionSpatialGrid[xIndex] = [];
+  for (let zIndex = 0; zIndex < ambientOcclusionGridCellsPerSide; zIndex++) {
+    ambientOcclusionSpatialGrid[xIndex][zIndex] = [];
   }
 }
 
@@ -270,13 +272,13 @@ for (let bladeIndex = 0; bladeIndex < totalBlades; bladeIndex++) {
   const xPosition = instanceOffsets[bladeIndex * 3 + 0];
   const zPosition = instanceOffsets[bladeIndex * 3 + 2];
   
-  const gridX = Math.floor((xPosition + grassPatchSize / 2) / aoGridCellSize);
-  const gridZ = Math.floor((zPosition + grassPatchSize / 2) / aoGridCellSize);
+  const aoGridColumnIndex = Math.floor((xPosition + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
+  const aoGridRowIndex = Math.floor((zPosition + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
   
-  const clampedGridX = Math.max(0, Math.min(aoGridSize - 1, gridX));
-  const clampedGridZ = Math.max(0, Math.min(aoGridSize - 1, gridZ));
+  const validAoGridColumnIndex = Math.max(0, Math.min(ambientOcclusionGridCellsPerSide - 1, aoGridColumnIndex));
+  const validAoGridRowIndex = Math.max(0, Math.min(ambientOcclusionGridCellsPerSide - 1, aoGridRowIndex));
   
-  spatialGrid[clampedGridX][clampedGridZ].push(bladeIndex);
+  ambientOcclusionSpatialGrid[validAoGridColumnIndex][validAoGridRowIndex].push(bladeIndex);
 }
 
 // Calculate density for each blade
@@ -284,40 +286,50 @@ for (let bladeIndex = 0; bladeIndex < totalBlades; bladeIndex++) {
   const xPosition = instanceOffsets[bladeIndex * 3 + 0];
   const zPosition = instanceOffsets[bladeIndex * 3 + 2];
   
-  const gridX = Math.floor((xPosition + grassPatchSize / 2) / aoGridCellSize);
-  const gridZ = Math.floor((zPosition + grassPatchSize / 2) / aoGridCellSize);
+  const aoGridColumnIndex = Math.floor((xPosition + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
+  const aoGridRowIndex = Math.floor((zPosition + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
   
-  let neighborCount = 0;
+  let weightedDensity = 0;
   
   // Check 3x3 grid around current cell
-  for (let deltaX = -1; deltaX <= 1; deltaX++) {
-    for (let deltaZ = -1; deltaZ <= 1; deltaZ++) {
-      const neighborGridX = gridX + deltaX;
-      const neighborGridZ = gridZ + deltaZ;
+  for (let neighborCellXOffset = -1; neighborCellXOffset <= 1; neighborCellXOffset++) {
+    for (let neighborCellZOffset = -1; neighborCellZOffset <= 1; neighborCellZOffset++) {
+      const neighborAoGridColumnIndex = aoGridColumnIndex + neighborCellXOffset;
+      const nighborAoGridRowIndex = aoGridRowIndex + neighborCellZOffset;
+      const indexIsNotWithinGrid = neighborAoGridColumnIndex < 0 
+        || neighborAoGridColumnIndex >= ambientOcclusionGridCellsPerSide 
+        || nighborAoGridRowIndex < 0 
+        || nighborAoGridRowIndex >= ambientOcclusionGridCellsPerSide;
+        
+      if (indexIsNotWithinGrid) continue;
       
-      if (neighborGridX < 0 || neighborGridX >= aoGridSize || neighborGridZ < 0 || neighborGridZ >= aoGridSize) continue;
-      
-      for (const neighborBladeIndex of spatialGrid[neighborGridX][neighborGridZ]) {
+      for (const neighborBladeIndex of ambientOcclusionSpatialGrid[neighborAoGridColumnIndex][nighborAoGridRowIndex]) {
         if (bladeIndex === neighborBladeIndex) continue;
         
         const neighborX = instanceOffsets[neighborBladeIndex * 3 + 0];
         const neighborZ = instanceOffsets[neighborBladeIndex * 3 + 2];
         
-        const deltaX2 = xPosition - neighborX;
-        const deltaZ2 = zPosition - neighborZ;
-        const distance = Math.sqrt(deltaX2 * deltaX2 + deltaZ2 * deltaZ2);
+        const deltaX = xPosition - neighborX;
+        const deltaZ = zPosition - neighborZ;
+        const distance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
         
-        if (distance < neighborSearchRadius) {
-          neighborCount++;
+        
+        if (distance < maximumNeighborDistance) {
+          // Closer neighbors contribute more
+          const distanceWeight = 1.0 - (distance / maximumNeighborDistance);
+          weightedDensity += distanceWeight;
         }
       }
     }
   }
   
   // Convert to AO factor
-  const maxNeighborsForAO = 15;
-  const densityFactor = Math.min(neighborCount / maxNeighborsForAO, 1.0);
-  instanceAmbientOcclusion[bladeIndex] = 1.0 - (densityFactor * 0.3);
+  const maxWeightedDensityForFullDarkening = 20.0;
+  const densityFactor = Math.min(weightedDensity / maxWeightedDensityForFullDarkening, 1.0);
+  const aoFalloff = Math.sqrt(densityFactor);
+
+  const maximumDarkeningAmount = 0.75;
+  instanceAmbientOcclusion[bladeIndex] = 1.0 - (aoFalloff * maximumDarkeningAmount);
 }
 
 // Add density AO attribute
