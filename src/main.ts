@@ -1,18 +1,5 @@
 import * as THREE from 'three';
 
-const ONE_SECOND_IN_MILLISECONDS = 1000;
-
-// For frame metric calculations
-const stats = { 
-  frameCount: 0, frameStartTime: 0, frameEndTime: performance.now(), timePerFrame: 0, fps: 0, 
-  gpuStartTime: performance.now(), gpuEndTime: performance.now(), gpuTimePerRender: performance.now(),
-  lastTime: performance.now(), currentTime: performance.now(), oneSecondInMilliseconds: 1000,
-  frameTimeHistory: [] as number[], // Store the last N frame times
-  historyCapacity: 120, // Number of frames to average over (e.g., 2 second at 60 FPS)
-  avgFrameTime: 0, // The smoothed average frame time (ms)
-  avgFPS: 0 // The smoothed average FPS
-};
-
 // Scene setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87ceeb);
@@ -334,7 +321,6 @@ for (let bladeIndex = 0; bladeIndex < totalBlades; bladeIndex++) {
 
 // Add density AO attribute
 bladeGeometry.setAttribute("instanceAmbientOcclusion", new THREE.InstancedBufferAttribute(instanceAmbientOcclusion, 1));
-
 bladeGeometry.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(instanceOffsets, 3));
 bladeGeometry.setAttribute("instanceYAxisRotation", new THREE.InstancedBufferAttribute(instanceYAxisRotations, 1));
 bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(instanceYAxisScales, 1));
@@ -363,17 +349,21 @@ onmousemove = mouseEvent => {
 onclick = () => renderer.domElement.requestPointerLock();
 const clock = new THREE.Clock();
 
-(function renderLoop() {
-  requestAnimationFrame(renderLoop);
-  calculateRunningAverage(); 
-  updateCameraRotation();
+const ONE_SECOND_IN_MILLISECONDS = 1000, TWO_SECONDS_AT_60FPS = 120;
 
-  shaderUniforms.time.value += clock.getDelta();
- 
-  renderer.render(scene, camera);
+const twoSecondsHavePassed = () => performance.now() >= stats.lastLogTime + ONE_SECOND_IN_MILLISECONDS * 2;
 
-  trackFrameMetrics();
-})();
+// For frame metric calculations
+const stats = { 
+  frameStartTime: 0, frameEndTime: performance.now(), timePerFrame: 0, fps: 0, 
+  gpuStartTime: performance.now(), gpuEndTime: performance.now(), gpuTimePerRender: performance.now(),
+  lastLogTime: performance.now(), currentTime: performance.now(), oneSecondInMilliseconds: 1000,
+  frameTimeHistory: [] as number[], 
+  historyCapacity: TWO_SECONDS_AT_60FPS,
+  smoothedAvgerageFrameTime: 0, // The smoothed average frame time (ms)
+  avgFPS: 0 // The smoothed average FPS
+};
+
 
 function calculateRunningAverage() {
     
@@ -404,8 +394,8 @@ function calculateRunningAverage() {
     const totalTime = stats.frameTimeHistory.reduce((sum, time) => sum + time, 0);
     
     // 7. Compute the final smoothed average
-    stats.avgFrameTime = totalTime / stats.frameTimeHistory.length;
-    stats.avgFPS = ONE_SECOND_IN_MILLISECONDS / stats.avgFrameTime;
+    stats.smoothedAvgerageFrameTime = totalTime / stats.frameTimeHistory.length;
+    stats.avgFPS = ONE_SECOND_IN_MILLISECONDS / stats.smoothedAvgerageFrameTime;
 }
 
 function updateCameraRotation() {
@@ -418,25 +408,21 @@ function updateCameraRotation() {
   deltaYaw = deltaPitch = 0;
 }
 
-function trackFrameMetrics() {
-  stats.currentTime = performance.now();
-  stats.frameCount++;
-
-  if (twoSecondHavePassed()) {
-    logFrameMetrics();
-    resetFrameMetrics();
-  }
+function logSmoothMetricsPeriodically() {
+    if (twoSecondsHavePassed()) {
+      console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.smoothedAvgerageFrameTime.toFixed(2)}ms`); 
+      stats.lastLogTime = performance.now();
+    }
 }
 
-function twoSecondHavePassed() {
-  return stats.currentTime >= stats.lastTime + ONE_SECOND_IN_MILLISECONDS * 2;
-}
+(function renderLoop() {
+  requestAnimationFrame(renderLoop);
+  calculateRunningAverage(); 
+  updateCameraRotation();
 
-function logFrameMetrics() {
-  console.log(`Avg FPS: ${stats.avgFPS.toFixed(1)} | Avg Frame Time: ${stats.avgFrameTime.toFixed(2)}ms`); // Logs the smooth average
-}
+  shaderUniforms.time.value += clock.getDelta();
+ 
+  renderer.render(scene, camera);
 
-function resetFrameMetrics() {
-  stats.frameCount = 0; // Keep the frame count reset
-  stats.lastTime = stats.currentTime; // Keep the time reset
-}
+  logSmoothMetricsPeriodically();
+})();
