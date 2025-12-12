@@ -87,9 +87,9 @@ export class GardenOfEdenApp {
         const deltaYaw = this.inputManager.mouseDeltaX;
         const deltaPitch = this.inputManager.mouseDeltaY;
 
-        if (deltaYaw === 0 && deltaPitch === 0) {
-            return; 
-        }
+        const mouseHasNotMoved = deltaYaw === 0 && deltaPitch === 0;
+        
+        if (mouseHasNotMoved) return; 
 
         // 2. APPLY LOGIC (Rotation)
         this.cameraYaw -= deltaYaw * this.mouseSensitivity;
