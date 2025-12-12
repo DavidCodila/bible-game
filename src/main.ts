@@ -186,7 +186,13 @@ const grassMaterial = new THREE.ShaderMaterial({
 // attach material after creation
 instancedGrassMesh.material = grassMaterial;
 
-// allocate arrays for instanced buffer attributes // need to think about changing this
+instancedGrassMesh.geometry.computeBoundingSphere();
+const boundingSphere = instancedGrassMesh.geometry.boundingSphere;
+
+if (boundingSphere) {
+  const patchDiagonal = Math.sqrt(grassPatchSideLength * grassPatchSideLength * 2);
+  boundingSphere.radius = patchDiagonal / 2; 
+}
 
 // vector attributes
 const VECTOR_3 = 3;
