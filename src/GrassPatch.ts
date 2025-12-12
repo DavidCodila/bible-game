@@ -1,28 +1,35 @@
+// --- IN src/GrassPatch.ts (The Orchestrator) ---
+
 import * as THREE from 'three';
 import { GrassGeometryFactory } from './GrassGeometryFactory'; 
+import { GrassDataGenerator } from './GrassDataGenerator'; // NEW
+import { BladeDensityOcclusion } from './BladeDensityOcclusion'; // NEW
+import type { AODensityConfig } from "./grass/types";
 
 /**
- * Encapsulates all data generation, instancing, AO calculation, and setup 
- * for the entire field of grass. Uses UNIFORM RANDOM placement.
+ * The orchestrator class. Manages Three.js resources (Mesh, Material, Shader) 
+ * and delegates heavy attribute calculation to dedicated utilities.
  */
 export class GrassPatch {
     public mesh: THREE.InstancedMesh;
     public material: THREE.ShaderMaterial;
     
+    // --- Configuration Constants ---
     private readonly sideLength = 10;
     private readonly bladesPerRow = 150;
     private readonly totalBlades: number;
     private readonly gridSpacing: number;
     private readonly bladeHeight = 0.4;
     
-    // Shader Uniforms (will be passed to the material later)
+    // Shader Uniforms (unchanged)
     public shaderUniforms: { [key: string]: THREE.IUniform<any> } = {
         time: { value: 0 },
         sunDirection: { value: new THREE.Vector3(1, 2, 0.5).normalize() },
         inverseBladeHeight: { value: 1.0 / this.bladeHeight }
     };
     
-    // --- SHADERS (Unchanged: uses instanceBendX/Z) ---
+    // --- SHADERS (Unchanged - uses the cleaner instanceBendX/Z) ---
+    // ... (Vertex Shader and Fragment Shader content remains the same)
     private vertexShader = `
         attribute vec3 instanceOffset;
         attribute float instanceYAxisRotation;
@@ -85,7 +92,7 @@ export class GrassPatch {
             
             vec3 coolSkyTint = vec3(0.7, 0.8, 1);
             
-            // DEBUG VIEW: Showing AO only (REMOVE THIS LINE FOR FINAL COLOR)
+            // DEBUG VIEW: Showing AO only 
             float combinedAO = vAmbientOcclusion * baseAmbientOcclusion;
             vec3 finalColor = vec3(combinedAO); 
             
@@ -103,9 +110,9 @@ export class GrassPatch {
         const bladeGeometry = GrassGeometryFactory.createBladeGeometry();
         this.mesh = new THREE.InstancedMesh(bladeGeometry, undefined as any, this.totalBlades);
         
-        this.calculateInstanceAttributes();
-        this.material = this.setupMaterial(); // Fix 1: Assign return value
-        this.mesh.material = this.material;   // Fix 2: Assign to mesh
+        this.calculateAndAssignAttributes(bladeGeometry);
+        this.material = this.setupMaterial();
+        this.mesh.material = this.material;
         this.applyBoundingSphereFix();
     }
 
@@ -120,108 +127,39 @@ export class GrassPatch {
         });
     }
 
-    private calculateInstanceAttributes(): void {
-        // --- 1. ATTRIBUTE ARRAY ALLOCATION ---
-        const instanceOffsets = new Float32Array(this.totalBlades * 3);
-        const instanceColors = new Float32Array(this.totalBlades * 3);
-        const instanceYAxisRotations = new Float32Array(this.totalBlades);
-        const instanceYAxisScales = new Float32Array(this.totalBlades);
-        const instancePlanarBendsX = new Float32Array(this.totalBlades);
-        const instancePlanarBendsZ = new Float32Array(this.totalBlades);
-        const instanceAmbientOcclusion = new Float32Array(this.totalBlades);
+    private calculateAndAssignAttributes(bladeGeometry: THREE.BufferGeometry): void {
+        const generationConfig = {
+            totalBlades: this.totalBlades,
+            sideLength: this.sideLength,
+            bladesPerRow: this.bladesPerRow,
+            gridSpacing: this.gridSpacing
+        };
+
+        // --- 1. GENERATE BASE ATTRIBUTES ---
+        const attributes = GrassDataGenerator.generateAttributes(generationConfig);
         
-        // --- 2. THE MAIN ATTRIBUTE FILLING LOOP (SIMPLE UNIFORM PLACEMENT) ---
-        for (let xIndex = 0; xIndex < this.bladesPerRow; xIndex++) { 
-            for (let zIndex = 0; zIndex < this.bladesPerRow; zIndex++) {
-                const bladeIndex = xIndex * this.bladesPerRow + zIndex;
-                
-                // Base pos + Uniform Jitter
-                // We no longer factor in a separate cluster offset.
-                const xPosition = xIndex * this.gridSpacing - this.sideLength / 2 
-                    + (Math.random() - 0.5) * this.gridSpacing;                           
-                const zPosition = zIndex * this.gridSpacing - this.sideLength / 2 
-                    + (Math.random() - 0.5) * this.gridSpacing;                           
-
-                // Offsets (X, Y, Z position)
-                instanceOffsets[bladeIndex * 3 + 0] = xPosition;
-                instanceOffsets[bladeIndex * 3 + 1] = 0;
-                instanceOffsets[bladeIndex * 3 + 2] = zPosition;
-
-                // Y Axis Rotation
-                instanceYAxisRotations[bladeIndex] = (Math.random() - 0.5) * (Math.PI / 2);
-
-                // Y Axis Scale (Height variation)
-                instanceYAxisScales[bladeIndex] = 0.7 + Math.random() * 1.2;
-
-                // Bending (Magnitude and Direction)
-                const leanMagnitude = 0.02 + Math.random() * 0.11;
-                const leanDirection = (Math.random() - 0.5) * Math.PI / 3; 
-                
-                instancePlanarBendsX[bladeIndex] = leanMagnitude * Math.sin(leanDirection); 
-                instancePlanarBendsZ[bladeIndex] = leanMagnitude * Math.cos(leanDirection); 
-
-                // Color Variation
-                const greenChannel = 0.25 + Math.random() * 0.35;
-                const redChannel = 0.08 + Math.random() * 0.08; 
-                const blueChannel = 0.03 + Math.random() * 0.05;
-                instanceColors[bladeIndex * 3 + 0] = redChannel;
-                instanceColors[bladeIndex * 3 + 1] = greenChannel;
-                instanceColors[bladeIndex * 3 + 2] = blueChannel;
-            }
-        }
+        // --- 2. CALCULATE AO (Uses the efficient Spatial Hash Grid) ---
+        const aoConfig : AODensityConfig = {
+            grassPatchSideLength: this.sideLength,
+            maximumNeighborDistance: this.gridSpacing * 2.5,
+            densityRequiredForMaxAO: 20.0
+        };
+        const aoCalculator = new BladeDensityOcclusion(aoConfig);
         
-        // --- 3. AO CALCULATION (Simplified: Using only position and distance) ---
-        this.calculateAmbientOcclusion(instanceAmbientOcclusion, instanceOffsets);
+        // Pass the generated positions to the AO calculator
+        const instanceAmbientOcclusion = aoCalculator.calculateAO(attributes.instanceOffsets);
 
-        // --- 4. ATTRIBUTE ASSIGNMENT ---
-        const bladeGeometry = this.mesh.geometry;
-        bladeGeometry.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(instanceOffsets, 3));
-        bladeGeometry.setAttribute("instanceYAxisRotation", new THREE.InstancedBufferAttribute(instanceYAxisRotations, 1));
-        bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(instanceYAxisScales, 1));
-        bladeGeometry.setAttribute("instanceBendX", new THREE.InstancedBufferAttribute(instancePlanarBendsX, 1)); 
-        bladeGeometry.setAttribute("instanceBendZ", new THREE.InstancedBufferAttribute(instancePlanarBendsZ, 1)); 
-        bladeGeometry.setAttribute("instanceColor", new THREE.InstancedBufferAttribute(instanceColors, 3));
+
+        // --- 3. ASSIGN ALL ATTRIBUTES TO GEOMETRY ---
+        bladeGeometry.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(attributes.instanceOffsets, 3));
+        bladeGeometry.setAttribute("instanceYAxisRotation", new THREE.InstancedBufferAttribute(attributes.instanceYAxisRotations, 1));
+        bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(attributes.instanceYAxisScales, 1));
+        bladeGeometry.setAttribute("instanceBendX", new THREE.InstancedBufferAttribute(attributes.instancePlanarBendsX, 1)); 
+        bladeGeometry.setAttribute("instanceBendZ", new THREE.InstancedBufferAttribute(attributes.instancePlanarBendsZ, 1)); 
+        bladeGeometry.setAttribute("instanceColor", new THREE.InstancedBufferAttribute(attributes.instanceColors, 3));
+        
+        // Assign the calculated AO
         bladeGeometry.setAttribute("instanceAmbientOcclusion", new THREE.InstancedBufferAttribute(instanceAmbientOcclusion, 1));
-    }
-
-    // AO Calculation is simplified to remove cluster/grid complexity, maintaining only basic neighbor density.
-    private calculateAmbientOcclusion(instanceAmbientOcclusion: Float32Array, instanceOffsets: Float32Array): void {
-        const maximumNeighborDistance = this.gridSpacing * 2.5; 
-        
-        // Note: Without the spatial grid, this is O(n^2) and is SLOW for 22,500 blades.
-        // I have left it simple here as the cluster logic was complex, but for production, 
-        // a simple spatial hash or quadtree is needed.
-        
-        for (let bladeIndex = 0; bladeIndex < this.totalBlades; bladeIndex++) {
-            const xPosition = instanceOffsets[bladeIndex * 3 + 0];
-            const zPosition = instanceOffsets[bladeIndex * 3 + 2];
-            
-            let weightedDensity = 0;
-            
-            // This loop iterates over ALL other blades. Keep an eye on performance here!
-            for (let neighborBladeIndex = 0; neighborBladeIndex < this.totalBlades; neighborBladeIndex++) {
-                if (bladeIndex === neighborBladeIndex) continue;
-                
-                const neighborX = instanceOffsets[neighborBladeIndex * 3 + 0];
-                const neighborZ = instanceOffsets[neighborBladeIndex * 3 + 2];
-                
-                const deltaX = xPosition - neighborX;
-                const deltaZ = zPosition - neighborZ;
-                const distance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-                
-                if (distance < maximumNeighborDistance) {
-                    const distanceWeight = 1.0 - (distance / maximumNeighborDistance);
-                    weightedDensity += distanceWeight;
-                }
-            }
-            
-            const maxWeightedDensityForFullDarkening = 20.0;
-            const densityFactor = Math.min(weightedDensity / maxWeightedDensityForFullDarkening, 1.0);
-            const aoFalloff = Math.sqrt(densityFactor);
-
-            const maximumDarkeningAmount = 0.75;
-            instanceAmbientOcclusion[bladeIndex] = 1.0 - (aoFalloff * maximumDarkeningAmount);
-        }
     }
 
     private applyBoundingSphereFix(): void {
