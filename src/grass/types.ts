@@ -4,8 +4,13 @@ export interface AODensityConfig {
     densityRequiredForMaxAO: number;
 }
 
-export interface Postiton {
+export interface Position {
     x: number;
     y: number;
     z: number;
+}
+
+export interface GridIndexes {
+    row: number;
+    column: number;
 }

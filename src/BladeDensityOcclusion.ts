@@ -1,5 +1,6 @@
 import type { AODensityConfig } from "./grass/types";
-import type { Postiton } from "./grass/types";
+import type { Position } from "./grass/types";
+import type { GridIndexes } from "./grass/types";
 
 export class BladeDensityOcclusion {
     
@@ -33,7 +34,7 @@ export class BladeDensityOcclusion {
 
         // --- PHASE 1: BUILD THE SPATIAL GRID ---
         
-        const initialiseGrid = () => {
+        const buildEmptyGrid = () => {
             for (let columnIndex = 0; columnIndex < ambientOcclusionGridCellsPerSide; columnIndex++) {
                 ambientOcclusionSpatialGrid[columnIndex] = [];
                 for (let rowIndex = 0; rowIndex < ambientOcclusionGridCellsPerSide; rowIndex++) {
@@ -43,84 +44,116 @@ export class BladeDensityOcclusion {
         }
 
         //can implement y later if needed
-        const getPositionFromIndex = (bladeIndex : number) : Postiton => {
-            const xPosition = positions[bladeIndex * this.CoordinatesPerBlade + 0];
-            const zPosition = positions[bladeIndex * this.CoordinatesPerBlade + 2];
-            return {x : xPosition, y: 0, z : zPosition}
+        const getBladePosition = (bladeIndex : number) : Position => {
+            return {
+                x : positions[bladeIndex * this.CoordinatesPerBlade + 0], 
+                y: 0, 
+                z : positions[bladeIndex * this.CoordinatesPerBlade + 2]
+            }
+        }
+
+        const clampGridIndexes = (grid : GridIndexes) : GridIndexes => {
+            const maxIndex = ambientOcclusionGridCellsPerSide - 1;
+            return {
+                row : Math.max(0, Math.min(maxIndex, grid.row)),
+                column : Math.max(0, Math.min(maxIndex, grid.column))
+            }
+        }
+
+        const getValidGridIndexes = (position : Position) : GridIndexes => {
+            return clampGridIndexes({
+                row : Math.floor((position.z + grassPatchSideLength / 2) / ambientOcclusionGridCellSize),
+                column : Math.floor((position.x + grassPatchSideLength / 2) / ambientOcclusionGridCellSize)
+            });
         }
 
         const populateGridWithBladeIndices = () => {
             for (let bladeIndex = 0; bladeIndex < totalBlades; bladeIndex++) {
-                const position : Postiton = getPositionFromIndex(bladeIndex)
+                const position : Position = getBladePosition(bladeIndex)
+                const ambientOcclusionGrid = getValidGridIndexes(position);
 
-                const aoGridColumnIndex = Math.floor((position.x + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
-                const aoGridRowIndex = Math.floor((position.z + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
-
-                const validAoGridColumnIndex = Math.max(0, Math.min(ambientOcclusionGridCellsPerSide - 1, aoGridColumnIndex));
-                const validAoGridRowIndex = Math.max(0, Math.min(ambientOcclusionGridCellsPerSide - 1, aoGridRowIndex));
-
-                ambientOcclusionSpatialGrid[validAoGridColumnIndex][validAoGridRowIndex].push(bladeIndex);
+                ambientOcclusionSpatialGrid[ambientOcclusionGrid.column][ambientOcclusionGrid.row].push(bladeIndex);
             }
         }
         
-        const querySpatialHashNeighbors = (bladeIndex: number): number[] => {
-            const position : Postiton = getPositionFromIndex(bladeIndex)
-            
-            const aoGridColumnIndex = Math.floor((position.x + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
-            const aoGridRowIndex = Math.floor((position.z + grassPatchSideLength / 2) / ambientOcclusionGridCellSize);
+        const getNeighborBladeIndices = (bladeIndex: number): number[] => {
+            const position : Position = getBladePosition(bladeIndex)
+            const ambientOcclusionGrid = getValidGridIndexes(position);
             
             const neighborBladeIndices: number[] = [];
 
-            for (let neighborCellColumnOffset = -1; neighborCellColumnOffset <= 1; neighborCellColumnOffset++) {
+            const isWithinGrid = (grid: GridIndexes): boolean => (
+                (grid.column >= 0 && grid.column < ambientOcclusionGridCellsPerSide) && 
+                (grid.row >= 0 && grid.row < ambientOcclusionGridCellsPerSide)          
+            );
+
+            const iterateThroughRowNeighboursForColumn = (neighborCellColumnOffset : number) => {
                 for (let neighborCellRowOffset = -1; neighborCellRowOffset <= 1; neighborCellRowOffset++) {
-                    
-                    const neighborAoGridColumnIndex = aoGridColumnIndex + neighborCellColumnOffset;
-                    const nighborAoGridRowIndex = aoGridRowIndex + neighborCellRowOffset;
-                    
-                    const neighborIndexIsNotWithinGrid = neighborAoGridColumnIndex < 0
-                        || neighborAoGridColumnIndex >= ambientOcclusionGridCellsPerSide
-                        || nighborAoGridRowIndex < 0
-                        || nighborAoGridRowIndex >= ambientOcclusionGridCellsPerSide;
-                        
-                    if (neighborIndexIsNotWithinGrid) continue;
-                    
-                    const indicesInCell = ambientOcclusionSpatialGrid[neighborAoGridColumnIndex][nighborAoGridRowIndex];
-                    neighborBladeIndices.push(...indicesInCell);
+                    const neighborAoGridIndexes : GridIndexes = {
+                        column : ambientOcclusionGrid.column + neighborCellColumnOffset, 
+                        row : ambientOcclusionGrid.row + neighborCellRowOffset
+                    }
+
+                    if (isWithinGrid(neighborAoGridIndexes)) {
+                        neighborBladeIndices.push(...ambientOcclusionSpatialGrid[neighborAoGridIndexes.column][neighborAoGridIndexes.row]);
+                    }
                 }
             }
+
+            const interateThroughColumnNeighbours = () => {
+                for (let neighborCellColumnOffset = -1; neighborCellColumnOffset <= 1; neighborCellColumnOffset++) {
+                    iterateThroughRowNeighboursForColumn(neighborCellColumnOffset);
+                }
+            }
+
+            interateThroughColumnNeighbours();
+            
             return neighborBladeIndices;
         }
 
         const calculateWeightedDensityFromNeighbors = (currentBladeIndex: number, neighborBladeIndices: number[]): number => {
-            const position : Postiton = getPositionFromIndex(currentBladeIndex)
+            const currentPosition : Position = getBladePosition(currentBladeIndex)
             let weightedDensity = 0;
+
+            const calculateDistanceFromCurrentBlade = (neighborPosition : Position) : number => {
+                const deltaX = currentPosition.x - neighborPosition.x;
+                const deltaZ = currentPosition.z - neighborPosition.z;
+                const squaredDistance = deltaX * deltaX + deltaZ * deltaZ;
+                if (squaredDistance > maximumNeighborDistance * maximumNeighborDistance) {
+                    return -1;
+                }
+                else return Math.sqrt(squaredDistance);
+            }
 
             for (const neighborBladeIndex of neighborBladeIndices) {
                 if (currentBladeIndex === neighborBladeIndex) continue;
 
-                const neighborPosition : Postiton = getPositionFromIndex(currentBladeIndex)
+                const neighborPosition : Position = getBladePosition(neighborBladeIndex)
 
-                const deltaX = position.x - neighborPosition.x;
-                const deltaZ = position.z - neighborPosition.z;
-                const distance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+                const distance = calculateDistanceFromCurrentBlade(neighborPosition);
                 
-                if (distance < maximumNeighborDistance) {
-                    const distanceWeight = 1.0 - (distance / maximumNeighborDistance);
-                    weightedDensity += distanceWeight;
+                if (distance === -1) continue
+
+                incrementWeightedDensity(distance);
+                
+                if (weightedDensity >= densityRequiredForMaxAO) {
+                    return densityRequiredForMaxAO;
                 }
             }
             return weightedDensity;
+
+            function incrementWeightedDensity(distance: number) {
+                const distanceWeight = 1.0 - (distance / maximumNeighborDistance);
+                weightedDensity += distanceWeight;
+            }
         }
                 
         const calculateBladeAO = (bladeIndex: number) => {
-            // SRP 1: Lookup
-            const neighborBladeIndices = querySpatialHashNeighbors(bladeIndex);
+            const neighborBladeIndices = getNeighborBladeIndices(bladeIndex);
             
-            // SRP 2: Calculate Density
             const weightedDensity = calculateWeightedDensityFromNeighbors(bladeIndex, neighborBladeIndices);
             
-            // SRP 3: Convert Density to Final AO Factor
-            const densityFactor = Math.min(weightedDensity / densityRequiredForMaxAO, 1.0);
+            const densityFactor = weightedDensity / densityRequiredForMaxAO;
             const ambientOcclusionFalloff = Math.sqrt(densityFactor);
 
             const maximumDarkeningAmount = 0.75;
@@ -133,7 +166,7 @@ export class BladeDensityOcclusion {
             }
         }
 
-        initialiseGrid();
+        buildEmptyGrid();
         populateGridWithBladeIndices();
         processAllBlades();
 
