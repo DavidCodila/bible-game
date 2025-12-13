@@ -46,4 +46,5 @@ export class InputManager {
     // Public accessors for the App to read input state
     public get mouseDeltaX(): number { return this.inputState.mouseDeltaX; }
     public get mouseDeltaY(): number { return this.inputState.mouseDeltaY; }
+    public get mouseHasNotMoved(): boolean { return this.inputState.mouseDeltaX === 0 && this.inputState.mouseDeltaY === 0}
 }

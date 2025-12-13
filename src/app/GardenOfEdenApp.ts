@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { StatsTracker } from '../StatsTracker';
 import { InputManager } from './InputManager';
 import { GrassPatch } from '../grass/GrassPatch';
+import { CameraController } from './CameraController';
 
 /**
  * The core application manager for the Garden of Eden environment.
@@ -13,33 +14,23 @@ export class GardenOfEdenApp {
     private renderer: THREE.WebGLRenderer;
     private clock: THREE.Clock;
 
-    // Module Dependencies
     private statsTracker: StatsTracker;
-    private inputManager: InputManager;
+    private cameraController: CameraController;
     private grassPatch: GrassPatch;
 
-    // Camera State
-    private cameraYaw: number = 0;
-    private cameraPitch: number = 0;
-    private readonly mouseSensitivity = 0.002;
-
     constructor() {
-        // CORE SETUP
         this.renderer = this.setupRenderer();
         this.scene = this.setupScene();
         this.camera = this.setupCamera();
         this.clock = new THREE.Clock();
 
-        // MODULE INITIALIZATION
         this.statsTracker = new StatsTracker();
-        this.inputManager = new InputManager(this.renderer.domElement);
+        this.cameraController = new CameraController(this.camera, new InputManager(this.renderer.domElement));
         
-        // ENVIRONMENT SETUP
         this.addGround();
         this.grassPatch = new GrassPatch();
         this.scene.add(this.grassPatch.mesh);
 
-        // START
         this.setupWindowListeners();
         this.animate();
     }
@@ -82,41 +73,14 @@ export class GardenOfEdenApp {
         });
     }
 
-    private updateCameraRotation(): void {
-        // 1. READ INPUT
-        const deltaYaw = this.inputManager.mouseDeltaX;
-        const deltaPitch = this.inputManager.mouseDeltaY;
-
-        const mouseHasNotMoved = deltaYaw === 0 && deltaPitch === 0;
-        
-        if (mouseHasNotMoved) return; 
-
-        // 2. APPLY LOGIC (Rotation)
-        this.cameraYaw -= deltaYaw * this.mouseSensitivity;
-        
-        // Clamp Pitch to prevent looking upside down (horizon to horizon)
-        this.cameraPitch = Math.max(
-            -Math.PI / 2, 
-            Math.min(Math.PI / 2, this.cameraPitch - deltaPitch * this.mouseSensitivity)
-        );
-
-        this.camera.rotation.y = this.cameraYaw;
-        this.camera.rotation.x = this.cameraPitch;
-
-        // 3. RESET INPUT STATE
-        this.inputManager.resetDeltas();
-    }
-
     private animate = () => {
         requestAnimationFrame(this.animate);
         const deltaTime = this.clock.getDelta();
 
-        // 1. UPDATE LOGIC (Orchestration)
         this.statsTracker.update(); 
-        this.updateCameraRotation(); 
+        this.cameraController.update(); 
         this.grassPatch.update(deltaTime); 
 
-        // 2. RENDER
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera)
     }
 }
