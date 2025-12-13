@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { StatsTracker } from './StatsTracker';
+import { StatsTracker } from '../StatsTracker';
 import { InputManager } from './InputManager';
-import { GrassPatch } from './GrassPatch';
+import { GrassPatch } from '../grass/GrassPatch';
 
 /**
  * The core application manager for the Garden of Eden environment.

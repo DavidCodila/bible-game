@@ -1,6 +1,6 @@
-import type { AODensityConfig } from "./grass/types";
-import type { Position } from "./grass/types";
-import type { GridIndexes } from "./grass/types";
+import type { AODensityConfig } from "./types";
+import type { Position } from "./types";
+import type { GridIndexes } from "./types";
 
 export class BladeDensityOcclusion {
     

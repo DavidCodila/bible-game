@@ -1,4 +1,4 @@
-import { GardenOfEdenApp } from './GardenOfEdenApp.ts';
+import { GardenOfEdenApp } from './app/GardenOfEdenApp.ts';
 
 document.addEventListener('DOMContentLoaded', () => {
     new GardenOfEdenApp();

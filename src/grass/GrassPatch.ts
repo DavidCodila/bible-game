@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { GrassGeometryFactory } from './GrassGeometryFactory'; 
 import { GrassDataGenerator } from './GrassDataGenerator'; // NEW
 import { BladeDensityOcclusion } from './BladeDensityOcclusion'; // NEW
-import type { AODensityConfig } from "./grass/types";
+import type { AODensityConfig } from "./types";
 
 /**
  * The orchestrator class. Manages Three.js resources (Mesh, Material, Shader) 
