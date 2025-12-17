@@ -4,6 +4,8 @@ import * as THREE from 'three';
 import { GrassGeometryFactory } from './GrassGeometryFactory'; 
 import { GrassDataGenerator } from './GrassDataGenerator'; // NEW
 import { BladeDensityOcclusion } from './BladeDensityOcclusion'; // NEW
+import vertexShader from './shaders/Grass.vert?raw';
+import fragmentShader from './shaders/Grass.frag?raw';
 import type { AODensityConfig } from "./types";
 
 /**
@@ -26,81 +28,6 @@ export class GrassPatch {
         inverseBladeHeight: { value: 1.0 / this.bladeHeight }
     };
     
-    // --- SHADERS (Unchanged - uses the cleaner instanceBendX/Z) ---
-    // ... (Vertex Shader and Fragment Shader content remains the same)
-    private vertexShader = `
-        attribute vec3 instanceOffsets;
-        attribute float instanceYAxisRotation;
-        attribute float instanceScaleY;
-        attribute float instanceBendX;
-        attribute float instanceBendZ;
-        attribute vec3 instanceColors;
-        attribute float instanceAmbientOcclusion;
-        uniform float time;
-        uniform float inverseBladeHeight;
-        varying vec3 vColor;
-        varying float vHeightProgress;
-        varying float vAmbientOcclusion;
-    
-        vec2 rotate2D(in vec2 point, in float angle){
-            float sine = sin(angle);
-            float cosine = cos(angle);
-            return vec2(cosine * point.x - sine * point.y, sine * point.x + cosine * point.y);
-        }
-    
-        void main(){
-            vec3 transformedPosition = position;
-    
-            transformedPosition.y *= instanceScaleY;
-    
-            float heightProgress = position.y * inverseBladeHeight;
-            vHeightProgress = heightProgress;
-    
-            float windEffect = sin(time * 0.8 + instanceOffsets.x * 1.5 + instanceOffsets.z * 1.2) * 0.05;
-            float bendBias = pow(heightProgress, 1.6);
-    
-            transformedPosition.z += (instanceBendZ + windEffect) * bendBias;
-            transformedPosition.x += (instanceBendX) * bendBias;
-    
-            vec2 rotatedAroundYAxis = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceYAxisRotation);
-            transformedPosition.x = rotatedAroundYAxis.x;
-            transformedPosition.z = rotatedAroundYAxis.y;
-    
-            vec4 worldPosition = modelMatrix * vec4(transformedPosition + vec3(instanceOffsets.x, 0.0, instanceOffsets.z), 1.0);
-    
-            vColor = instanceColors;
-            vAmbientOcclusion = instanceAmbientOcclusion;
-    
-            gl_Position = projectionMatrix * viewMatrix * worldPosition;
-        }
-    `;
-
-    private fragmentShader = `
-        varying vec3 vColor;
-        varying float vHeightProgress;
-        varying float vAmbientOcclusion;
-        uniform vec3 sunDirection;
-
-        void main(){
-            float sunExposure = 0.3 + 0.7 * vHeightProgress; 
-            float directionalLighting = 0.9 + 0.1 * sunDirection.x; 
-            float baseAmbientOcclusion = mix(0.5, 1.0, pow(vHeightProgress, 0.5)); 
-            
-            float totalLighting = sunExposure * directionalLighting * baseAmbientOcclusion * vAmbientOcclusion;
-            
-            vec3 coolSkyTint = vec3(0.7, 0.8, 1);
-            
-            // DEBUG VIEW: Showing AO only 
-            float combinedAO = vAmbientOcclusion * baseAmbientOcclusion;
-            vec3 finalColor = vec3(combinedAO); 
-            
-            // FINAL COLOR: (UNCOMMENT THIS LINE WHEN READY)
-            // vec3 finalColor = vColor * totalLighting * coolSkyTint;
-
-            gl_FragColor = vec4(finalColor, 1.0);
-        }
-    `;
-    
     constructor() {
         this.totalBlades = this.bladesPerRow * this.bladesPerRow;
         this.gridSpacing = this.sideLength / this.bladesPerRow;
@@ -116,8 +43,8 @@ export class GrassPatch {
     private setupMaterial(): THREE.ShaderMaterial {
         return new THREE.ShaderMaterial({
             uniforms: this.shaderUniforms,
-            vertexShader: this.vertexShader,
-            fragmentShader: this.fragmentShader,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
             side: THREE.DoubleSide,
             depthWrite: true,
             depthTest: true
