@@ -1,11 +1,8 @@
-// --- IN src/GrassPatch.ts (The Orchestrator) ---
-
 import * as THREE from 'three';
 import { GrassGeometryFactory } from './GrassGeometryFactory'; 
 import { GrassDataGenerator } from './GrassDataGenerator'; // NEW
 import { BladeDensityOcclusion } from './BladeDensityOcclusion'; // NEW
-import vertexShader from './shaders/Grass.vert?raw';
-import fragmentShader from './shaders/Grass.frag?raw';
+import { GrassShader } from './GrassShader';
 import type { AODensityConfig } from "./types";
 
 /**
@@ -13,42 +10,30 @@ import type { AODensityConfig } from "./types";
  * and delegates heavy attribute calculation to dedicated utilities.
  */
 export class GrassPatch {
-    public mesh: THREE.InstancedMesh;    
-    // --- Configuration Constants ---
-    private readonly sideLength = 10;
-    private readonly bladesPerRow = 150;
+    public mesh: THREE.InstancedMesh;  
+    private grassMaterial: GrassShader;  
+    
     private readonly totalBlades: number;
     private readonly gridSpacing: number;
+    private readonly sideLength = 10;
+    private readonly bladesPerRow = 150;
     private readonly bladeHeight = 0.4;
-    
-    // Shader Uniforms (unchanged)
-    public shaderUniforms: { [key: string]: THREE.IUniform<any> } = {
-        time: { value: 0 },
-        sunDirection: { value: new THREE.Vector3(1, 2, 0.5).normalize() },
-        inverseBladeHeight: { value: 1.0 / this.bladeHeight }
-    };
     
     constructor() {
         this.totalBlades = this.bladesPerRow * this.bladesPerRow;
         this.gridSpacing = this.sideLength / this.bladesPerRow;
 
         const bladeGeometry = GrassGeometryFactory.createBladeGeometry();
-        this.mesh = new THREE.InstancedMesh(bladeGeometry, undefined as any, this.totalBlades);
         
-        this.calculateAndAssignAttributes(bladeGeometry);
-        this.mesh.material = this.setupMaterial();
-        this.applyBoundingSphereFix();
-    }
+        this.grassMaterial = new GrassShader(this.bladeHeight);
+        this.mesh = new THREE.InstancedMesh(
+            bladeGeometry, 
+            this.grassMaterial.material, 
+            this.totalBlades
+        );
 
-    private setupMaterial(): THREE.ShaderMaterial {
-        return new THREE.ShaderMaterial({
-            uniforms: this.shaderUniforms,
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            side: THREE.DoubleSide,
-            depthWrite: true,
-            depthTest: true
-        });
+        this.calculateAndAssignAttributes(bladeGeometry);
+        this.applyBoundingSphereFix();
     }
 
     private calculateAndAssignAttributes(bladeGeometry: THREE.BufferGeometry): void {
@@ -98,6 +83,6 @@ export class GrassPatch {
     }
 
     public update(deltaTime: number): void {
-        this.shaderUniforms.time.value += deltaTime;
+        this.grassMaterial.update(deltaTime);
     }
 }
