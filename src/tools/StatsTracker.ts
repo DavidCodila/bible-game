@@ -34,12 +34,12 @@ export class StatsTracker {
         const newFrameEndTime = performance.now();
         const rawFrameTime = newFrameEndTime - this.stats.frameStartTime;
 
+        this.stats.frameStartTime = newFrameEndTime; 
+
         // GUARD CLAUSE: Ignore extreme values (stutters or errors)
         if (rawFrameTime <= 0 || rawFrameTime > 100) {
             return; 
         }
-
-        this.stats.frameStartTime = newFrameEndTime; 
 
         // SLIDING WINDOW: Add new time and remove oldest if capacity is exceeded
         this.stats.frameTimeHistory.push(rawFrameTime);
