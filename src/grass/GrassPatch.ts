@@ -11,9 +11,7 @@ import type { AODensityConfig } from "./types";
  * and delegates heavy attribute calculation to dedicated utilities.
  */
 export class GrassPatch {
-    public mesh: THREE.InstancedMesh;
-    public material: THREE.ShaderMaterial;
-    
+    public mesh: THREE.InstancedMesh;    
     // --- Configuration Constants ---
     private readonly sideLength = 10;
     private readonly bladesPerRow = 150;
@@ -31,12 +29,12 @@ export class GrassPatch {
     // --- SHADERS (Unchanged - uses the cleaner instanceBendX/Z) ---
     // ... (Vertex Shader and Fragment Shader content remains the same)
     private vertexShader = `
-        attribute vec3 instanceOffset;
+        attribute vec3 instanceOffsets;
         attribute float instanceYAxisRotation;
         attribute float instanceScaleY;
         attribute float instanceBendX;
         attribute float instanceBendZ;
-        attribute vec3 instanceColor;
+        attribute vec3 instanceColors;
         attribute float instanceAmbientOcclusion;
         uniform float time;
         uniform float inverseBladeHeight;
@@ -58,7 +56,7 @@ export class GrassPatch {
             float heightProgress = position.y * inverseBladeHeight;
             vHeightProgress = heightProgress;
     
-            float windEffect = sin(time * 0.8 + instanceOffset.x * 1.5 + instanceOffset.z * 1.2) * 0.05;
+            float windEffect = sin(time * 0.8 + instanceOffsets.x * 1.5 + instanceOffsets.z * 1.2) * 0.05;
             float bendBias = pow(heightProgress, 1.6);
     
             transformedPosition.z += (instanceBendZ + windEffect) * bendBias;
@@ -68,9 +66,9 @@ export class GrassPatch {
             transformedPosition.x = rotatedAroundYAxis.x;
             transformedPosition.z = rotatedAroundYAxis.y;
     
-            vec4 worldPosition = modelMatrix * vec4(transformedPosition + vec3(instanceOffset.x, 0.0, instanceOffset.z), 1.0);
+            vec4 worldPosition = modelMatrix * vec4(transformedPosition + vec3(instanceOffsets.x, 0.0, instanceOffsets.z), 1.0);
     
-            vColor = instanceColor;
+            vColor = instanceColors;
             vAmbientOcclusion = instanceAmbientOcclusion;
     
             gl_Position = projectionMatrix * viewMatrix * worldPosition;
@@ -111,8 +109,7 @@ export class GrassPatch {
         this.mesh = new THREE.InstancedMesh(bladeGeometry, undefined as any, this.totalBlades);
         
         this.calculateAndAssignAttributes(bladeGeometry);
-        this.material = this.setupMaterial();
-        this.mesh.material = this.material;
+        this.mesh.material = this.setupMaterial();
         this.applyBoundingSphereFix();
     }
 
@@ -151,12 +148,12 @@ export class GrassPatch {
 
 
         // --- 3. ASSIGN ALL ATTRIBUTES TO GEOMETRY ---
-        bladeGeometry.setAttribute("instanceOffset", new THREE.InstancedBufferAttribute(attributes.instanceOffsets, 3));
+        bladeGeometry.setAttribute("instanceOffsets", new THREE.InstancedBufferAttribute(attributes.instanceOffsets, 3));
         bladeGeometry.setAttribute("instanceYAxisRotation", new THREE.InstancedBufferAttribute(attributes.instanceYAxisRotations, 1));
         bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(attributes.instanceYAxisScales, 1));
         bladeGeometry.setAttribute("instanceBendX", new THREE.InstancedBufferAttribute(attributes.instancePlanarBendsX, 1)); 
         bladeGeometry.setAttribute("instanceBendZ", new THREE.InstancedBufferAttribute(attributes.instancePlanarBendsZ, 1)); 
-        bladeGeometry.setAttribute("instanceColor", new THREE.InstancedBufferAttribute(attributes.instanceColors, 3));
+        bladeGeometry.setAttribute("instanceColors", new THREE.InstancedBufferAttribute(attributes.instanceColors, 3));
         
         // Assign the calculated AO
         bladeGeometry.setAttribute("instanceAmbientOcclusion", new THREE.InstancedBufferAttribute(instanceAmbientOcclusion, 1));

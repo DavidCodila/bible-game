@@ -28,6 +28,7 @@ export class GrassDataGenerator {
         const instanceYAxisScales = new Float32Array(config.totalBlades);
         const instancePlanarBendsX = new Float32Array(config.totalBlades); 
         const instancePlanarBendsZ = new Float32Array(config.totalBlades);
+        const bladeSpacingBuffer = 0.8;
         
         // --- 2. THE MAIN ATTRIBUTE FILLING LOOP (UNIFORM JITTER) ---
         for (let xIndex = 0; xIndex < config.bladesPerRow; xIndex++) { 
@@ -36,9 +37,9 @@ export class GrassDataGenerator {
                 
                 // Base pos + Uniform Jitter (no clumping)
                 const xPosition = xIndex * config.gridSpacing - config.sideLength / 2 
-                    + (Math.random() - 0.5) * config.gridSpacing;                           
+                    + (Math.random() - 0.5) * config.gridSpacing * bladeSpacingBuffer;                           
                 const zPosition = zIndex * config.gridSpacing - config.sideLength / 2 
-                    + (Math.random() - 0.5) * config.gridSpacing;                           
+                    + (Math.random() - 0.5) * config.gridSpacing * bladeSpacingBuffer;                           
 
                 // Offsets (X, Y, Z position)
                 instanceOffsets[bladeIndex * 3 + 0] = xPosition;

@@ -37,8 +37,8 @@ export class GrassGeometryFactory {
             const currentWidth = DEFAULT_BLADE_WIDTH * widthScaleFactor;
 
             // Vertices are generated in the X/Y plane
-            vertices.push(-currentWidth / 2, yPosition, 0); // Left vertex
-            vertices.push(currentWidth / 2, yPosition, 0);  // Right vertex
+            vertices.push(-currentWidth / 2, yPosition, 0); 
+            vertices.push(currentWidth / 2, yPosition, 0);  
         }
     }
 
@@ -49,10 +49,7 @@ export class GrassGeometryFactory {
             const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;
             const upperSegmentRightIndex = lowerSegmentLeftIndex + 3;
 
-            // First triangle (Lower Left, Lower Right, Upper Left)
-            triangleIndices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);
-            
-            // Second triangle (Lower Right, Upper Right, Upper Left)
+            triangleIndices.push(lowerSegmentLeftIndex, lowerSegmentRightIndex, upperSegmentLeftIndex);            
             triangleIndices.push(lowerSegmentRightIndex, upperSegmentRightIndex, upperSegmentLeftIndex);
         }
     }

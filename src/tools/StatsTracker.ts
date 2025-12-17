@@ -33,12 +33,13 @@ export class StatsTracker {
         // 1. Measure the time elapsed since the last frame
         const newFrameEndTime = performance.now();
         const rawFrameTime = newFrameEndTime - this.stats.frameStartTime;
-        this.stats.frameStartTime = newFrameEndTime; 
 
         // GUARD CLAUSE: Ignore extreme values (stutters or errors)
         if (rawFrameTime <= 0 || rawFrameTime > 100) {
             return; 
         }
+
+        this.stats.frameStartTime = newFrameEndTime; 
 
         // SLIDING WINDOW: Add new time and remove oldest if capacity is exceeded
         this.stats.frameTimeHistory.push(rawFrameTime);
@@ -47,7 +48,7 @@ export class StatsTracker {
         }
         
         // CALCULATE AVERAGE
-        const totalTime = this.stats.frameTimeHistory.reduce((sum, time) => sum + time, 0); //need to look into this more
+        const totalTime = this.stats.frameTimeHistory.reduce((sum, time) => sum + time, 0);
         this.stats.avgFrameTime = totalTime / this.stats.frameTimeHistory.length;
         this.stats.avgFPS = ONE_SECOND_IN_MILLISECONDS / this.stats.avgFrameTime;
     }

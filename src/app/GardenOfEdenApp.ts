@@ -4,7 +4,6 @@ import { InputManager } from './InputManager';
 import { GrassPatch } from '../grass/GrassPatch';
 import { CameraController } from './CameraController';
 import { TerrainPlane } from '../scene/TerrainPlane';
-import { setupSceneLights } from '../scene/LightingSetup';
 
 /**
  * The core application manager for the Garden of Eden environment.
@@ -29,7 +28,6 @@ export class GardenOfEdenApp {
 
         this.statsTracker = new StatsTracker();
         this.cameraController = new CameraController(this.camera, new InputManager(this.renderer.domElement));
-        setupSceneLights(this.scene);
         this.terrainPlane = new TerrainPlane();
         this.scene.add(this.terrainPlane.mesh);
         
