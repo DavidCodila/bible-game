@@ -42,7 +42,6 @@ export class GrassPatch {
             gridSpacing: gridSpacing
         };
 
-        // --- 1. GENERATE BASE ATTRIBUTES ---
         const attributes = GrassDataGenerator.generateAttributes(generationConfig);
         
         bladeGeometry.setAttribute("instanceOffsets", new THREE.InstancedBufferAttribute(attributes.instanceOffsets, 3));
@@ -50,8 +49,7 @@ export class GrassPatch {
         bladeGeometry.setAttribute("instanceScaleY", new THREE.InstancedBufferAttribute(attributes.instanceYAxisScales, 1));
         bladeGeometry.setAttribute("instanceBendX", new THREE.InstancedBufferAttribute(attributes.instancePlanarBendsX, 1)); 
         bladeGeometry.setAttribute("instanceBendZ", new THREE.InstancedBufferAttribute(attributes.instancePlanarBendsZ, 1)); 
-        bladeGeometry.setAttribute("instanceColors", new THREE.InstancedBufferAttribute(attributes.instanceColors, 3));
-        
+        bladeGeometry.setAttribute("instanceColors", new THREE.InstancedBufferAttribute(attributes.instanceColors, 3));  
     }
 
     private applyBoundingSphereFix(bladeHeight : number): void {

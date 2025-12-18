@@ -24,14 +24,3 @@ export interface GenerationConfig {
     bladesPerRow: number;
     gridSpacing: number;
 }
-
-export interface Position {
-    x: number;
-    y: number;
-    z: number;
-}
-
-export interface GridIndexes {
-    row: number;
-    column: number;
-}
