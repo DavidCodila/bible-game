@@ -25,12 +25,6 @@ export interface GenerationConfig {
     gridSpacing: number;
 }
 
-export interface AODensityConfig {
-    grassPatchSideLength: number;
-    maximumNeighborDistance: number;
-    densityRequiredForMaxAO: number;
-}
-
 export interface Position {
     x: number;
     y: number;

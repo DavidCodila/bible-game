@@ -4,12 +4,10 @@ attribute float instanceScaleY;
 attribute float instanceBendX;
 attribute float instanceBendZ;
 attribute vec3 instanceColors;
-attribute float instanceAmbientOcclusion;
 uniform float time;
 uniform float inverseBladeHeight;
 varying vec3 vColor;
 varying float vHeightProgress;
-varying float vAmbientOcclusion;
 
 vec2 rotate2D(in vec2 point, in float angle){
     float sine = sin(angle);
@@ -38,7 +36,6 @@ void main(){
     vec4 worldPosition = modelMatrix * vec4(transformedPosition + vec3(instanceOffsets.x, 0.0, instanceOffsets.z), 1.0);
 
     vColor = instanceColors;
-    vAmbientOcclusion = instanceAmbientOcclusion;
 
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
 }
