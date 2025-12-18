@@ -10,6 +10,21 @@ export interface GrassBladeConfig {
     segmentsPerBlade: number;
 }
 
+export interface GrassAttributeData {
+    instanceOffsets: Float32Array;
+    instanceColors: Float32Array;
+    instanceYAxisRotations: Float32Array;
+    instanceYAxisScales: Float32Array;
+    instancePlanarBendsX: Float32Array;
+    instancePlanarBendsZ: Float32Array;
+}
+export interface GenerationConfig {
+    totalBlades: number;
+    sideLength: number;
+    bladesPerRow: number;
+    gridSpacing: number;
+}
+
 export interface AODensityConfig {
     grassPatchSideLength: number;
     maximumNeighborDistance: number;

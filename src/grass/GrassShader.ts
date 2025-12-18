@@ -23,10 +23,6 @@ export class GrassShader {
         });
     }
 
-    /**
-     * Updates the animation state. 
-     * Keeps GrassPatch from needing to know the uniform names.
-     */
     public update(deltaTime: number): void {
         this.uniforms.time.value += deltaTime;
     }

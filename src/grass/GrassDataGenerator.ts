@@ -1,18 +1,4 @@
-interface GrassAttributeData {
-    instanceOffsets: Float32Array;
-    instanceColors: Float32Array;
-    instanceYAxisRotations: Float32Array;
-    instanceYAxisScales: Float32Array;
-    instancePlanarBendsX: Float32Array;
-    instancePlanarBendsZ: Float32Array;
-}
-
-interface GenerationConfig {
-    totalBlades: number;
-    sideLength: number;
-    bladesPerRow: number;
-    gridSpacing: number;
-}
+import type { GenerationConfig, GrassAttributeData } from "./types";
 
 export class GrassDataGenerator {
 

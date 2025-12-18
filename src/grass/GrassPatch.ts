@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GrassGeometryFactory } from './GrassGeometryFactory'; 
-import { GrassDataGenerator } from './GrassDataGenerator'; // NEW
-import { BladeDensityOcclusion } from './BladeDensityOcclusion'; // NEW
+import { GrassDataGenerator } from './GrassDataGenerator'; 
+import { BladeDensityOcclusion } from './BladeDensityOcclusion'; 
 import { GrassShader } from './GrassShader';
 import type { GrassPatchConfig, AODensityConfig } from "./types";
 
