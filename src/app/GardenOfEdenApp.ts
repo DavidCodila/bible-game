@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { StatsTracker } from '../tools/StatsTracker';
+import { StatsTracker } from '../tools/stats/Tracker';
 import { InputManager } from './InputManager';
 import { GrassPatch } from '../grass/GrassPatch';
 import { CameraController } from './CameraController';
