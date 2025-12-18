@@ -4,6 +4,7 @@ import { InputManager } from './InputManager';
 import { GrassPatch } from '../grass/GrassPatch';
 import { CameraController } from './CameraController';
 import { TerrainPlane } from '../scene/TerrainPlane';
+import type { GrassBladeConfig } from '../grass/types';
 
 /**
  * The core application manager for the Garden of Eden environment.
@@ -30,8 +31,8 @@ export class GardenOfEdenApp {
         this.cameraController = new CameraController(this.camera, new InputManager(this.renderer.domElement));
         this.terrainPlane = new TerrainPlane();
         this.scene.add(this.terrainPlane.mesh);
-        
-        this.grassPatch = new GrassPatch();
+        const grassBladeConfig : GrassBladeConfig = {bladeHeight: 0.4, bladeWidth: 0.05, segmentsPerBlade: 6}
+        this.grassPatch = new GrassPatch({sideLength : 10, bladesPerRow: 150, grassBladeConfig: grassBladeConfig});
         this.scene.add(this.grassPatch.mesh);
 
         this.setupWindowListeners();

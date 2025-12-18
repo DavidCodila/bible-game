@@ -1,8 +1,5 @@
 import * as THREE from 'three';
-
-const DEFAULT_BLADE_WIDTH = 0.05;
-const DEFAULT_BLADE_HEIGHT = 0.4;
-const DEFAULT_SEGMENT_COUNT = 6;
+import type { GrassBladeConfig } from './types';
 
 // Helper function to taper the width (1.0 at base, 0.0 at tip)
 const defaultBladeTaper = (normalizedHeight: number): number => 1.0 - (normalizedHeight * normalizedHeight);
@@ -13,13 +10,13 @@ const defaultBladeTaper = (normalizedHeight: number): number => 1.0 - (normalize
  */
 export class GrassGeometryFactory {
 
-    public static createBladeGeometry(): THREE.BufferGeometry {
+    public static createBladeGeometry(config: GrassBladeConfig): THREE.BufferGeometry {
         const bladeGeometry = new THREE.BufferGeometry();
         const vertices: number[] = [];
         const triangleIndices: number[] = [];
 
-        GrassGeometryFactory.loadVertices(vertices);
-        GrassGeometryFactory.loadTriangleIndices(triangleIndices);
+        GrassGeometryFactory.loadVertices(vertices, config);
+        GrassGeometryFactory.loadTriangleIndices(triangleIndices, config);
 
         bladeGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vertices), 3));
         bladeGeometry.setIndex(triangleIndices);
@@ -28,13 +25,13 @@ export class GrassGeometryFactory {
         return bladeGeometry;
     }
 
-    private static loadVertices(vertices: number[]): void {
-        for (let segmentIndex = 0; segmentIndex <= DEFAULT_SEGMENT_COUNT; segmentIndex++) {
-            const normalizedHeight = segmentIndex / DEFAULT_SEGMENT_COUNT;
-            const yPosition = normalizedHeight * DEFAULT_BLADE_HEIGHT;
+    private static loadVertices(vertices: number[], config: GrassBladeConfig): void {
+        for (let segmentIndex = 0; segmentIndex <= config.segmentsPerBlade; segmentIndex++) {
+            const normalizedHeight = segmentIndex / config.segmentsPerBlade;
+            const yPosition = normalizedHeight * config.bladeHeight;
 
             const widthScaleFactor = defaultBladeTaper(normalizedHeight);
-            const currentWidth = DEFAULT_BLADE_WIDTH * widthScaleFactor;
+            const currentWidth = config.bladeWidth * widthScaleFactor;
 
             // Vertices are generated in the X/Y plane
             vertices.push(-currentWidth / 2, yPosition, 0); 
@@ -42,8 +39,8 @@ export class GrassGeometryFactory {
         }
     }
 
-    private static loadTriangleIndices(triangleIndices: number[]): void {
-        for (let segmentIndex = 0; segmentIndex < DEFAULT_SEGMENT_COUNT; segmentIndex++) {
+    private static loadTriangleIndices(triangleIndices: number[], config: GrassBladeConfig): void {
+        for (let segmentIndex = 0; segmentIndex < config.segmentsPerBlade; segmentIndex++) {
             const lowerSegmentLeftIndex = segmentIndex * 2;
             const lowerSegmentRightIndex = lowerSegmentLeftIndex + 1;
             const upperSegmentLeftIndex = lowerSegmentLeftIndex + 2;

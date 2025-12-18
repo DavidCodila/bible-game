@@ -3,7 +3,7 @@ import { GrassGeometryFactory } from './GrassGeometryFactory';
 import { GrassDataGenerator } from './GrassDataGenerator'; // NEW
 import { BladeDensityOcclusion } from './BladeDensityOcclusion'; // NEW
 import { GrassShader } from './GrassShader';
-import type { AODensityConfig } from "./types";
+import type { GrassPatchConfig, AODensityConfig } from "./types";
 
 /**
  * The orchestrator class. Manages Three.js resources (Mesh, Material, Shader) 
@@ -11,24 +11,21 @@ import type { AODensityConfig } from "./types";
  */
 export class GrassPatch {
     public mesh: THREE.InstancedMesh;  
-    private grassMaterial: GrassShader;  
+    private grassShader: GrassShader; 
+    private config: GrassPatchConfig; 
     
     private readonly totalBlades: number;
-    private readonly gridSpacing: number;
-    private readonly sideLength = 10;
-    private readonly bladesPerRow = 150;
-    private readonly bladeHeight = 0.4;
     
-    constructor() {
-        this.totalBlades = this.bladesPerRow * this.bladesPerRow;
-        this.gridSpacing = this.sideLength / this.bladesPerRow;
-
-        const bladeGeometry = GrassGeometryFactory.createBladeGeometry();
+    constructor(config: GrassPatchConfig) {
+        this.config = config
+        this.totalBlades = config.bladesPerRow * config.bladesPerRow;
+        const grassBladeConfig = config.grassBladeConfig;
+        const bladeGeometry = GrassGeometryFactory.createBladeGeometry(grassBladeConfig);
         
-        this.grassMaterial = new GrassShader(this.bladeHeight);
+        this.grassShader = new GrassShader(grassBladeConfig.bladeHeight);
         this.mesh = new THREE.InstancedMesh(
             bladeGeometry, 
-            this.grassMaterial.material, 
+            this.grassShader.material, 
             this.totalBlades
         );
 
@@ -37,11 +34,13 @@ export class GrassPatch {
     }
 
     private calculateAndAssignAttributes(bladeGeometry: THREE.BufferGeometry): void {
+        const gridSpacing = this.config.sideLength / this.config.bladesPerRow;
+
         const generationConfig = {
             totalBlades: this.totalBlades,
-            sideLength: this.sideLength,
-            bladesPerRow: this.bladesPerRow,
-            gridSpacing: this.gridSpacing
+            sideLength: this.config.sideLength,
+            bladesPerRow: this.config.bladesPerRow,
+            gridSpacing: gridSpacing
         };
 
         // --- 1. GENERATE BASE ATTRIBUTES ---
@@ -49,8 +48,8 @@ export class GrassPatch {
         
         // --- 2. CALCULATE AO (Uses the efficient Spatial Hash Grid) ---
         const aoConfig : AODensityConfig = {
-            grassPatchSideLength: this.sideLength,
-            maximumNeighborDistance: this.gridSpacing * 2.5,
+            grassPatchSideLength: this.config.sideLength,
+            maximumNeighborDistance: gridSpacing * 2.5,
             densityRequiredForMaxAO: 20.0
         };
         const aoCalculator = new BladeDensityOcclusion(aoConfig);
@@ -74,7 +73,7 @@ export class GrassPatch {
     private applyBoundingSphereFix(): void {
         this.mesh.geometry.computeBoundingSphere(); 
         
-        const patchDiagonalHalf = Math.sqrt(this.sideLength ** 2 * 2) / 2;
+        const patchDiagonalHalf = Math.sqrt(this.config.sideLength ** 2 * 2) / 2;
         
         const sphere = this.mesh.geometry.boundingSphere;
         if (sphere) {
@@ -83,6 +82,6 @@ export class GrassPatch {
     }
 
     public update(deltaTime: number): void {
-        this.grassMaterial.update(deltaTime);
+        this.grassShader.update(deltaTime);
     }
 }
