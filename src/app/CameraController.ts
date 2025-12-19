@@ -42,5 +42,5 @@ export class CameraController {
         this.camera.updateProjectionMatrix();
     }
 
-    public get getCamera(): THREE.PerspectiveCamera { return this.camera; }
+    public get cameraInstance(): THREE.PerspectiveCamera { return this.camera; }
 }
