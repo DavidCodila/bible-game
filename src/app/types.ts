@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export interface InputState {
     mouseDeltaX: number;
     mouseDeltaY: number;
@@ -6,4 +8,8 @@ export interface InputState {
     isSPressed: boolean;
     isAPressed: boolean;
     isDPressed: boolean;
+}
+export interface GameObject {
+    mesh: THREE.Mesh;
+    update(deltaTime: number): void;
 }

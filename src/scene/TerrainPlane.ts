@@ -1,14 +1,18 @@
 import * as THREE from 'three';
+import type { GameObject } from '../app/types';
 
 /**
  * Creates and manages the static terrain plane geometry for the scene.
  */
-export class TerrainPlane {
+export class TerrainPlane implements GameObject{
     public mesh: THREE.Mesh;
 
     constructor() {
         this.mesh = this.createGroundMesh();
     }
+
+    // added for overall code simplicity
+    update(deltaTime: number): void {}
 
     private createGroundMesh(): THREE.Mesh {
         const ground = new THREE.Mesh(
