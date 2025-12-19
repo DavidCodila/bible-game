@@ -12,3 +12,6 @@ export class GeometryUtils {
         });
     }
 }
+
+// Helper function to taper the width (1.0 at base, 0.0 at tip)
+export const defaultBladeTaper = (normalizedHeight: number): number => 1.0 - (normalizedHeight * normalizedHeight);

@@ -43,5 +43,4 @@ export class CameraController {
     }
 
     public get getCamera(): THREE.PerspectiveCamera { return this.camera; }
-
 }

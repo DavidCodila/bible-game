@@ -1,13 +1,7 @@
 import * as THREE from 'three';
 import type { GrassBladeConfig } from './types';
+import { defaultBladeTaper } from '../tools/GeometryUtils';
 
-// Helper function to taper the width (1.0 at base, 0.0 at tip)
-const defaultBladeTaper = (normalizedHeight: number): number => 1.0 - (normalizedHeight * normalizedHeight);
-
-/**
- * Static factory to create the base BufferGeometry for a single grass blade.
- * Adheres to SRP: only responsible for geometry construction.
- */
 export class GrassGeometryFactory {
 
     public static createBladeGeometry(config: GrassBladeConfig): THREE.BufferGeometry {
@@ -33,7 +27,6 @@ export class GrassGeometryFactory {
             const widthScaleFactor = defaultBladeTaper(normalizedHeight);
             const currentWidth = config.bladeWidth * widthScaleFactor;
 
-            // Vertices are generated in the X/Y plane
             vertices.push(-currentWidth / 2, yPosition, 0); 
             vertices.push(currentWidth / 2, yPosition, 0);  
         }
