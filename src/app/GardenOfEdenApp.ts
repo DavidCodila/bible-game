@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { StatsTracker } from '../tools/stats/Tracker';
 import { InputManager } from './InputManager';
-import { GrassPatch } from '../grass/GrassPatch';
+import { GrassPatch } from '../grass/patch/GrassPatch';
 import { CameraController } from './CameraController';
 import { TerrainPlane } from '../scene/TerrainPlane';
 import type { GrassBladeConfig } from '../grass/types';

@@ -1,0 +1,14 @@
+import * as THREE from 'three';
+import type { InstancedAttributeData } from "../types/rendering";
+
+export class GeometryUtils {
+    /**
+     * Iterates through the self-describing attribute list and binds them to geometry.
+     * This replaces the hard-coded AttributeManager.
+     */
+    public static assignInstancedAttributes( geometry: THREE.BufferGeometry, attributeData: InstancedAttributeData): void {
+        attributeData.attributes.forEach((attribute) => {
+            geometry.setAttribute(attribute.name, new THREE.InstancedBufferAttribute(attribute.data, attribute.itemSize));
+        });
+    }
+}
