@@ -9,7 +9,13 @@ export interface InputState {
     isAPressed: boolean;
     isDPressed: boolean;
 }
-export interface GameObject {
+
+export interface MeshGameObject {
     mesh: THREE.Mesh;
     update(deltaTime: number): void;
+    dispose(): void;
+}
+
+export interface DisposableObject {
+    dispose(): void
 }

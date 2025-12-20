@@ -23,4 +23,14 @@ export class RendererController {
     }
 
     public get instanceDomElement() : HTMLCanvasElement {return this.renderer.domElement}
+
+    public dispose(): void {
+        this.renderer.dispose();
+        this.renderer.forceContextLoss();
+
+        if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+            this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+        }
+        console.log("RendererController released");
+    }
 }

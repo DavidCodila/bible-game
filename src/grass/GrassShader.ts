@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import vertexShader from './shaders/Grass.vert?raw';
 import fragmentShader from './shaders/Grass.frag?raw';
+import type { DisposableObject } from '../app/types';
 
-export class GrassShader {
+export class GrassShader implements DisposableObject {
     public readonly material: THREE.ShaderMaterial;
     private readonly uniforms: { [key: string]: THREE.IUniform };
 
@@ -21,6 +22,10 @@ export class GrassShader {
             depthWrite: true,
             depthTest: true
         });
+    }
+
+    dispose(): void {
+        this.material.dispose();
     }
 
     public update(deltaTime: number): void {

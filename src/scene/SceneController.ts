@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import type { DisposableObject } from '../app/types';
 
-export class SceneController {
+export class SceneController implements DisposableObject {
     private scene: THREE.Scene;
 
     constructor(scene : THREE.Scene) {
@@ -17,5 +18,10 @@ export class SceneController {
     }
 
     public get sceneInstance(): THREE.Scene { return this.scene; }
+
+    public dispose(): void {
+        this.scene.background = null;
+        this.scene.clear();
+    }
 
 }

@@ -4,9 +4,11 @@ import { DataGenerator } from '../generator/DataGenerator';
 import { GrassGeometryFactory } from '../GrassGeometryFactory'; 
 import { GrassShader } from '../GrassShader';
 import { BoundsHelper } from "./BoundsHelper";
+import type { MeshGameObject } from '../../app/types';
 import type { GrassPatchConfig } from "../types";
+import { ThreeUtils } from '../../tools/ThreeUtils';
 
-export class GrassPatch {
+export class GrassPatch implements MeshGameObject{
     public mesh: THREE.InstancedMesh;  
     private grassShader: GrassShader; 
     
@@ -28,6 +30,16 @@ export class GrassPatch {
         GeometryUtils.assignInstancedAttributes(geometry, attributeData);
         
         BoundsHelper.computePatchBounds(this.mesh, config);
+    }
+    dispose(): void {
+        this.grassShader.dispose();
+        ThreeUtils.disposeMesh(this.mesh);
+        // PREVENT ACCIDENTAL UPDATES
+        (this.mesh as any).instanceMatrix = null;
+        (this as any).grassShader = null;
+        (this as any).mesh = null;
+        
+        console.log("GrassPatch: Instanced resources and shader disposed.");
     }
 
     public update(deltaTime: number): void {

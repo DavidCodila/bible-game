@@ -1,10 +1,8 @@
 import * as THREE from 'three';
-import type { GameObject } from '../app/types';
+import { ThreeUtils } from '../tools/ThreeUtils'
+import type { MeshGameObject } from '../app/types';
 
-/**
- * Creates and manages the static terrain plane geometry for the scene.
- */
-export class TerrainPlane implements GameObject{
+export class TerrainPlane implements MeshGameObject{
     public mesh: THREE.Mesh;
 
     constructor() {
@@ -12,7 +10,7 @@ export class TerrainPlane implements GameObject{
     }
 
     // added for overall code simplicity
-    update(deltaTime: number): void {}
+    update(_deltaTime: number): void {}
 
     private createGroundMesh(): THREE.Mesh {
         const ground = new THREE.Mesh(
@@ -23,5 +21,10 @@ export class TerrainPlane implements GameObject{
         ground.rotation.x = -Math.PI / 2; 
         
         return ground;
+    }
+
+    dispose(): void {
+        ThreeUtils.disposeMesh(this.mesh);
+        console.log("TerrainPlane cleaned up via ThreeUtils.");
     }
 }

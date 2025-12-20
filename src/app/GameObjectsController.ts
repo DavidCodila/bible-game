@@ -1,16 +1,16 @@
 import type { SceneController } from '../scene/SceneController';
-import type { GameObject } from './types';
+import type { DisposableObject, MeshGameObject } from './types';
 
-export class GameObjectsController {
+export class GameObjectsController implements DisposableObject {
     sceneController: SceneController;
-    gameObjects: GameObject[];
+    gameObjects: MeshGameObject[];
 
     constructor(sceneController: SceneController) {
         this.sceneController = sceneController;
         this.gameObjects = [];
     }
 
-    public add(gameObject: GameObject): void {
+    public add(gameObject: MeshGameObject): void {
         this.gameObjects.push(gameObject);
         this.sceneController.add(gameObject.mesh);
     }
@@ -21,5 +21,9 @@ export class GameObjectsController {
         });
     }
 
-
+    public dispose(): void {
+        this.gameObjects.forEach(gameObjects => {
+            gameObjects.dispose();
+        });
+    }
 }

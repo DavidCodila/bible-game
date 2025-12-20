@@ -16,7 +16,8 @@ export class WorldBuilder {
     }
 
     public createTerrain() {
-        this.gameObjectsController.add(new TerrainPlane());
+        const terrainPlane = new TerrainPlane();
+        this.gameObjectsController.add(terrainPlane);
     }
 
     public createGrassField() {

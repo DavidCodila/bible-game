@@ -1,7 +1,8 @@
+import type { DisposableObject } from "../../app/types";
 import { STATS_CONFIG } from "./Constants";
 import type { PerformanceMetrics } from "./Types";
 
-export class StatsTracker {
+export class StatsTracker implements DisposableObject {
     private metrics: PerformanceMetrics;
 
     constructor() {
@@ -43,5 +44,10 @@ export class StatsTracker {
             console.log(`FPS: ${this.metrics.avgFPS.toFixed(1)} | Time: ${this.metrics.avgFrameTime.toFixed(2)}ms`);
             this.metrics.lastLogTime = currentTime;
         }
+    }
+
+    dispose(): void {
+        this.metrics.frameTimeHistory = [];       
+        console.log("StatsTracker: Performance history cleared.");
     }
 }
