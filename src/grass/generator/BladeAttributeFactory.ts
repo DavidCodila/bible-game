@@ -35,6 +35,12 @@ export class BladeAttributeFactory {
         const redChannel = 0.08 + Math.random() * 0.08; 
         const blueChannel = 0.03 + Math.random() * 0.05;
 
+        /* Brighter grass
+        const greenChannel = 0.30 + Math.random() * 0.40;
+        const redChannel = 0.10 + Math.random() * 0.15;
+        const blueChannel = 0.05 + Math.random() * 0.10;
+        */
+
         instanceColors[bladeIndex * 3] = redChannel;
         instanceColors[bladeIndex * 3 + 1] = greenChannel;
         instanceColors[bladeIndex * 3 + 2] = blueChannel;

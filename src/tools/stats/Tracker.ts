@@ -6,13 +6,7 @@ export class StatsTracker implements DisposableObject {
     private metrics: PerformanceMetrics;
 
     constructor() {
-        this.metrics = {
-            frameStartTime: performance.now(),
-            frameTimeHistory: [],
-            avgFrameTime: 0,
-            avgFPS: 0,
-            lastLogTime: performance.now(),
-        };
+        this.metrics = {frameStartTime: performance.now(), frameTimeHistory: [], avgFrameTime: 0, avgFPS: 0, lastLogTime: performance.now()};
     }
 
     public update(): void {

@@ -15,12 +15,12 @@ export class WorldBuilder {
         this.createGrassField();
     }
 
-    public createTerrain() {
+    private createTerrain() {
         const terrainPlane = new TerrainPlane();
         this.gameObjectsController.add(terrainPlane);
     }
 
-    public createGrassField() {
+    private createGrassField() {
         const grassBladeConfig : GrassBladeConfig = {
             bladeHeight: 0.4, bladeWidth: 0.05, segmentsPerBlade: 6
         }
