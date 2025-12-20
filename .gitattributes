@@ -1,0 +1,12 @@
+# Handle line endings automatically
+* text=auto
+
+# Ensure lock files always use LF (Linux style) to prevent cross-platform issues
+bun.lock linguist-generated=true text eol=lf
+package-lock.json text eol=lf
+
+# Keep 3D assets and images as binary (don't touch line endings)
+*.png binary
+*.jpg binary
+*.glb binary
+*.gltf binary
