@@ -1,5 +1,11 @@
 import { GardenOfEdenApp } from './app/GardenOfEdenApp.ts';
 
-document.addEventListener('DOMContentLoaded', () => {
-    new GardenOfEdenApp();
-});
+const initaliseApplication = () => {
+  new GardenOfEdenApp();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initaliseApplication);
+} else {
+  initaliseApplication();
+}

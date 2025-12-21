@@ -1,23 +1,29 @@
 import { GardenOfEdenApp } from '@src/app/GardenOfEdenApp';
 
-vi.mock('@src/app/GardenOfEdenApp', () => {
-    return {
-        GardenOfEdenApp: vi.fn()
-    };
-});
+vi.mock('@src/app/GardenOfEdenApp', () => ({ GardenOfEdenApp: vi.fn() }));
 
 describe('main.ts entry point', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        document.body.innerHTML = '';
+        vi.resetModules();
     });
 
-    it('should initialize GardenOfEdenApp when DOMContentLoaded fires', async () => {
+    it('should wait for DOMContentLoaded if document is loading', async () => {
+        Object.defineProperty(document, 'readyState', { value: 'loading', configurable: true });
+        
         await import('@src/main');
+        
+        expect(GardenOfEdenApp).not.toHaveBeenCalled();
+        
+        document.dispatchEvent(new Event('DOMContentLoaded'));
+        expect(GardenOfEdenApp).toHaveBeenCalledTimes(1);
+    });
 
-        const event = new Event('DOMContentLoaded');
-        document.dispatchEvent(event);
-
+    it('should initialize immediately if document is already complete', async () => {
+        Object.defineProperty(document, 'readyState', { value: 'complete', configurable: true });
+        
+        await import('@src/main');
+        
         expect(GardenOfEdenApp).toHaveBeenCalledTimes(1);
     });
 });
