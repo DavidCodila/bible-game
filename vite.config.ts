@@ -14,6 +14,7 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     coverage: {
       provider: 'istanbul',
+      include: ['src/**/*.ts'],
       reporter: ['text', 'json', 'html'],
       reportsDirectory: './tests/coverage',
       thresholds: {
