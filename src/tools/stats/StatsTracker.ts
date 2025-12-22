@@ -40,6 +40,9 @@ export class StatsTracker implements DisposableObject {
         }
     }
 
+    /** @internal - For testing and speed purposes */
+    public get get_metrics() {return this.metrics};
+
     dispose(): void {
         this.metrics.frameTimeHistory = [];       
         console.log("StatsTracker: Performance history cleared.");
