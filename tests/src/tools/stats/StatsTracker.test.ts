@@ -73,4 +73,34 @@ describe('StatsTracker', () => {
         
         expect(tracker.get_metrics.frameTimeHistory).toEqual([]);
     });
+
+    it('should handle frames with 0ms duration by ignoring them', () => {
+      const initialFPS = tracker.get_metrics.avgFPS;
+      // Do not advance timers
+      tracker.update(); 
+      
+      // avgFPS should not become Infinity or NaN
+      expect(tracker.get_metrics.avgFPS).toBe(initialFPS);
+    });
+
+    it('should not update lastLogTime if the log interval has not been reached', () => {
+      const initialLogTime = tracker.get_metrics.lastLogTime;
+      const almostInterval = STATS_CONFIG.LOG_INTERVAL_IN_MILLISECONDS - 1;
+      
+      vi.advanceTimersByTime(almostInterval);
+      tracker.update();
+
+      expect(tracker.get_metrics.lastLogTime).toBe(initialLogTime);
+    });
+
+    it('should calculate accurate averages while history is partially full', () => {
+      const framesToRun = 5;
+      for (let i = 0; i < framesToRun; i++) {
+        vi.advanceTimersByTime(frameTime);
+        tracker.update();
+      }
+
+      expect(tracker.get_metrics.frameTimeHistory.length).toBe(framesToRun);
+      expect(tracker.get_metrics.avgFrameTime).toBe(frameTime);
+    });
 });
