@@ -3,9 +3,6 @@ import type { InstancedAttributeData } from "../../types/rendering";
 import { BladeAttributeFactory } from "./BladeAttributeFactory";
 
 export class DataGenerator {
-    /**
-     * Orchestrates the allocation and population of grass instance data.
-     */
     public static generateAttributes(config: GenerationConfig): InstancedAttributeData {
         const attributeData = this.allocateBuffers(config.totalBlades);
 
@@ -13,21 +10,19 @@ export class DataGenerator {
             for (let zIndex = 0; zIndex < config.bladesPerRow; zIndex++) {
                 const bladeIndex = xIndex * config.bladesPerRow + zIndex;
                 
-                BladeAttributeFactory.calculateBlade(
-                    bladeIndex, 
-                    xIndex, 
-                    zIndex, 
-                    attributeData, 
-                    config
-                );
+                BladeAttributeFactory.calculateBlade({
+                    bladeIndex: bladeIndex, 
+                    gridX: xIndex, 
+                    gridZ: zIndex, 
+                    attributeData: attributeData, 
+                    sideLength: config.sideLength,
+                    gridSpacing: config.gridSpacing
+                });
             }
         }
         return attributeData;
     }
 
-    /**
-     * Allocates the Float32Arrays for the GPU buffers using the self-describing format.
-     */
     private static allocateBuffers(count: number): InstancedAttributeData {
         return {
             attributes: [

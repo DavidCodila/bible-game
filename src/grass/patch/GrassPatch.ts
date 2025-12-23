@@ -31,6 +31,7 @@ export class GrassPatch implements MeshGameObject{
         
         BoundsHelper.computePatchBounds(this.mesh, config);
     }
+    
     dispose(): void {
         this.grassShader.dispose();
         ThreeUtils.disposeMesh(this.mesh);

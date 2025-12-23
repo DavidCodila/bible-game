@@ -1,51 +1,40 @@
-import type { GenerationConfig } from "../types";
-import type { InstancedAttributeData } from "../../types/rendering";
+import type { BladeData } from "../types";
 
 export class BladeAttributeFactory {
     public static calculateBlade(
-        bladeIndex: number, 
-        gridX: number, 
-        gridZ: number, 
-        attributeData: InstancedAttributeData, 
-        config: GenerationConfig
+        bladeData : BladeData
     ): void {
-        const instanceOffsets = attributeData.attributes[0].data;
-        const instanceColors = attributeData.attributes[1].data;
-        const instanceYAxisRotation = attributeData.attributes[2].data;
-        const instanceYAxisScale = attributeData.attributes[3].data;
-        const instanceBendX = attributeData.attributes[4].data;
-        const instanceBendZ = attributeData.attributes[5].data;
-
+        const instanceOffsets = bladeData.attributeData.attributes[0].data;
+        const instanceColors = bladeData.attributeData.attributes[1].data;
+        const instanceYAxisRotation = bladeData.attributeData.attributes[2].data;
+        const instanceYAxisScale = bladeData.attributeData.attributes[3].data;
+        const instanceBendX = bladeData.attributeData.attributes[4].data;
+        const instanceBendZ = bladeData.attributeData.attributes[5].data;
         const jitterBuffer = 0.8;
-        const halfSideLength = config.sideLength / 2;
+        const halfSideLength = bladeData.sideLength / 2;
+        const bladeIndex = bladeData.bladeIndex;
+        const array3DOffset = 3;
+        const xOffset = 0; const yOffset = 1; const zOffset = 2;
 
-        // Position
-        instanceOffsets[bladeIndex * 3] = (gridX * config.gridSpacing) - halfSideLength + (Math.random() - 0.5) * config.gridSpacing * jitterBuffer;
-        instanceOffsets[bladeIndex * 3 + 1] = 0; 
-        instanceOffsets[bladeIndex * 3 + 2] = (gridZ * config.gridSpacing) - halfSideLength + (Math.random() - 0.5) * config.gridSpacing * jitterBuffer;
+        instanceOffsets[bladeIndex * array3DOffset + xOffset] = 
+            (bladeData.gridX * bladeData.gridSpacing) - halfSideLength + (Math.random() - 0.5) * bladeData.gridSpacing * jitterBuffer;
+        instanceOffsets[bladeIndex * array3DOffset + yOffset] = 
+            0; 
+        instanceOffsets[bladeIndex * array3DOffset + zOffset] = 
+            (bladeData.gridZ * bladeData.gridSpacing) - halfSideLength + (Math.random() - 0.5) * bladeData.gridSpacing * jitterBuffer;
 
-        // Rotation
         instanceYAxisRotation[bladeIndex] = (Math.random() - 0.5) * (Math.PI / 2);
-
-        // Scale
         instanceYAxisScale[bladeIndex] = 0.7 + Math.random() * 1.2;
 
-        // Color - EXACT RESTORATION
         const greenChannel = 0.25 + Math.random() * 0.35;
         const redChannel = 0.08 + Math.random() * 0.08; 
         const blueChannel = 0.03 + Math.random() * 0.05;
 
-        /* Brighter grass
-        const greenChannel = 0.30 + Math.random() * 0.40;
-        const redChannel = 0.10 + Math.random() * 0.15;
-        const blueChannel = 0.05 + Math.random() * 0.10;
-        */
+        // Brighter grass const greenChannel = 0.30 + Math.random() * 0.40; const redChannel = 0.10 + Math.random() * 0.15; const blueChannel = 0.05 + Math.random() * 0.10;
+        instanceColors[bladeIndex * array3DOffset] = redChannel;
+        instanceColors[bladeIndex * array3DOffset + 1] = greenChannel;
+        instanceColors[bladeIndex * array3DOffset + 2] = blueChannel;
 
-        instanceColors[bladeIndex * 3] = redChannel;
-        instanceColors[bladeIndex * 3 + 1] = greenChannel;
-        instanceColors[bladeIndex * 3 + 2] = blueChannel;
-
-        // Planar Bends
         const leanMagnitude = 0.02 + Math.random() * 0.11;
         const leanDirection = (Math.random() - 0.5) * (Math.PI / 3);
         instanceBendX[bladeIndex] = leanMagnitude * Math.sin(leanDirection);
