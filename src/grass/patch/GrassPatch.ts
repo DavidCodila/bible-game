@@ -16,16 +16,11 @@ export class GrassPatch implements MeshGameObject{
         const totalBlades = config.bladesPerRow * config.bladesPerRow;
         const bladeConfig = config.grassBladeConfig;
         const geometry = GrassGeometryFactory.createBladeGeometry(bladeConfig);
+        const attributeData = DataGenerator.generateAttributes(config);
+
         this.grassShader = new GrassShader(bladeConfig.bladeHeight);
         
         this.mesh = new THREE.InstancedMesh(geometry, this.grassShader.material, totalBlades);
-
-        const attributeData = DataGenerator.generateAttributes({
-            totalBlades,
-            sideLength: config.sideLength,
-            bladesPerRow: config.bladesPerRow,
-            gridSpacing: config.sideLength / config.bladesPerRow
-        });
 
         GeometryUtils.assignInstancedAttributes(geometry, attributeData);
         
@@ -35,7 +30,6 @@ export class GrassPatch implements MeshGameObject{
     dispose(): void {
         this.grassShader.dispose();
         ThreeUtils.disposeMesh(this.mesh);
-        // PREVENT ACCIDENTAL UPDATES
         (this.mesh as any).instanceMatrix = null;
         (this as any).grassShader = null;
         (this as any).mesh = null;

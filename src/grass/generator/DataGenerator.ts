@@ -1,13 +1,13 @@
-import type { BladeData, GenerationConfig } from "../types";
-import type { AttributeBuffer, InstancedAttributeData } from "../../types/rendering";
+import type { BladeData, GrassPatchConfig } from "../types";
+import type { InstancedAttributeData } from "../../types/rendering";
 import { BladeAttributeFactory } from "./BladeAttributeFactory";
-import * as GrassConstants from "./GrassConstants"
-import { GrassAttributeAccessor } from "./GrassAttributeAccessor";
+import { BufferAllocator } from "./BufferAllocator";
 
 export class DataGenerator {
-    public static generateAttributes(config: GenerationConfig): InstancedAttributeData {
-        const attributeData = this.allocateBuffers(config.totalBlades);
-        const accessor = new GrassAttributeAccessor(attributeData);
+    public static generateAttributes(config: GrassPatchConfig): InstancedAttributeData {
+        const totalBlades = config.bladesPerRow * config.bladesPerRow;
+        const gridSpacing = config.sideLength / config.bladesPerRow;
+        const attributeData : InstancedAttributeData = BufferAllocator.allocateBuffers(totalBlades);
 
         for (let xIndex = 0; xIndex < config.bladesPerRow; xIndex++) {
             for (let zIndex = 0; zIndex < config.bladesPerRow; zIndex++) {
@@ -17,25 +17,11 @@ export class DataGenerator {
                     gridX: xIndex, 
                     gridZ: zIndex,
                     sideLength: config.sideLength,
-                    gridSpacing: config.gridSpacing
+                    gridSpacing: gridSpacing
                 }
-                BladeAttributeFactory.calculateBlade(bladeData, accessor);
+                BladeAttributeFactory.calculateBlade(bladeData, attributeData.accessor);
             }
         }
         return attributeData;
-    }
-
-    private static allocateBuffers(totalBlades: number): InstancedAttributeData {
-        const bufferCollection: AttributeBuffer[] = [];
-
-        GrassConstants.GRASS_BUFFER_LAYOUT.forEach((schema) => {
-            bufferCollection[schema.index] = {
-                name: schema.name,
-                itemSize: schema.itemSize,
-                storage: new Float32Array(totalBlades * schema.itemSize)
-            };
-        });
-
-        return { attributeList: bufferCollection };
     }
 }

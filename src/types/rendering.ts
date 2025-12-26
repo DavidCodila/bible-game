@@ -1,3 +1,5 @@
+import type { GrassAttributeAccessor } from "@src/grass/generator/GrassAttributeAccessor";
+
 /**
  * Represents a single buffer for a WebGL attribute.
  */
@@ -12,4 +14,5 @@ export interface AttributeBuffer {
  */
 export interface InstancedAttributeData {
     attributeList: AttributeBuffer[];
+    accessor: GrassAttributeAccessor;
 }
