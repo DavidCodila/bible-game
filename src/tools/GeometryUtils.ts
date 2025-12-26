@@ -7,8 +7,8 @@ export class GeometryUtils {
      * This replaces the hard-coded AttributeManager.
      */
     public static assignInstancedAttributes( geometry: THREE.BufferGeometry, attributeData: InstancedAttributeData): void {
-        attributeData.attributes.forEach((attribute) => {
-            geometry.setAttribute(attribute.name, new THREE.InstancedBufferAttribute(attribute.data, attribute.itemSize));
+        attributeData.attributeList.forEach((attribute) => {
+            geometry.setAttribute(attribute.name, new THREE.InstancedBufferAttribute(attribute.storage, attribute.itemSize));
         });
     }
 }

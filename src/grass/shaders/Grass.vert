@@ -33,8 +33,8 @@ void main(){
     transformedPosition.x = rotatedAroundYAxis.x;
     transformedPosition.z = rotatedAroundYAxis.y;
 
-    vec4 worldPosition = modelMatrix * vec4(transformedPosition + vec3(instanceOffsets.x, 0.0, instanceOffsets.z), 1.0);
-
+    vec4 worldPosition = modelMatrix * vec4(transformedPosition + instanceOffsets, 1.0);
+    
     vColor = instanceColors;
 
     gl_Position = projectionMatrix * viewMatrix * worldPosition;

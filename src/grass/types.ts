@@ -23,7 +23,6 @@ export interface BladeData {
     bladeIndex: number;
     gridX: number;
     gridZ: number; 
-    attributeData: InstancedAttributeData;
     sideLength: number;
     gridSpacing: number;
 }
