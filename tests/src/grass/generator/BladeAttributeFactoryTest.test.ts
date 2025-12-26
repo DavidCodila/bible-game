@@ -9,7 +9,14 @@ import type { BladeData } from '@src/grass/types';
 const TOTAL_BLADES_FOR_TEST = 10;
 
 describe('BladeAttributeFactory', () => {
-    let mockAccessor: any;
+    let mockAccessor: {
+        offsets: Float32Array;
+        colors: Float32Array;
+        yAxisRotation: Float32Array;
+        yAxisScale: Float32Array;
+        bendXAxis: Float32Array;
+        bendZAxis: Float32Array;
+    };
     const simpleBladeData: BladeData = {
             bladeIndex: 0,
             gridX: 0,
@@ -65,22 +72,44 @@ describe('BladeAttributeFactory', () => {
 
     it('should generate RGB colors within the legal 0.0 to 1.0 range', () => {
         const baseIndex = simpleBladeData.bladeIndex * VECTOR_OFFSETS.ARRAY_3D_OFFSET;
-        const channels = [COLOR_INDICES.RED, COLOR_INDICES.GREEN, COLOR_INDICES.BLUE];
 
         BladeAttributeFactory.calculateBlade(simpleBladeData, mockAccessor);
 
-        channels.forEach(channel => {
-            const value = mockAccessor.colors[baseIndex + channel];
-            expect(value).toBeGreaterThanOrEqual(0);
-            expect(value).toBeLessThanOrEqual(1.0);
-        });
+        const red = mockAccessor.colors[baseIndex + COLOR_INDICES.RED];
+        const green = mockAccessor.colors[baseIndex + COLOR_INDICES.GREEN];
+        const blue = mockAccessor.colors[baseIndex + COLOR_INDICES.BLUE];
+
+        expect(red).toBeGreaterThanOrEqual(0);
+        expect(red).toBeLessThanOrEqual(1.0);
+        
+        expect(green).toBeGreaterThanOrEqual(0);
+        expect(green).toBeLessThanOrEqual(1.0);
+
+        expect(blue).toBeGreaterThanOrEqual(0);
+        expect(blue).toBeLessThanOrEqual(1.0);
     });
 
-    it('should write to the correct memory stride for scalar attributes', () => {
+    it('should write scalar attributes to the correct memory index', () => {
         BladeAttributeFactory.calculateBlade(simpleBladeData, mockAccessor);
 
         const bladeIndex = simpleBladeData.bladeIndex;
+
         expect(mockAccessor.yAxisScale[bladeIndex]).toBeGreaterThan(0);
-        expect(mockAccessor.yAxisRotation[bladeIndex]).toBeDefined();
+
+        const rotation = mockAccessor.yAxisRotation[bladeIndex];
+        expect(rotation).toBeGreaterThanOrEqual(-Math.PI/2);
+        expect(rotation).toBeLessThanOrEqual(Math.PI/2);
+
+        expect(mockAccessor.bendXAxis[bladeIndex]).toStrictEqual(expect.any(Number));
+        expect(mockAccessor.bendZAxis[bladeIndex]).toStrictEqual(expect.any(Number));
+    });
+
+    it('should always stay within bounds over many iterations', () => {
+        for (let i = 0; i < 100; i++) {
+            BladeAttributeFactory.calculateBlade(simpleBladeData, mockAccessor);
+            const rotation = mockAccessor.yAxisRotation[simpleBladeData.bladeIndex];
+            expect(rotation).toBeGreaterThanOrEqual(-Math.PI/2);
+            expect(rotation).toBeLessThanOrEqual(Math.PI/2);
+        }
     });
 });
