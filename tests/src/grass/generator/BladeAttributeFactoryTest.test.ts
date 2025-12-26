@@ -1,12 +1,7 @@
 import { BladeAttributeFactory } from '@src/grass/generator/BladeAttributeFactory';
 import { 
-    ARRAY_3D_OFFSET, 
-    X_OFFSET, 
-    Y_OFFSET, 
-    Z_OFFSET, 
-    RED_INDEX, 
-    GREEN_INDEX, 
-    BLUE_INDEX,
+    VECTOR_OFFSETS, 
+    COLOR_INDICES,
     JITTER_BUFFER
 } from '@src/grass/generator/GrassConstants';
 import type { BladeData } from '@src/grass/types';
@@ -25,8 +20,8 @@ describe('BladeAttributeFactory', () => {
 
     beforeEach(() => {
         mockAccessor = {
-            offsets: new Float32Array(TOTAL_BLADES_FOR_TEST * ARRAY_3D_OFFSET),
-            colors: new Float32Array(TOTAL_BLADES_FOR_TEST * ARRAY_3D_OFFSET),
+            offsets: new Float32Array(TOTAL_BLADES_FOR_TEST * VECTOR_OFFSETS.ARRAY_3D_OFFSET),
+            colors: new Float32Array(TOTAL_BLADES_FOR_TEST * VECTOR_OFFSETS.ARRAY_3D_OFFSET),
             yAxisRotation: new Float32Array(TOTAL_BLADES_FOR_TEST),
             yAxisScale: new Float32Array(TOTAL_BLADES_FOR_TEST),
             bendXAxis: new Float32Array(TOTAL_BLADES_FOR_TEST),
@@ -40,7 +35,7 @@ describe('BladeAttributeFactory', () => {
         const gridZ = 3;
         const gridSpacing = 2;
         const sideLength = 10;
-        const baseIndex = bladeIndex * ARRAY_3D_OFFSET;
+        const baseIndex = bladeIndex * VECTOR_OFFSETS.ARRAY_3D_OFFSET;
         const bladeData : BladeData = {
             bladeIndex,
             gridX,
@@ -51,10 +46,10 @@ describe('BladeAttributeFactory', () => {
 
         BladeAttributeFactory.calculateBlade(bladeData, mockAccessor);
 
-        const xValue = mockAccessor.offsets[baseIndex + X_OFFSET];
+        const xValue = mockAccessor.offsets[baseIndex + VECTOR_OFFSETS.X_OFFSET];
         const expectedXBase = (gridX * gridSpacing) - (sideLength / 2);
 
-        const zValue = mockAccessor.offsets[baseIndex + Z_OFFSET];
+        const zValue = mockAccessor.offsets[baseIndex + VECTOR_OFFSETS.Z_OFFSET];
         const expectedZBase = (gridZ * gridSpacing) - (sideLength / 2);
 
         const maxDeviation = (0.5 * gridSpacing * JITTER_BUFFER);
@@ -65,12 +60,12 @@ describe('BladeAttributeFactory', () => {
         expect(zValue).toBeGreaterThanOrEqual(expectedZBase - maxDeviation);
         expect(zValue).toBeLessThanOrEqual(expectedZBase + maxDeviation);
 
-        expect(mockAccessor.offsets[baseIndex + Y_OFFSET]).toBe(0); //need to change when adding ground elevation
+        expect(mockAccessor.offsets[baseIndex + VECTOR_OFFSETS.Y_OFFSET]).toBe(0); //need to change when adding ground elevation
     });
 
     it('should generate RGB colors within the legal 0.0 to 1.0 range', () => {
-        const baseIndex = simpleBladeData.bladeIndex * ARRAY_3D_OFFSET;
-        const channels = [RED_INDEX, GREEN_INDEX, BLUE_INDEX];
+        const baseIndex = simpleBladeData.bladeIndex * VECTOR_OFFSETS.ARRAY_3D_OFFSET;
+        const channels = [COLOR_INDICES.RED, COLOR_INDICES.GREEN, COLOR_INDICES.BLUE];
 
         BladeAttributeFactory.calculateBlade(simpleBladeData, mockAccessor);
 

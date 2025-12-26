@@ -1,13 +1,8 @@
 import type { BladeData } from "../types";
 import { GrassAttributeAccessor } from "./GrassAttributeAccessor";
 import { JITTER_BUFFER, 
-    ARRAY_3D_OFFSET, 
-    X_OFFSET, 
-    Y_OFFSET, 
-    Z_OFFSET, 
-    RED_INDEX, 
-    GREEN_INDEX, 
-    BLUE_INDEX
+    VECTOR_OFFSETS, 
+    COLOR_INDICES
 } from "./GrassConstants";
 
 export class BladeAttributeFactory {
@@ -17,13 +12,13 @@ export class BladeAttributeFactory {
     ): void {        
         const halfSideLength = bladeData.sideLength / 2;
         const bladeIndex = bladeData.bladeIndex;
-        const baseIndex = bladeIndex * ARRAY_3D_OFFSET;
+        const baseIndex = bladeIndex * VECTOR_OFFSETS.ARRAY_3D_OFFSET;
 
-        accessor.offsets[baseIndex + X_OFFSET] = 
+        accessor.offsets[baseIndex + VECTOR_OFFSETS.X_OFFSET] = 
             (bladeData.gridX * bladeData.gridSpacing) - halfSideLength + (Math.random() - 0.5) * bladeData.gridSpacing * JITTER_BUFFER;
-        accessor.offsets[baseIndex + Y_OFFSET] = 
+        accessor.offsets[baseIndex + VECTOR_OFFSETS.Y_OFFSET] = 
             0; 
-        accessor.offsets[baseIndex + Z_OFFSET] = 
+        accessor.offsets[baseIndex + VECTOR_OFFSETS.Z_OFFSET] = 
             (bladeData.gridZ * bladeData.gridSpacing) - halfSideLength + (Math.random() - 0.5) * bladeData.gridSpacing * JITTER_BUFFER;
 
         accessor.yAxisRotation[bladeIndex] = (Math.random() - 0.5) * (Math.PI / 2);
@@ -34,9 +29,9 @@ export class BladeAttributeFactory {
         const blueChannel = 0.03 + Math.random() * 0.05;
 
         // Brighter grass const greenChannel = 0.30 + Math.random() * 0.40; const redChannel = 0.10 + Math.random() * 0.15; const blueChannel = 0.05 + Math.random() * 0.10;
-        accessor.colors[baseIndex + RED_INDEX] = redChannel;
-        accessor.colors[baseIndex + GREEN_INDEX] = greenChannel;
-        accessor.colors[baseIndex + BLUE_INDEX] = blueChannel;
+        accessor.colors[baseIndex + COLOR_INDICES.RED] = redChannel;
+        accessor.colors[baseIndex + COLOR_INDICES.GREEN] = greenChannel;
+        accessor.colors[baseIndex + COLOR_INDICES.BLUE] = blueChannel;
 
         const leanMagnitude = 0.02 + Math.random() * 0.11;
         const leanDirection = (Math.random() - 0.5) * (Math.PI / 3);

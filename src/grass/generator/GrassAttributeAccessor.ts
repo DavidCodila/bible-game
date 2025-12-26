@@ -1,4 +1,4 @@
-import * as GrassConstants from "./GrassConstants";
+import { INSTANCE_INDICES } from "./GrassConstants";
 import type { AttributeBuffer } from "../../types/rendering";
 
 export class GrassAttributeAccessor {
@@ -10,11 +10,11 @@ export class GrassAttributeAccessor {
     public readonly bendZAxis: Float32Array;
 
     constructor(attributeList: AttributeBuffer[]) {
-        this.offsets = attributeList[GrassConstants.INSTANCE_OFFSETS_INDEX].storage;
-        this.colors = attributeList[GrassConstants.INSTANCE_COLORS_INDEX].storage;
-        this.yAxisRotation = attributeList[GrassConstants.INSTANCE_Y_AXIS_ROTATION_INDEX].storage;
-        this.yAxisScale = attributeList[GrassConstants.INSTANCE_Y_AXIS_SCALE_INDEX].storage;
-        this.bendXAxis = attributeList[GrassConstants.INSTANCE_BEND_X_AXIS_INDEX].storage;
-        this.bendZAxis = attributeList[GrassConstants.INSTANCE_BEND_Z_AXIS_INDEX].storage;
+        this.offsets = attributeList[INSTANCE_INDICES.OFFSETS].storage;
+        this.colors = attributeList[INSTANCE_INDICES.COLORS].storage;
+        this.yAxisRotation = attributeList[INSTANCE_INDICES.Y_AXIS_ROTATION].storage;
+        this.yAxisScale = attributeList[INSTANCE_INDICES.Y_AXIS_SCALE].storage;
+        this.bendXAxis = attributeList[INSTANCE_INDICES.BEND_X_AXIS].storage;
+        this.bendZAxis = attributeList[INSTANCE_INDICES.BEND_Z_AXIS].storage;
     }
 }
