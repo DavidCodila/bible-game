@@ -12,12 +12,13 @@ export class ThreeUtils {
     }
 
     private static disposeMaterial(material: THREE.Material): void {
-        Object.keys(material).forEach((propertyName) => {
+        for (const propertyName in material) {
             const value = (material as any)[propertyName];
-            if (value && value instanceof THREE.Texture) {
+
+            if (value && value.isTexture) {
                 value.dispose();
             }
-        });
+        }
 
         material.dispose();
     }
