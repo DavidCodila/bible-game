@@ -4,7 +4,6 @@ import type { InstancedAttributeData } from "../types/rendering";
 export class GeometryUtils {
     /**
      * Iterates through the self-describing attribute list and binds them to geometry.
-     * This replaces the hard-coded AttributeManager.
      */
     public static assignInstancedAttributes( geometry: THREE.BufferGeometry, attributeData: InstancedAttributeData): void {
         attributeData.attributeList.forEach((attribute) => {
@@ -13,5 +12,10 @@ export class GeometryUtils {
     }
 }
 
+export const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
+
 // Helper function to taper the width (1.0 at base, 0.0 at tip)
-export const defaultBladeTaper = (normalizedHeight: number): number => 1.0 - (normalizedHeight * normalizedHeight);
+export const defaultBladeTaper = (normalizedHeight: number): number => {
+    const safeHeight = clamp(normalizedHeight, 0, 1);
+    return 1.0 - (safeHeight * safeHeight);
+};
