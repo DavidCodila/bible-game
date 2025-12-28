@@ -17,8 +17,9 @@ export class GrassPatch implements MeshGameObject{
         const bladeConfig = config.grassBladeConfig;
         const geometry = GrassGeometryFactory.createBladeGeometry(bladeConfig);
         const attributeData = DataGenerator.generateAttributes(config);
+        const sunDirection = new THREE.Vector3(1, 2, 0.5).normalize();
 
-        this.grassShader = new GrassShader(bladeConfig.bladeHeight);
+        this.grassShader = new GrassShader(bladeConfig.bladeHeight, sunDirection);
         
         this.mesh = new THREE.InstancedMesh(geometry, this.grassShader.material, totalBlades);
 

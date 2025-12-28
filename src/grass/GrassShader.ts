@@ -7,10 +7,10 @@ export class GrassShader implements DisposableObject {
     public readonly material: THREE.ShaderMaterial;
     private readonly uniforms: { [key: string]: THREE.IUniform };
 
-    constructor(bladeHeight: number) {
+    constructor(bladeHeight: number, sunDirection: THREE.Vector3) {
         this.uniforms = {
             time: { value: 0 },
-            sunDirection: { value: new THREE.Vector3(1, 2, 0.5).normalize() },
+            sunDirection: { value: sunDirection.clone().normalize() },
             inverseBladeHeight: { value: 1.0 / bladeHeight }
         };
 
