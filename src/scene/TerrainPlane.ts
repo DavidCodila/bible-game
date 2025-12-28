@@ -15,7 +15,7 @@ export class TerrainPlane implements MeshGameObject{
     private createGroundMesh(): THREE.Mesh {
         const ground = new THREE.Mesh(
             new THREE.PlaneGeometry(50, 50),
-            new THREE.MeshBasicMaterial({ color: 0x3d2817 })
+            new THREE.MeshBasicMaterial({ color: 0x3d2817 }) // need to alter here and in tests later...
         );
         // Correct rotation to lie flat on the XZ plane
         ground.rotation.x = -Math.PI / 2; 
