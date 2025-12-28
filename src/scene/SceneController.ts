@@ -14,7 +14,7 @@ export class SceneController implements DisposableObject {
     }
 
     private setupScene(): void {
-        this.scene.background = new THREE.Color(0x87ceeb);
+        this.scene.background = new THREE.Color(0x87ceeb); //need to change colour here and in test later...
     }
 
     public get sceneInstance(): THREE.Scene { return this.scene; }
