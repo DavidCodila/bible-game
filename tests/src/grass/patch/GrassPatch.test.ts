@@ -6,7 +6,7 @@ import { GeometryUtils } from '@src/tools/GeometryUtils';
 import { ThreeUtils } from '@src/tools/ThreeUtils';
 import { GrassShader } from '@src/grass/GrassShader';
 import { SUN_DIRECTION } from '@src/scene/Constants';
-import { GRASS_BUFFER_LAYOUT, INSTANCE_INDICES } from '@src/grass/generator/GrassConstants';
+import { GRASS_BUFFER_LAYOUT } from '@src/grass/generator/GrassConstants';
 import { GrassAttributeAccessor } from '@src/grass/generator/GrassAttributeAccessor';
 import type { GrassPatchConfig } from '@src/grass/types';
 import type { AttributeBuffer, InstancedAttributeData } from '@src/types/rendering';
