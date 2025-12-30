@@ -2,14 +2,16 @@ import type { DisposableObject, InputState } from "./types";
 
 export class InputManager implements DisposableObject{
     private domElement : HTMLElement;
-    private inputState: InputState = {mouseDeltaX: 0, mouseDeltaY: 0, isWPressed: false, isSPressed: false,  isAPressed: false, isDPressed: false};
+    private inputState: InputState = {
+        mouseDeltaX: 0, mouseDeltaY: 0, isWPressed: false, isSPressed: false,  isAPressed: false, isDPressed: false
+    };
 
     constructor(domElement: HTMLElement) {
         this.domElement = domElement;
-        this.setupPointerLock(domElement);
+        this.setupEventListeners(domElement);
     }
 
-    private setupPointerLock(domElement: HTMLElement): void {
+    private setupEventListeners(domElement: HTMLElement): void {
         domElement.addEventListener('click', this.handlePointerLockRequest);
         document.addEventListener('mousemove', this.handleMouseMove);
     }
