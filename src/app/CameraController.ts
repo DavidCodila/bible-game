@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { InputManager } from './InputManager';
+import { clamp } from 'three/src/math/MathUtils.js';
 
 export class CameraController {
     private inputManager: InputManager;
@@ -24,15 +25,12 @@ export class CameraController {
     }
 
     public update(): void {
-        if (this.inputManager.mouseHasNotMoved) return;        
+        if (this.inputManager.mouseHasNotMoved) return;   
+        const yaw = this.camera.rotation.y - this.inputManager.mouseDeltaX * this.mouseSensitivity;     
+        const pitch = this.camera.rotation.x - this.inputManager.mouseDeltaY * this.mouseSensitivity;
 
-        this.camera.rotation.y -= this.inputManager.mouseDeltaX * this.mouseSensitivity;
-        
-        // Clamp Pitch to prevent looking upside down
-        this.camera.rotation.x = Math.max(
-            -Math.PI / 2, 
-            Math.min(Math.PI / 2, this.camera.rotation.x - this.inputManager.mouseDeltaY * this.mouseSensitivity)
-        );
+        this.camera.rotation.y = yaw;        
+        this.camera.rotation.x = clamp(pitch, -Math.PI / 2, Math.PI / 2);
 
         this.inputManager.resetDeltas();
     }
