@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { StatsTracker } from '@src/tools/stats/StatsTracker';
 import { STATS_CONFIG } from '@src/tools/stats/Constants';
 

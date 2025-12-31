@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { STATS_CONFIG } from '@src/tools/stats/Constants';
 
 describe('Constants', () => {

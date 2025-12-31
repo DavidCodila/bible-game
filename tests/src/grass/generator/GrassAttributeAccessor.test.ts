@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { GrassAttributeAccessor } from "@src/grass/generator/GrassAttributeAccessor";
 import * as GrassConstants from "@src/grass/generator/GrassConstants";
 import type { AttributeBuffer } from "@src/types/rendering";

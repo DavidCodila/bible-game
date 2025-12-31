@@ -1,3 +1,4 @@
+// @vitest-environment node
 import * as THREE from 'three';
 import { GrassShader } from '@src/grass/GrassShader';
 

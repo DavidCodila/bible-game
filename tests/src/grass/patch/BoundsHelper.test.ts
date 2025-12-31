@@ -1,3 +1,4 @@
+// @vitest-environment node
 import * as THREE from 'three';
 import { BoundsHelper } from '@src/grass/patch/BoundsHelper';
 import type { GrassPatchConfig } from '@src/grass/types';

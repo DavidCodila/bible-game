@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { GrassGeometryFactory } from '@src/grass/GrassGeometryFactory';
 import type { GrassBladeConfig } from '@src/grass/types';
 import type { BufferAttribute, BufferGeometry, InterleavedBufferAttribute } from 'three';

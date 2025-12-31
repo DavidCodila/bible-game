@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { BladeAttributeFactory } from '@src/grass/generator/BladeAttributeFactory';
 import { 
     VECTOR_OFFSETS, 

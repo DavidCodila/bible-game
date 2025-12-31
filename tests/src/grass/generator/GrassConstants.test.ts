@@ -1,3 +1,4 @@
+// @vitest-environment node
 import * as GrassConstants from "@src/grass/generator/GrassConstants"
 
 describe('GrassConstants', () => {

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { BufferAllocator } from "@src/grass/generator/BufferAllocator";
 import { GrassAttributeAccessor } from "@src/grass/generator/GrassAttributeAccessor";
 import * as GrassConstants from "@src/grass/generator/GrassConstants";

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { DataGenerator } from '@src/grass/generator/DataGenerator';
 import { BladeAttributeFactory } from '@src/grass/generator/BladeAttributeFactory';
 import { BufferAllocator } from '@src/grass/generator/BufferAllocator';
