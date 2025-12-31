@@ -1,4 +1,4 @@
-import type { SceneController } from '../scene/SceneController';
+import type { SceneController } from "@src/scene/SceneController";
 import type { DisposableObject, MeshGameObject } from './types';
 
 export class GameObjectsController implements DisposableObject {
@@ -10,9 +10,9 @@ export class GameObjectsController implements DisposableObject {
         this.gameObjects = [];
     }
 
-    public add(gameObject: MeshGameObject): void {
-        this.gameObjects.push(gameObject);
-        this.sceneController.add(gameObject.mesh);
+    public add(meshGameObject: MeshGameObject): void {
+        this.gameObjects.push(meshGameObject);
+        this.sceneController.add(meshGameObject.mesh);
     }
 
     public update(deltaTime: number): void {
@@ -22,8 +22,9 @@ export class GameObjectsController implements DisposableObject {
     }
 
     public dispose(): void {
-        this.gameObjects.forEach(gameObjects => {
-            gameObjects.dispose();
+        this.gameObjects.forEach(gameObject => {
+            gameObject.dispose();
         });
+        this.gameObjects = [];
     }
 }
