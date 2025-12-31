@@ -10,10 +10,10 @@ export class WindowController implements DisposableObject {
         this.rendererController = rendererController;
         this.cameraController = cameraController;
         
-        this.initaliseListerners();
+        this.initialiseListerners();
     }
 
-    private initaliseListerners(): void {
+    private initialiseListerners(): void {
         window.addEventListener('resize', this.handleResize);
     }
 
