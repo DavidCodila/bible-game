@@ -36,3 +36,5 @@ export const DISPOSE_ORDER = [
     'statsTracker',
     'rendererController'
 ] as const;
+
+export const ALL_KEYS = [...new Set([...UPDATE_ORDER, ...DISPOSE_ORDER])] as const;

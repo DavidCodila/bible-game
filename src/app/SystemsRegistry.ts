@@ -1,35 +1,37 @@
 import { UPDATE_ORDER, DISPOSE_ORDER } from './AppConfig';
 import { buildWorld } from './WorldBuilder';
+import { validateSystems } from './SystemsValidator';
 
 export class SystemsRegistry {
-    private readonly instances: Record<string, any>;
+    private readonly systems: Record<string, any>;
 
-    constructor(instances: Record<string, any>) {
-        this.instances = instances;
+    constructor(systems: Record<string, any>) {
+        validateSystems(systems);
+        this.systems = systems;
     }
 
     public buildWorld(): void {
-        const controller = this.instances.gameObjectsController;
+        const controller = this.systems.gameObjectsController;
         buildWorld(controller);
     }
 
     public update(deltaTime: number): void {
         UPDATE_ORDER.forEach((key) => {
-            this.instances[key].update(deltaTime);
+            this.systems[key].update(deltaTime);
         });
     }
 
     public render(): void {
-        const renderer = this.instances.rendererController;
-        const scene = this.instances.sceneController.sceneInstance;
-        const camera = this.instances.cameraController.cameraInstance;
+        const renderer = this.systems.rendererController;
+        const scene = this.systems.sceneController.sceneInstance;
+        const camera = this.systems.cameraController.cameraInstance;
 
         renderer.render(scene, camera);
     }
 
     public dispose(): void {
         DISPOSE_ORDER.forEach((key) => {
-            this.instances[key].dispose();
+            this.systems[key].dispose();
         });
     }
 }
