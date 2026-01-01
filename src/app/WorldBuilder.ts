@@ -1,32 +1,8 @@
-import { GameObjectsController } from './GameObjectsController';
-import { TerrainPlane } from '../scene/TerrainPlane';
-import { GrassPatch } from '../grass/patch/GrassPatch';
-import type { GrassBladeConfig } from '../grass/types';
+import { GameObjectsController } from '@src/app/GameObjectsController';
+import { TerrainPlane } from '@src/scene/TerrainPlane';
+import { defaultGrassPatch } from '@src/grass/Constants';
 
-export class WorldBuilder {
-    private gameObjectsController: GameObjectsController;
-
-    constructor(gameObjectsController: GameObjectsController) {
-        this.gameObjectsController = gameObjectsController;
-    }
-
-    public buildInitialWorld(): void {
-        this.createTerrain();
-        this.createGrassField();
-    }
-
-    private createTerrain() {
-        const terrainPlane = new TerrainPlane();
-        this.gameObjectsController.add(terrainPlane);
-    }
-
-    private createGrassField() {
-        const grassBladeConfig : GrassBladeConfig = {
-            bladeHeight: 0.4, bladeWidth: 0.05, segmentsPerBlade: 6
-        }
-        const grassPatch = new GrassPatch({
-            sideLength : 10, bladesPerRow: 150, grassBladeConfig: grassBladeConfig
-        });
-        this.gameObjectsController.add(grassPatch);
-    }
-}
+export const buildWorld = (gameObjectsController: GameObjectsController): void => {
+    gameObjectsController.add(new TerrainPlane());
+    gameObjectsController.add(defaultGrassPatch());
+};

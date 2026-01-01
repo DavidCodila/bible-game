@@ -5,7 +5,7 @@ import { CameraController } from './CameraController';
 import { SceneController } from '../scene/SceneController';
 import { RendererController } from './RendererController';
 import { GameObjectsController } from './GameObjectsController'; 
-import { WorldBuilder } from './WorldBuilder';
+import { buildWorld } from './WorldBuilder';
 import { WindowController } from './WindowController';
 import type { DisposableObject } from './types';
 
@@ -34,7 +34,7 @@ export class GardenOfEdenApp implements DisposableObject {
         this.windowController = new WindowController(this.rendererController, this.cameraController);
         this.disposableObjects = [this.windowController, this.inputManager, this.gameObjectsController, this.sceneController, this.statsTracker, this.rendererController];
 
-        new WorldBuilder(this.gameObjectsController).buildInitialWorld();
+        buildWorld(this.gameObjectsController);
 
         this.animate();
     }
