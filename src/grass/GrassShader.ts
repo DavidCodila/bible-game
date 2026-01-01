@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import vertexShader from './shaders/Grass.vert?raw';
 import fragmentShader from './shaders/Grass.frag?raw';
 import type { DisposableObject } from '../app/types';

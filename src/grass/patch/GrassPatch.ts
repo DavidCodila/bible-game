@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { GeometryUtils } from '../../tools/GeometryUtils';
 import { DataGenerator } from '../generator/DataGenerator';
 import { GrassGeometryFactory } from '../GrassGeometryFactory'; 

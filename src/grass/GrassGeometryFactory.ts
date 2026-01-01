@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import type { GrassBladeConfig } from './types';
 import { defaultBladeTaper } from '../tools/GeometryUtils';
 

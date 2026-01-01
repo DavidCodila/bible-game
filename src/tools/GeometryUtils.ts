@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import type { InstancedAttributeData } from "../types/rendering";
 
 export class GeometryUtils {

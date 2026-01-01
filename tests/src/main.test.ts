@@ -4,7 +4,6 @@ vi.mock('@src/app/GardenOfEdenApp', () => ({ GardenOfEdenApp: vi.fn() }));
 
 describe('main.ts entry point', () => {
     beforeEach(() => {
-        vi.clearAllMocks();
         vi.resetModules();
     });
 

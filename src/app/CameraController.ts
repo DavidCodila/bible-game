@@ -1,8 +1,8 @@
-import * as THREE from 'three';
 import { InputManager } from './InputManager';
 import { clamp } from 'three/src/math/MathUtils.js';
+import type { DisposableObject } from './types';
 
-export class CameraController {
+export class CameraController implements DisposableObject {
     private inputManager: InputManager;
     private camera: THREE.PerspectiveCamera;
 
@@ -41,4 +41,6 @@ export class CameraController {
     }
 
     public get cameraInstance(): THREE.PerspectiveCamera { return this.camera; }
+
+    dispose(): void {}
 }

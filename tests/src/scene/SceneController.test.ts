@@ -1,5 +1,4 @@
 // @vitest-environment node
-import * as THREE from 'three';
 import { SceneController } from '@src/scene/SceneController';
 
 describe('SceneController', () => {

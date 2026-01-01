@@ -7,10 +7,6 @@ vi.mock("@src/grass/generator/GrassAttributeAccessor");
 
 describe('BufferAllocator', () => {
     const totalBlades = 10;
-    
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
 
     it('should correctly allocate the full attribute list based on the layout', () => {
         const { attributeList } = BufferAllocator.allocateBuffers(totalBlades);

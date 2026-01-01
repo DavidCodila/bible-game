@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { StatsTracker } from '../tools/stats/StatsTracker';
 import { InputManager } from './InputManager';
 import { CameraController } from './CameraController';

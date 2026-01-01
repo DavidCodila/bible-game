@@ -41,7 +41,6 @@ describe('RendererController', () => {
 
     afterEach(() => {
         vi.unstubAllGlobals();
-        vi.clearAllMocks();
     });
 
     describe('Initialization', () => {

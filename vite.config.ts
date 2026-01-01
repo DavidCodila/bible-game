@@ -9,9 +9,12 @@ export default defineConfig({
   },
   // @ts-ignore - Vitest uses this block
   test: {
+    clearMocks: true, 
+    mockReset: false,
     globals: true,
     environment: 'happy-dom',
     include: ['tests/**/*.test.ts'],
+    setupFiles: ['./tests/setup.ts'],
     coverage: {
       provider: 'istanbul',
       include: ['src/**/*.ts'],

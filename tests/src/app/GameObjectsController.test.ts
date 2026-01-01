@@ -1,5 +1,4 @@
 // @vitest-environment node
-import * as THREE from 'three';
 import { GameObjectsController } from '@src/app/GameObjectsController';
 import type { MeshGameObject } from '@src/app/types';
 import { SceneController } from '@src/scene/SceneController';
@@ -37,7 +36,6 @@ describe('GameObjectsController', () => {
 
     afterEach(() => {
         gameObjectsController.dispose();
-        vi.clearAllMocks();
     });
 
     describe('Frame Update Logic', () => {

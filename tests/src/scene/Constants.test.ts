@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { SUN_DIRECTION } from '@src/scene/Constants';
 
 describe('Constants', () => {

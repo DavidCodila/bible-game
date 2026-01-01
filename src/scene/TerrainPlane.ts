@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { ThreeUtils } from '../tools/ThreeUtils'
 import type { MeshGameObject } from '../app/types';
 

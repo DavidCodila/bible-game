@@ -1,5 +1,4 @@
 // @vitest-environment node
-import * as THREE from 'three';
 import { GrassShader } from '@src/grass/GrassShader';
 
 vi.mock('@src/grass/shaders/Grass.vert?raw', () => ({ default: 'varying vec2 vUv; void main() {}' }));

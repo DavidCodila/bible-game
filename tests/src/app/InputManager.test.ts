@@ -39,7 +39,6 @@ describe('InputManager', () => {
     afterEach(() => {
         inputManager.dispose();
         setGlobalPointerLockElement(null);
-        vi.clearAllMocks();
     });
 
     it('should request pointer lock when the display element is clicked', () => {

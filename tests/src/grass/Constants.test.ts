@@ -4,9 +4,6 @@ import { GrassPatch } from "@src/grass/patch/GrassPatch";
 vi.mock('@src/grass/patch/GrassPatch');
 
 describe('defaultGrassPatch', () => {
-    afterEach(() => {
-        vi.clearAllMocks();
-    });
 
     it('should return a new GrassPatch instance when invoked', () => {
         const grassPatchInstance = defaultGrassPatch();

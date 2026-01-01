@@ -1,11 +1,12 @@
-import { GardenOfEdenApp } from './app/GardenOfEdenApp.ts';
+import './environment';
+import { GardenOfEdenApp } from './app/GardenOfEdenApp';
 
-const initaliseApplication = () => {
+const initialiseApplication = (): void => {
   new GardenOfEdenApp();
-}
+};
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initaliseApplication);
+  document.addEventListener('DOMContentLoaded', initialiseApplication);
 } else {
-  initaliseApplication();
+  initialiseApplication();
 }

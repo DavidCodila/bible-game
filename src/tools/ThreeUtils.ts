@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 
 export class ThreeUtils {
     public static disposeMesh(mesh: THREE.Mesh): void {

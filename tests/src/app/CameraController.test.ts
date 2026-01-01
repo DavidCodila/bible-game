@@ -31,7 +31,6 @@ describe('CameraController', () => {
 
     afterEach(() => {
         vi.unstubAllGlobals();
-        vi.clearAllMocks();
     });
 
     describe('Initialization', () => {

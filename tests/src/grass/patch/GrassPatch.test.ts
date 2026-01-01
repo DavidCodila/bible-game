@@ -1,5 +1,4 @@
 // @vitest-environment node
-import * as THREE from 'three';
 import { GrassPatch } from '@src/grass/patch/GrassPatch';
 import { GrassGeometryFactory } from '@src/grass/GrassGeometryFactory';
 import { DataGenerator } from '@src/grass/generator/DataGenerator';
@@ -77,7 +76,6 @@ describe('GrassPatch', () => {
     });
 
     afterEach(() => {
-        vi.clearAllMocks();
         if (grassPatch && (grassPatch as any).grassShader !== null) {
             grassPatch.dispose();
         }

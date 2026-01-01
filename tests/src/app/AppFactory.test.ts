@@ -1,8 +1,5 @@
-import * as THREE from 'three';
 import { assembleSystemsRegistry } from '@src/app/AppFactory';
 import { SystemsRegistry } from '@src/app/SystemsRegistry';
-import { RendererController } from '@src/app/RendererController';
-import { SceneController } from '@src/scene/SceneController';
 import { InputManager } from '@src/app/InputManager';
 import { GameObjectsController } from '@src/app/GameObjectsController';
 import { CameraController } from '@src/app/CameraController';
@@ -43,33 +40,14 @@ vi.mock('@src/app/tools/stats/StatsTracker', () => ({
     StatsTracker: vi.fn().mockImplementation(function() { return {}; })
 }));
 
-// 2. Mock THREE.js and capture the instances it creates
-vi.mock('three', async () => {
-    const actual = await vi.importActual('three');
-    return {
-        ...actual,
-        WebGLRenderer: vi.fn().mockImplementation(function() { return {}; }),
-        Scene: vi.fn().mockImplementation(function() { 
-            return { id: 'three-scene-instance' }; 
-        }),
-        PerspectiveCamera: vi.fn().mockImplementation(function() { 
-            return { id: 'three-camera-instance' }; 
-        })
-    };
-});
-
 describe('AppFactory - assembleSystemsRegistry', () => {
-    
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
 
     test('should verify GameObjectsController receives the SceneController which contains the THREE scene', () => {
         assembleSystemsRegistry();
 
         expect(GameObjectsController).toHaveBeenCalledWith(
             expect.objectContaining({
-                scene: expect.objectContaining({ id: 'three-scene-instance' })
+                scene: expect.any(THREE.Scene) 
             })
         );
     });
@@ -79,7 +57,7 @@ describe('AppFactory - assembleSystemsRegistry', () => {
 
         // Verifying the injection of the THREE camera instance and our InputManager instance
         expect(CameraController).toHaveBeenCalledWith(
-            expect.objectContaining({ id: 'three-camera-instance' }),
+            expect.any(THREE.PerspectiveCamera),
             expect.objectContaining({ inputId: 'unique-input-id' })
         );
     });

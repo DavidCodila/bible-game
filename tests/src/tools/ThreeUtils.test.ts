@@ -1,5 +1,4 @@
 // @vitest-environment node
-import * as THREE from 'three';
 import { ThreeUtils } from '@src/tools/ThreeUtils'; 
 
 describe('ThreeUtils', () => {

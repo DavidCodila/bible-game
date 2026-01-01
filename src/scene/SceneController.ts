@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import type { DisposableObject } from '../app/types';
 
 export class SceneController implements DisposableObject {
