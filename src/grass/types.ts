@@ -1,7 +1,10 @@
+import type { GrassAppearanceConfig } from './generator/AppearanceConfig';
+
 export interface GrassPatchConfig {
     sideLength: number;
     bladesPerRow: number;
-    grassBladeConfig: GrassBladeConfig
+    grassBladeConfig: GrassBladeConfig;
+    appearance?: GrassAppearanceConfig;
 }
 
 export interface GrassBladeConfig {
@@ -13,7 +16,7 @@ export interface GrassBladeConfig {
 export interface BladeData {
     bladeIndex: number;
     gridX: number;
-    gridZ: number; 
+    gridZ: number;
     sideLength: number;
     gridSpacing: number;
 }

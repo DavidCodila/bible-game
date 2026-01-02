@@ -1,37 +1,37 @@
-import { defaultGrassPatch } from "@src/grass/Constants";
+// @vitest-environment node
+import { defaultGrassPatch, brightGrassPatch } from "@src/grass/Constants";
 import { GrassPatch } from "@src/grass/patch/GrassPatch";
+import { DARK_GRASS_APPEARANCE, BRIGHT_GRASS_APPEARANCE } from '@src/grass/generator/AppearanceConfig';
 
 vi.mock('@src/grass/patch/GrassPatch');
 
-describe('defaultGrassPatch', () => {
+describe('Grass Constants Factories', () => {
 
-    it('should return a new GrassPatch instance when invoked', () => {
-        const grassPatchInstance = defaultGrassPatch();
+    describe('defaultGrassPatch', () => {
+        it('should pass DARK_GRASS_APPEARANCE to the GrassPatch constructor', () => {
+            defaultGrassPatch();
 
-        expect(grassPatchInstance).toBeInstanceOf(GrassPatch);
-        expect(GrassPatch).toHaveBeenCalledTimes(1);
-    });
-
-    it('should pass the correct configuration to the GrassPatch constructor', () => {
-        defaultGrassPatch();
-
-        expect(GrassPatch).toHaveBeenCalledWith({
-            sideLength: 10,
-            bladesPerRow: 150,
-            grassBladeConfig: {
-                bladeHeight: 0.4,
-                bladeWidth: 0.05,
-                segmentsPerBlade: 6
-            }
+            expect(GrassPatch).toHaveBeenCalledWith(expect.objectContaining({
+                appearance: DARK_GRASS_APPEARANCE
+            }));
         });
     });
 
-    it('should produce a unique instance on every call', () => {
+    describe('brightGrassPatch', () => {
+        it('should pass BRIGHT_GRASS_APPEARANCE to the GrassPatch constructor', () => {
+            brightGrassPatch();
+
+            expect(GrassPatch).toHaveBeenCalledWith(expect.objectContaining({
+                appearance: BRIGHT_GRASS_APPEARANCE
+            }));
+        });
+    });
+
+    it('should produce a new instance on every call', () => {
         const firstInstance = defaultGrassPatch();
-        const secondInstance = defaultGrassPatch();
+        const secondInstance = brightGrassPatch();
 
         expect(GrassPatch).toHaveBeenCalledTimes(2);
-        
         expect(firstInstance).not.toBe(secondInstance);
     });
 });

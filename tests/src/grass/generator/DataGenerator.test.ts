@@ -29,22 +29,27 @@ describe('DataGenerator', () => {
     });
 
     it('should process blades in the correct Z-major order', () => {
-        const calculateBladeSpy = vi.spyOn(BladeAttributeFactory, 'calculateBlade');
-        const result = DataGenerator.generateAttributes(patchConfiguration);
-
-        const expectedOrderedBladeData = [
+        const capturedCalls: any[] = [];
+        const calculateBladeSpy = vi.spyOn(BladeAttributeFactory, 'calculateBlade')
+            .mockImplementation((bladeData) => {
+                capturedCalls.push({ ...bladeData });
+            });
+    
+        DataGenerator.generateAttributes(patchConfiguration);
+    
+        const expectedSequence = [
             { bladeIndex: 0, gridX: 0, gridZ: 0 },
             { bladeIndex: 1, gridX: 0, gridZ: 1 },
             { bladeIndex: 2, gridX: 1, gridZ: 0 },
             { bladeIndex: 3, gridX: 1, gridZ: 1 }
         ];
-
-        expectedOrderedBladeData.forEach((bladeData, callIndex) => {
-            expect(calculateBladeSpy).toHaveBeenNthCalledWith(
-                callIndex + 1,
-                expect.objectContaining(bladeData),
-                result.accessor
-            );
+    
+        expectedSequence.forEach((expected, i) => {
+            expect(capturedCalls[i].bladeIndex).toBe(expected.bladeIndex);
+            expect(capturedCalls[i].gridX).toBe(expected.gridX);
+            expect(capturedCalls[i].gridZ).toBe(expected.gridZ);
         });
+    
+        calculateBladeSpy.mockRestore();
     });
 });
