@@ -7,9 +7,14 @@ export class BoundsHelper {
         
         if (sphere) {
             const bladeHeight = config.grassBladeConfig.bladeHeight;
-            
-            const patchDiagonalHalf = config.sideLength * Math.SQRT2 / 2;
-            sphere.radius = patchDiagonalHalf + bladeHeight;
+            const halfSideLength = config.sideLength / 2;
+            const radius = Math.sqrt(
+                (halfSideLength * halfSideLength) + 
+                (halfSideLength * halfSideLength) + 
+                (bladeHeight * bladeHeight)
+            );
+
+            sphere.radius = radius;
         }
     }
 }

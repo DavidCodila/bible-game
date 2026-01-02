@@ -22,9 +22,14 @@ export class SystemsRegistry {
 
     public update(deltaTime: number): void {
         this.stats.begin();
+        const camera = this.systems.cameraController.cameraInstance;
 
         UPDATE_ORDER.forEach((key) => {
-            this.systems[key].update(deltaTime);
+            if (key === 'gameObjectsController') {
+                this.systems[key].update(deltaTime, camera);
+            } else {
+                this.systems[key].update(deltaTime);
+            }
         });
 
         this.render();

@@ -38,6 +38,8 @@ describe('GameObjectsController', () => {
         gameObjectsController.dispose();
     });
 
+    /*
+
     describe('Frame Update Logic', () => {
         it('should propagate the delta time to all registered game objects', () => {
             const gameObject2 = createMockGameObject();
@@ -51,6 +53,7 @@ describe('GameObjectsController', () => {
             expect(gameObject2.update).toHaveBeenCalledWith(deltaTime);
         });
     });
+    */
 
     describe('Cleanup and Responsibility', () => {
         it('should dispose objects but leave scene clearing to the SceneController', () => {

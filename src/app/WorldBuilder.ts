@@ -1,6 +1,6 @@
 import { GameObjectsController } from '@src/app/GameObjectsController';
 import { TerrainPlane } from '@src/scene/TerrainPlane';
-import { defaultGrassPatch, smallGrassPatch } from '@src/grass/Constants';
+import { smallGrassPatch } from '@src/grass/Constants';
 
 export const buildWorld = (gameObjectsController: GameObjectsController): void => {
     gameObjectsController.add(new TerrainPlane());
@@ -8,8 +8,8 @@ export const buildWorld = (gameObjectsController: GameObjectsController): void =
 };
 
 const createGrassGrid = (gameObjectsController: GameObjectsController) : void => {
-    const patchSideLength = 2;
-    const gridDimension = 5;
+    const patchSideLength = 1;
+    const gridDimension = 10;
     const offsetToCenter = (gridDimension - 1) / 2;
 
     // 3. Generate the 3x3 grid
