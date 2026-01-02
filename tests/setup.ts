@@ -14,6 +14,7 @@ class MockWebGLRenderer {
     setPixelRatio = vi.fn();
     render = vi.fn();
     dispose = vi.fn();
+    forceContextLoss = vi.fn();
 }
 
 Object.defineProperty(THREE_SANDBOX, 'WebGLRenderer', {

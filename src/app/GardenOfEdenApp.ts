@@ -11,7 +11,7 @@ export class GardenOfEdenApp implements DisposableObject {
     constructor() {
         this.registry = assembleSystemsRegistry();
 
-        window.addEventListener('beforeunload', () => this.dispose());
+        window.addEventListener('beforeunload', this.handleBeforeUnload);
         
         this.registry.buildWorld();
         this.animate();
@@ -27,9 +27,14 @@ export class GardenOfEdenApp implements DisposableObject {
         this.registry.render();
     }
 
+    private handleBeforeUnload = () => {
+        this.dispose();
+    }
+
     dispose(): void {
         this.isRunning = false;
         cancelAnimationFrame(this.animationFrameId);
         this.registry.dispose();
+        window.removeEventListener('beforeunload', this.handleBeforeUnload);
     }
 }
