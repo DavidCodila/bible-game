@@ -115,4 +115,10 @@ describe('CameraController', () => {
             expect(updateProjectionMatrixSpy).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe('Disposal', () => {
+        it('should implement the dispose method without throwing errors', () => {
+            expect(() => cameraController.dispose()).not.toThrow();
+        });
+    });
 });
