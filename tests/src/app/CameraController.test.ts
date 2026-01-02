@@ -41,7 +41,7 @@ describe('CameraController', () => {
             expect(mockCamera.rotation.order).toBe('YXZ');
             expect(mockCamera.position.x).toBe(0);
             expect(mockCamera.position.y).toBe(1.8);
-            expect(mockCamera.position.z).toBe(1);
+            expect(mockCamera.position.z).toBe(0);
         });
 
         it('should provide access to the camera instance via getter', () => {

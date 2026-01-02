@@ -19,7 +19,7 @@ export class CameraController implements DisposableObject {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.near = 0.1;
         this.camera.far = 1000;
-        this.camera.position.set(0, 1.8, 1);
+        this.camera.position.set(0, 1.8, 0);
         this.camera.rotation.order = 'YXZ';
         this.camera.updateProjectionMatrix();
     }

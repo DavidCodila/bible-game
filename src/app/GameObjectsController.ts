@@ -10,9 +10,10 @@ export class GameObjectsController implements DisposableObject {
         this.gameObjects = [];
     }
 
-    public add(meshGameObject: MeshGameObject): void {
-        this.gameObjects.push(meshGameObject);
-        this.sceneController.add(meshGameObject.mesh);
+    public add(...meshGameObjects: MeshGameObject[]): void {
+        this.gameObjects.push(...meshGameObjects);
+        const meshesToRegister = meshGameObjects.map((gameObject) => gameObject.mesh);
+        this.sceneController.add(...meshesToRegister);
     }
 
     public update(deltaTime: number): void {

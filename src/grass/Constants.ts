@@ -13,6 +13,13 @@ export const defaultGrassPatch = () => new GrassPatch({
     appearance: DARK_GRASS_APPEARANCE
 });
 
+export const smallGrassPatch = () => new GrassPatch({
+    sideLength: 2,
+    bladesPerRow: 30,
+    grassBladeConfig: defaultGrassBladeConfig,
+    appearance: DARK_GRASS_APPEARANCE
+});
+
 export const brightGrassPatch = () => new GrassPatch({
     sideLength: 10,
     bladesPerRow: 150,
