@@ -18,7 +18,6 @@
  * TARGET: Must implement .update(deltaTime: number): void
  */
 export const UPDATE_ORDER = [
-    'statsTracker',
     'cameraController',
     'gameObjectsController'
 ] as const;
@@ -33,7 +32,6 @@ export const DISPOSE_ORDER = [
     'gameObjectsController',
     'sceneController',
     'cameraController',
-    'statsTracker',
     'rendererController'
 ] as const;
 

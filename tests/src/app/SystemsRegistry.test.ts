@@ -6,6 +6,20 @@ vi.mock('@src/app/WorldBuilder', () => ({
     buildWorld: vi.fn()
 }));
 
+vi.mock('three/examples/jsm/libs/stats.module.js', () => {
+    class MockStats {
+        public dom = document.createElement('div');
+        public showPanel = vi.fn();
+        public begin = vi.fn();
+        public end = vi.fn();
+        public update = vi.fn();
+    }
+
+    return {
+        default: MockStats
+    };
+});
+
 describe('SystemsRegistry', () => {
     const createMockSystems = () => {
         const systems: Record<string, any> = {};

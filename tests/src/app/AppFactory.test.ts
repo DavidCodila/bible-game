@@ -36,9 +36,18 @@ vi.mock('@src/app/WindowController', () => ({
     WindowController: vi.fn().mockImplementation(function() { return {}; })
 }));
 
-vi.mock('@src/app/tools/stats/StatsTracker', () => ({
-    StatsTracker: vi.fn().mockImplementation(function() { return {}; })
-}));
+vi.mock('@src/app/SystemsRegistry', () => {
+    class MockSystemsRegistry {
+        public buildWorld = vi.fn();
+        public update = vi.fn();
+        public render = vi.fn();
+        public dispose = vi.fn();
+    }
+
+    return {
+        SystemsRegistry: MockSystemsRegistry
+    };
+});
 
 describe('AppFactory - assembleSystemsRegistry', () => {
 

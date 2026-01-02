@@ -24,7 +24,6 @@ export class GardenOfEdenApp implements DisposableObject {
         const deltaTime = this.clock.getDelta();
 
         this.registry.update(deltaTime);
-        this.registry.render();
     }
 
     private handleBeforeUnload = () => {

@@ -6,7 +6,6 @@ const { mockRegistryFunctions } = vi.hoisted(() => ({
     mockRegistryFunctions: {
         buildWorld: vi.fn(),
         update: vi.fn(),
-        render: vi.fn(),
         dispose: vi.fn()
     }
 }));
@@ -61,7 +60,6 @@ describe('GardenOfEdenApp', () => {
 
         expect(mockRegistryFunctions.update).toHaveBeenCalledWith(expect.any(Number));
         expect(mockRegistryFunctions.update).toHaveBeenCalledTimes(numberOfTotalFrames);
-        expect(mockRegistryFunctions.render).toHaveBeenCalledTimes(numberOfTotalFrames);
     });
 
     it('should handle the window beforeunload event', () => {
@@ -87,12 +85,10 @@ describe('GardenOfEdenApp', () => {
         appAny.isRunning = false;
         
         mockRegistryFunctions.update.mockClear();
-        mockRegistryFunctions.render.mockClear();
     
         appAny.animate();
     
         expect(mockRegistryFunctions.update).not.toHaveBeenCalled();
-        expect(mockRegistryFunctions.render).not.toHaveBeenCalled();
     });
     
     it('should trigger dispose via the handleBeforeUnload event listener', async () => {

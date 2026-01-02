@@ -1,4 +1,3 @@
-import { StatsTracker } from '../tools/stats/StatsTracker';
 import { InputManager } from './InputManager';
 import { CameraController } from './CameraController';
 import { SceneController } from '../scene/SceneController';
@@ -20,7 +19,6 @@ export function assembleSystemsRegistry(): SystemsRegistry {
         gameObjectsController,
         inputManager,
         cameraController,
-        statsTracker: new StatsTracker(),
         windowController: new WindowController(rendererController, cameraController)
     });
 }
