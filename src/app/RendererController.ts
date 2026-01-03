@@ -8,7 +8,7 @@ export class RendererController {
     }
 
     public render(scene: THREE.Object3D, camera: THREE.Camera): void {
-        this.renderer.render(scene, camera)
+        this.renderer.render(scene, camera);
     }
 
     public resizeWindow(): void {

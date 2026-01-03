@@ -7,7 +7,9 @@ import { WindowController } from './WindowController';
 import { SystemsRegistry } from './SystemsRegistry';
 
 export function assembleSystemsRegistry(): SystemsRegistry {
-    const rendererController = new RendererController(new THREE.WebGLRenderer({ alpha: false, antialias: true }));
+    const rendererController = new RendererController(
+        new THREE.WebGLRenderer({ alpha: false, antialias: true, powerPreference: "high-performance", depth: true })
+    );
     const sceneController = new SceneController(new THREE.Scene());
     const inputManager = new InputManager(rendererController.instanceDomElement);
     const gameObjectsController = new GameObjectsController(sceneController);

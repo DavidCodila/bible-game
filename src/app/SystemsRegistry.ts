@@ -1,18 +1,18 @@
 import { UPDATE_ORDER, DISPOSE_ORDER } from './AppConfig';
 import { buildWorld } from './WorldBuilder';
 import { validateSystems } from './SystemsValidator';
-import Stats from 'three/examples/jsm/libs/stats.module.js';
+//import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 export class SystemsRegistry {
     private readonly systems: Record<string, any>;
-    private readonly stats: Stats;
+    //private readonly stats: Stats;
 
     constructor(systems: Record<string, any>) {
         validateSystems(systems);
         this.systems = systems;
-        this.stats = new Stats();
-        this.stats.showPanel(0); 
-        document.body.appendChild(this.stats.dom);
+        //this.stats = new Stats();
+        //this.stats.showPanel(0); 
+        //document.body.appendChild(this.stats.dom);
     }
 
     public buildWorld(): void {
@@ -21,21 +21,19 @@ export class SystemsRegistry {
     }
 
     public update(deltaTime: number): void {
-        this.stats.begin();
-        const camera = this.systems.cameraController.cameraInstance;
-
-        UPDATE_ORDER.forEach((key) => {
+        //this.stats.begin();    
+        for (const key of UPDATE_ORDER) {
+            const system = this.systems[key];
             if (key === 'gameObjectsController') {
-                this.systems[key].update(deltaTime, camera);
+                system.update(deltaTime);
             } else {
-                this.systems[key].update(deltaTime);
+                system.update(deltaTime);
             }
-        });
-
+        }
+    
         this.render();
-
-        this.stats.end();
-        this.stats.update();
+        //this.stats.end();
+        //this.stats.update();
     }
 
     public render(): void {

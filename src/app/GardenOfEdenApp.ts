@@ -19,10 +19,10 @@ export class GardenOfEdenApp implements DisposableObject {
 
     private animate = () => {
         if (!this.isRunning) return;
+    
         this.animationFrameId = requestAnimationFrame(this.animate);
-        
         const deltaTime = this.clock.getDelta();
-
+    
         this.registry.update(deltaTime);
     }
 
