@@ -23,17 +23,15 @@ void main(){
     float heightProgress = position.y * inverseBladeHeight;
     vHeightProgress = heightProgress;
 
-    vec2 rotatedAroundYAxis = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceYAxisRotation);
-    transformedPosition.x = rotatedAroundYAxis.x;
-    transformedPosition.z = rotatedAroundYAxis.y;
-
     float windEffect = sin(time * 0.8 + instanceOffsets.x * 1.5 + instanceOffsets.z * 1.2) * 0.05;
     float bendBias = pow(heightProgress, 1.6);
 
     transformedPosition.z += (instanceBendZ + windEffect) * bendBias;
     transformedPosition.x += (instanceBendX) * bendBias;
 
-    
+    vec2 rotatedAroundYAxis = rotate2D(vec2(transformedPosition.x, transformedPosition.z), instanceYAxisRotation);
+    transformedPosition.x = rotatedAroundYAxis.x;
+    transformedPosition.z = rotatedAroundYAxis.y;
 
     vec4 worldPosition = modelMatrix * vec4(transformedPosition + instanceOffsets, 1.0);
     
