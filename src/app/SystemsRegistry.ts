@@ -23,12 +23,7 @@ export class SystemsRegistry {
     public update(deltaTime: number): void {
         //this.stats.begin();    
         for (const key of UPDATE_ORDER) {
-            const system = this.systems[key];
-            if (key === 'gameObjectsController') {
-                system.update(deltaTime);
-            } else {
-                system.update(deltaTime);
-            }
+            this.systems[key].update(deltaTime);
         }
     
         this.render();
