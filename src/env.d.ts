@@ -6,6 +6,8 @@ declare global {
 
   namespace THREE {
     export type BufferAttribute = _THREE.BufferAttribute;
+    export type AmbientLight = _THREE.AmbientLight;
+    export type DirectionalLight = _THREE.DirectionalLight;
     export type Frustum = _THREE.Frustum;
     export type ShaderMaterial = _THREE.ShaderMaterial;
     export type IUniform = _THREE.IUniform;
