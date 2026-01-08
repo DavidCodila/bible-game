@@ -26,7 +26,11 @@ export class GrassPatch implements MeshGameObject{
         
         BoundsHelper.computePatchBounds(this.mesh, config);
     }
-    
+
+    public update(deltaTime: number): void {
+        this.grassShader.update(deltaTime);
+    }
+
     dispose(): void {
         this.grassShader.dispose();
         ThreeUtils.disposeMesh(this.mesh);
@@ -35,9 +39,5 @@ export class GrassPatch implements MeshGameObject{
         (this as any).mesh = null;
         
         console.log("GrassPatch: Instanced resources and shader disposed.");
-    }
-
-    public update(deltaTime: number): void {
-        this.grassShader.update(deltaTime);
     }
 }

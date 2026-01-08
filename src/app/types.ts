@@ -1,4 +1,3 @@
-
 export interface InputState {
     mouseDeltaX: number;
     mouseDeltaY: number;

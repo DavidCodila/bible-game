@@ -1,4 +1,3 @@
-
 export class RendererController {
     renderer: THREE.WebGLRenderer;
 

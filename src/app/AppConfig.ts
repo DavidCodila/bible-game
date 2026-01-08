@@ -4,7 +4,7 @@
  * the strict execution order of the engine's core controllers.
  * * DESIGN PRINCIPLES:
  * 1. ORDER MATTERS: Systems are updated and disposed of in the exact sequence 
- * defined below. (e.g., Stats must update before GameObjects).
+ * defined below. (e.g., cameraController must update before gameObjectsController).
  * * 2. FAIL-FAST CONTRACT: Every string in these lists MUST match a property 
  * name in GardenOfEdenApp. The targeted property MUST implement the 
  * required lifecycle method (.update() or .dispose()).
