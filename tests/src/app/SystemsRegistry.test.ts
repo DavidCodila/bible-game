@@ -69,7 +69,7 @@ describe('SystemsRegistry', () => {
 
         expect(systems.rendererController.render).toHaveBeenCalledWith(
             systems.sceneController.sceneInstance,
-            systems.cameraController.cameraInstance
+            systems.cameraController.camera
         );
     });
 

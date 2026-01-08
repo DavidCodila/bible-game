@@ -28,7 +28,7 @@ vi.mock('@src/app/GameObjectsController', () => ({
     GameObjectsController: vi.fn().mockImplementation(function() { return {}; })
 }));
 
-vi.mock('@src/app/CameraController', () => ({
+vi.mock('@src/app/camera/CameraController', () => ({
     CameraController: vi.fn().mockImplementation(function() { return {cameraID: 'unique-camera-id'}; })
 }));
 

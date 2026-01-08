@@ -22,10 +22,14 @@ describe('BoundsHelper', () => {
 
     describe('computePatchBounds', () => {
         it('should precisely calculate the radius to encompass both the area and blade height', () => {
-            const sideLength = grassPatchConfiguration.sideLength;
+            const halfSideLength = grassPatchConfiguration.sideLength / 2;
             const bladeHeight = grassPatchConfiguration.grassBladeConfig.bladeHeight;
             
-            const expectedRadius = (sideLength * Math.SQRT2 / 2) + bladeHeight;
+            const expectedRadius = Math.sqrt(
+                (halfSideLength * halfSideLength) + 
+                (halfSideLength * halfSideLength) + 
+                (bladeHeight * bladeHeight)
+            );
 
             BoundsHelper.computePatchBounds(instancedMesh, grassPatchConfiguration);
 
