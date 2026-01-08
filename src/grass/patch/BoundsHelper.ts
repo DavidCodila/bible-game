@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import type { GrassPatchConfig } from "../types";
 
 export class BoundsHelper {

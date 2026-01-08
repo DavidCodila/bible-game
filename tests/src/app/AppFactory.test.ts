@@ -1,42 +1,66 @@
-import { assembleSystemsRegistry } from '@src/app/AppFactory';
-import { SystemsRegistry } from '@src/app/SystemsRegistry';
-import { InputManager } from '@src/app/InputManager';
-import { GameObjectsController } from '@src/app/GameObjectsController';
-import { CameraController } from '@src/app/camera/CameraController';
-import { WindowController } from '@src/app/WindowController';
+import { assembleSystemsRegistry } from '../../../src/app/AppFactory';
+import { SystemsRegistry } from '../../../src/app/SystemsRegistry';
+import { InputManager } from '../../../src/app/InputManager';
+import { GameObjectsController } from '../../../src/app/GameObjectsController';
+import { CameraController } from '../../../src/app/camera/CameraController';
+import { WindowController } from '../../../src/app/WindowController';
+
+// Mock THREE module with MockWebGLRenderer defined INSIDE the factory
+vi.mock('three', async () => {
+    const actual = await vi.importActual<typeof import('three')>('three');
+    
+    // Define mock class inside the factory (this is hoisted-safe)
+    class MockWebGLRenderer {
+        domElement = document.createElement('canvas');
+        shadowMap = { enabled: false, type: 1 };
+        setSize = vi.fn();
+        setPixelRatio = vi.fn();
+        render = vi.fn();
+        dispose = vi.fn();
+        forceContextLoss = vi.fn();
+    }
+    
+    return {
+        ...actual,
+        WebGLRenderer: MockWebGLRenderer,
+    };
+});
+
+// Import THREE after the mock is set up
+const THREE = await import('three');
 
 // 1. Setup Spies with distinct return values so we can track them
-vi.mock('@src/app/RendererController', () => ({
+vi.mock('../../../src/app/RendererController', () => ({
     RendererController: vi.fn().mockImplementation(function() {
         return { instanceDomElement: { id: 'unique-canvas-id' } };
     })
 }));
 
-vi.mock('@src/scene/SceneController', () => ({
+vi.mock('../../../src/scene/SceneController', () => ({
     SceneController: vi.fn().mockImplementation(function(sceneInstance) {
         return { scene: sceneInstance };
     })
 }));
 
-vi.mock('@src/app/InputManager', () => ({
+vi.mock('../../../src/app/InputManager', () => ({
     InputManager: vi.fn().mockImplementation(function() {
         return { inputId: 'unique-input-id' };
     })
 }));
 
-vi.mock('@src/app/GameObjectsController', () => ({
+vi.mock('../../../src/app/GameObjectsController', () => ({
     GameObjectsController: vi.fn().mockImplementation(function() { return {}; })
 }));
 
-vi.mock('@src/app/camera/CameraController', () => ({
+vi.mock('../../../src/app/camera/CameraController', () => ({
     CameraController: vi.fn().mockImplementation(function() { return {cameraID: 'unique-camera-id'}; })
 }));
 
-vi.mock('@src/app/WindowController', () => ({
+vi.mock('../../../src/app/WindowController', () => ({
     WindowController: vi.fn().mockImplementation(function() { return {}; })
 }));
 
-vi.mock('@src/app/SystemsRegistry', () => {
+vi.mock('../../../src/app/SystemsRegistry', () => {
     class MockSystemsRegistry {
         public buildWorld = vi.fn();
         public update = vi.fn();

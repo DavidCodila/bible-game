@@ -1,4 +1,4 @@
-import type { SceneController } from "@src/scene/SceneController";
+import type { SceneController } from "../scene/SceneController";
 import type { DisposableObject, MeshGameObject } from './types';
 
 export class GameObjectsController implements DisposableObject {

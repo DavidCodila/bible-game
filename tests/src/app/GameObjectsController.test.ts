@@ -1,7 +1,8 @@
 // @vitest-environment node
-import { GameObjectsController } from '@src/app/GameObjectsController';
-import type { MeshGameObject } from '@src/app/types';
-import { SceneController } from '@src/scene/SceneController';
+import * as THREE from 'three';
+import { GameObjectsController } from '../../../src/app/GameObjectsController';
+import type { MeshGameObject } from '../../../src/app/types';
+import { SceneController } from '../../../src/scene/SceneController';
 
 vi.mock('@src/scene/SceneController');
 

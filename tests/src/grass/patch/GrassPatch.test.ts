@@ -1,15 +1,16 @@
 // @vitest-environment node
-import { GrassPatch } from '@src/grass/patch/GrassPatch';
-import { GrassGeometryFactory } from '@src/grass/GrassGeometryFactory';
-import { DataGenerator } from '@src/grass/generator/DataGenerator';
-import { GeometryUtils } from '@src/tools/GeometryUtils';
-import { ThreeUtils } from '@src/tools/ThreeUtils';
-import { GrassShader } from '@src/grass/GrassShader';
-import { SUN_DIRECTION } from '@src/scene/Constants';
-import { GRASS_BUFFER_LAYOUT } from '@src/grass/generator/GrassConstants';
-import { GrassAttributeAccessor } from '@src/grass/generator/GrassAttributeAccessor';
-import type { GrassPatchConfig } from '@src/grass/types';
-import type { AttributeBuffer, InstancedAttributeData } from '@src/types/rendering';
+import * as THREE from 'three';
+import { GrassPatch } from '../../../../src/grass/patch/GrassPatch';
+import { GrassGeometryFactory } from '../../../../src/grass/GrassGeometryFactory';
+import { DataGenerator } from '../../../../src/grass/generator/DataGenerator';
+import { GeometryUtils } from '../../../../src/tools/GeometryUtils';
+import { ThreeUtils } from '../../../../src/tools/ThreeUtils';
+import { GrassShader } from '../../../../src/grass/GrassShader';
+import { SUN_DIRECTION } from '../../../../src/scene/Constants';
+import { GRASS_BUFFER_LAYOUT } from '../../../../src/grass/generator/GrassConstants';
+import { GrassAttributeAccessor } from '../../../../src/grass/generator/GrassAttributeAccessor';
+import type { GrassPatchConfig } from '../../../../src/grass/types';
+import type { AttributeBuffer, InstancedAttributeData } from '../../../../src/types/rendering';
 
 const mockShaderInstance = {
     material: new THREE.ShaderMaterial(),
@@ -17,13 +18,13 @@ const mockShaderInstance = {
     dispose: vi.fn(),
 };
 
-vi.mock('@src/grass/GrassGeometryFactory');
-vi.mock('@src/grass/generator/DataGenerator');
-vi.mock('@src/tools/GeometryUtils');
-vi.mock('@src/grass/patch/BoundsHelper');
-vi.mock('@src/tools/ThreeUtils');
+vi.mock('../../../../src/grass/GrassGeometryFactory');
+vi.mock('../../../../src/grass/generator/DataGenerator');
+vi.mock('../../../../src/tools/GeometryUtils');
+vi.mock('../../../../src/grass/patch/BoundsHelper');
+vi.mock('../../../../src/tools/ThreeUtils');
 
-vi.mock('@src/grass/GrassShader', () => {
+vi.mock('../../../../src/grass/GrassShader', () => {
     return {
         GrassShader: vi.fn().mockImplementation(function () {
             return mockShaderInstance;

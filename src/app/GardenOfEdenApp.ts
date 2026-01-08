@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { assembleSystemsRegistry } from './AppFactory';
 import { SystemsRegistry } from './SystemsRegistry';
 import type { DisposableObject } from './types';

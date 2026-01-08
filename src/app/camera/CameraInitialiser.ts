@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export function initialiseCamera(camera : THREE.PerspectiveCamera) : THREE.PerspectiveCamera {
     camera.fov = 75;
     camera.aspect = window.innerWidth / window.innerHeight;

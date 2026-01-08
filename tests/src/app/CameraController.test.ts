@@ -1,6 +1,6 @@
 import { PerspectiveCamera } from 'three';
-import { CameraController } from '@src/app/camera/CameraController';
-import { InputManager } from '@src/app/InputManager';
+import { CameraController } from '../../../src/app/camera/CameraController';
+import { InputManager } from '../../../src/app/InputManager';
 
 describe('CameraController', () => {
     let mockCamera: PerspectiveCamera;

@@ -1,8 +1,8 @@
-import { SystemsRegistry } from "@src/app/SystemsRegistry";
-import { UPDATE_ORDER, DISPOSE_ORDER, ALL_KEYS } from "@src/app/AppConfig";
-import { buildWorld } from "@src/app/WorldBuilder"; 
+import { SystemsRegistry } from "../../../src/app/SystemsRegistry";
+import { UPDATE_ORDER, DISPOSE_ORDER, ALL_KEYS } from "../../../src/app/AppConfig";
+import { buildWorld } from "../../../src/app/WorldBuilder"; 
 
-vi.mock('@src/app/WorldBuilder', () => ({
+vi.mock('../../../src/app/WorldBuilder', () => ({
     buildWorld: vi.fn()
 }));
 

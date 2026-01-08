@@ -1,6 +1,6 @@
 import { GrassAttributeAccessor } from "./GrassAttributeAccessor";
 import { GRASS_BUFFER_LAYOUT } from "./GrassConstants"
-import type { AttributeBuffer, InstancedAttributeData } from "@src/types/rendering";
+import type { AttributeBuffer, InstancedAttributeData } from "../../types/rendering";
 
 export class BufferAllocator {
     public static allocateBuffers(totalBlades: number): InstancedAttributeData {

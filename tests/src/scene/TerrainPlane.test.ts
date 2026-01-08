@@ -1,6 +1,7 @@
 // @vitest-environment node
-import { TerrainPlane } from '@src/scene/TerrainPlane';
-import { ThreeUtils } from '@src/tools/ThreeUtils'; 
+import * as THREE from 'three';
+import { TerrainPlane } from '../../../src/scene/TerrainPlane';
+import { ThreeUtils } from '../../../src/tools/ThreeUtils'; 
 
 describe('TerrainPlane', () => {
     let terrainPlane: TerrainPlane;

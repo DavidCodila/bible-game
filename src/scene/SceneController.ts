@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import type { DisposableObject } from '../app/types';
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
 

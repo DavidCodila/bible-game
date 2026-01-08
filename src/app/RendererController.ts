@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export class RendererController {
     renderer: THREE.WebGLRenderer;
 

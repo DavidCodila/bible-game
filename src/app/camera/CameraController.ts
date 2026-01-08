@@ -1,4 +1,5 @@
-import { clamp } from "@src/tools/GeometryUtils";
+import * as THREE from 'three';
+import { clamp } from '../../tools/GeometryUtils';
 import { SENSITIVITY, DAMPING, SKY_LIMIT, GROUND_LIMIT } from "./Constants";
 import type { InputManager } from "../InputManager";
 import type { DisposableObject } from "../types";

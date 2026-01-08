@@ -1,10 +1,11 @@
+import * as THREE from 'three';
 import { GeometryUtils } from '../../tools/GeometryUtils';
 import { DataGenerator } from '../generator/DataGenerator';
 import { GrassGeometryFactory } from '../GrassGeometryFactory'; 
 import { GrassShader } from '../GrassShader';
 import { BoundsHelper } from "./BoundsHelper";
 import { ThreeUtils } from '../../tools/ThreeUtils';
-import { SUN_DIRECTION } from '@src/scene/Constants';
+import { SUN_DIRECTION } from '../../scene/Constants';
 import type { MeshGameObject } from '../../app/types';
 import type { GrassPatchConfig } from "../types";
 

@@ -1,4 +1,3 @@
-import './environment';
 import { GardenOfEdenApp } from './app/GardenOfEdenApp';
 
 const initialiseApplication = (): void => {

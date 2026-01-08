@@ -1,6 +1,7 @@
+import * as THREE from 'three';
 import vertexShader from './shaders/Grass.vert?raw';
 import fragmentShader from './shaders/Grass.frag?raw';
-import { LOOP_TIME_IN_RADIANS } from '@src/grass/Constants';
+import { LOOP_TIME_IN_RADIANS } from './Constants';
 import type { DisposableObject } from '../app/types';
 
 export class GrassShader implements DisposableObject {

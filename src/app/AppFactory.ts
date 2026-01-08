@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { InputManager } from './InputManager';
 import { CameraController } from './camera/CameraController';
 import { SceneController } from '../scene/SceneController';
