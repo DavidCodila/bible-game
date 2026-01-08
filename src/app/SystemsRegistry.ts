@@ -34,7 +34,7 @@ export class SystemsRegistry {
     public render(): void {
         const renderer = this.systems.rendererController;
         const scene = this.systems.sceneController.sceneInstance;
-        const camera = this.systems.cameraController.cameraInstance;
+        const camera = this.systems.cameraController.camera;
 
         renderer.render(scene, camera);
     }

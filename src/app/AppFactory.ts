@@ -1,10 +1,11 @@
 import { InputManager } from './InputManager';
-import { CameraController } from './CameraController';
+import { CameraController } from './camera/CameraController';
 import { SceneController } from '../scene/SceneController';
 import { RendererController } from './RendererController';
 import { GameObjectsController } from './GameObjectsController';
 import { WindowController } from './WindowController';
 import { SystemsRegistry } from './SystemsRegistry';
+import { initaliseCamera } from './camera/CameraInitialiser';
 
 export function assembleSystemsRegistry(): SystemsRegistry {
     const rendererController = new RendererController(
@@ -13,7 +14,8 @@ export function assembleSystemsRegistry(): SystemsRegistry {
     const sceneController = new SceneController(new THREE.Scene());
     const inputManager = new InputManager(rendererController.instanceDomElement);
     const gameObjectsController = new GameObjectsController(sceneController);
-    const cameraController = new CameraController(new THREE.PerspectiveCamera(), inputManager);
+    const camera = initaliseCamera(new THREE.PerspectiveCamera());
+    const cameraController = new CameraController(camera, inputManager);
 
     return new SystemsRegistry({
         rendererController,

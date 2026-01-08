@@ -2,6 +2,7 @@ import { assembleSystemsRegistry } from './AppFactory';
 import { SystemsRegistry } from './SystemsRegistry';
 import type { DisposableObject } from './types';
 
+//to do: make headge around garden with endless wilderness after hedge
 export class GardenOfEdenApp implements DisposableObject {
     private readonly clock = new THREE.Clock();
     private readonly registry: SystemsRegistry;

@@ -1,5 +1,5 @@
 import { PerspectiveCamera } from 'three';
-import { CameraController } from '@src/app/CameraController';
+import { CameraController } from '@src/app/camera/CameraController';
 import { InputManager } from '@src/app/InputManager';
 
 describe('CameraController', () => {

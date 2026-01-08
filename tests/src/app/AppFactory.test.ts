@@ -2,7 +2,7 @@ import { assembleSystemsRegistry } from '@src/app/AppFactory';
 import { SystemsRegistry } from '@src/app/SystemsRegistry';
 import { InputManager } from '@src/app/InputManager';
 import { GameObjectsController } from '@src/app/GameObjectsController';
-import { CameraController } from '@src/app/CameraController';
+import { CameraController } from '@src/app/camera/CameraController';
 import { WindowController } from '@src/app/WindowController';
 
 // 1. Setup Spies with distinct return values so we can track them

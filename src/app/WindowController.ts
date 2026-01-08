@@ -1,5 +1,5 @@
 import { RendererController } from './RendererController';
-import { CameraController } from './CameraController';
+import { CameraController } from './camera/CameraController';
 import type { DisposableObject } from './types';
 
 export class WindowController implements DisposableObject {

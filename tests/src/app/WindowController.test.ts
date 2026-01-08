@@ -1,6 +1,6 @@
 import { WindowController } from '@src/app/WindowController';
 import { RendererController } from '@src/app/RendererController';
-import { CameraController } from '@src/app/CameraController';
+import { CameraController } from '@src/app/camera/CameraController';
 
 describe('WindowController', () => {
     let mockRendererController: RendererController;
