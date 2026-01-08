@@ -3,7 +3,7 @@ import { DARK_GRASS_APPEARANCE, BRIGHT_GRASS_APPEARANCE } from './generator/Appe
 import type { GrassBladeConfig } from './types';
 
 const defaultGrassBladeConfig: GrassBladeConfig = {
-    bladeHeight: 0.4, bladeWidth: 0.05, segmentsPerBlade: 6
+    bladeHeight: 0.4, bladeWidth: 0.05, segmentsPerBlade: 3
 };
 
 export const defaultGrassPatch = () => new GrassPatch({
@@ -21,8 +21,8 @@ export const smallGrassPatch = () => new GrassPatch({
 });
 
 export const brightGrassPatch = () => new GrassPatch({
-    sideLength: 20,
-    bladesPerRow: 300,
+    sideLength: 10,
+    bladesPerRow: 150,
     grassBladeConfig: defaultGrassBladeConfig,
     appearance: BRIGHT_GRASS_APPEARANCE
 });

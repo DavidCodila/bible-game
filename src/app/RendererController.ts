@@ -18,7 +18,7 @@ export class RendererController {
 
     private setupRenderer(): void {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setPixelRatio(1);
         document.body.appendChild(this.renderer.domElement);
     }
 
