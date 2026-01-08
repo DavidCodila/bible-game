@@ -1,4 +1,4 @@
-export function initaliseCamera(camera : THREE.PerspectiveCamera) : THREE.PerspectiveCamera {
+export function initialiseCamera(camera : THREE.PerspectiveCamera) : THREE.PerspectiveCamera {
     camera.fov = 75;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.near = 0.1;
