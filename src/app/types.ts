@@ -10,7 +10,7 @@ export interface InputState {
 
 export interface MeshGameObject {
     mesh: THREE.Mesh;
-    update(deltaTime: number): void;
+    update(elapsedTime: number): void;
     dispose(): void;
 }
 

@@ -9,7 +9,7 @@ export class TerrainPlane implements MeshGameObject{
     }
 
     // added for overall code simplicity
-    update(_deltaTime: number): void {}
+    update(_elapsedTime: number): void {}
 
     private createGroundMesh(): THREE.Mesh {
         const ground = new THREE.Mesh(

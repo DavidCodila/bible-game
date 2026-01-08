@@ -27,8 +27,8 @@ export class GrassPatch implements MeshGameObject{
         BoundsHelper.computePatchBounds(this.mesh, config);
     }
 
-    public update(deltaTime: number): void {
-        this.grassShader.update(deltaTime);
+    public update(elapsedTime: number): void {
+        this.grassShader.update(elapsedTime);
     }
 
     dispose(): void {

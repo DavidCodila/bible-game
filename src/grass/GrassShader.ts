@@ -1,5 +1,6 @@
 import vertexShader from './shaders/Grass.vert?raw';
 import fragmentShader from './shaders/Grass.frag?raw';
+import { LOOP_TIME_IN_RADIANS } from '@src/grass/Constants';
 import type { DisposableObject } from '../app/types';
 
 export class GrassShader implements DisposableObject {
@@ -27,7 +28,8 @@ export class GrassShader implements DisposableObject {
         this.material.dispose();
     }
 
-    public update(deltaTime: number): void {
-        this.uniforms.time.value += deltaTime;
+    public update(elapsedTime: number): void {
+        const loopedTime = (elapsedTime % LOOP_TIME_IN_RADIANS);
+        this.uniforms.time.value = loopedTime;
     }
 }

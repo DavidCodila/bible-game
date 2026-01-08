@@ -16,9 +16,9 @@ export class GameObjectsController implements DisposableObject {
         this.sceneController.add(...meshesToRegister);
     }
 
-    public update(deltaTime: number): void {
+    public update(elapsedTime: number): void {
         for (const gameObject of this.gameObjects) {
-            gameObject.update(deltaTime);
+            gameObject.update(elapsedTime);
         }
     }
 

@@ -15,9 +15,9 @@ export class SystemsRegistry {
         buildWorld(controller);
     }
 
-    public update(deltaTime: number): void {
+    public update(elapsedTime: number): void {
         for (const key of UPDATE_ORDER) {
-            this.systems[key].update(deltaTime);
+            this.systems[key].update(elapsedTime);
         }
     
         this.render();

@@ -26,3 +26,5 @@ export const brightGrassPatch = () => new GrassPatch({
     grassBladeConfig: defaultGrassBladeConfig,
     appearance: BRIGHT_GRASS_APPEARANCE
 });
+
+export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
