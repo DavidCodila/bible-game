@@ -19,3 +19,7 @@ export const defaultBladeTaper = (normalizedHeight: number): number => {
     const safeHeight = clamp(normalizedHeight, 0, 1);
     return 1.0 - (safeHeight * safeHeight);
 };
+
+export function assignForwardVector(vector: THREE.Vector3, yaw: number): void {
+    vector.set(-Math.sin(yaw), 0, -Math.cos(yaw)).normalize();
+}

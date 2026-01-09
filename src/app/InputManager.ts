@@ -1,10 +1,13 @@
-import type { DisposableObject, InputState } from "./types";
+import type { DisposableObject, InputMouseState, InputMovementState } from "./types";
 
 export class InputManager implements DisposableObject{
     private domElement : HTMLElement;
-    private inputState: InputState = {
-        mouseDeltaX: 0, mouseDeltaY: 0, wKeyPressed: false, sKeyPressed: false,  aKeyPressed: false, dKeyPressed: false, spaceKeyPressed: false
+    private inputMouseState: InputMouseState = {
+        mouseDeltaX: 0, mouseDeltaY: 0,
     };
+    private inputMovementState: InputMovementState = {
+        wKeyPressed: false, sKeyPressed: false,  aKeyPressed: false, dKeyPressed: false, spaceKeyPressed: false
+    }
 
     constructor(domElement: HTMLElement) {
         this.domElement = domElement;
@@ -20,15 +23,15 @@ export class InputManager implements DisposableObject{
 
     private handleKeyUpdate(keyCode: string, isPressed: boolean): void {
         if (!this.mouseIsLockedOnScreen()) return;
-        if (keyCode === 'KeyW') this.inputState.wKeyPressed = isPressed;
-        if (keyCode === 'KeyS') this.inputState.sKeyPressed = isPressed;
-        if (keyCode === 'KeyA') this.inputState.aKeyPressed = isPressed;
-        if (keyCode === 'KeyD') this.inputState.dKeyPressed = isPressed;
-        if (keyCode === 'Space') this.inputState.spaceKeyPressed = isPressed;
+        if (keyCode === 'KeyW') this.inputMovementState.wKeyPressed = isPressed;
+        if (keyCode === 'KeyS') this.inputMovementState.sKeyPressed = isPressed;
+        if (keyCode === 'KeyA') this.inputMovementState.aKeyPressed = isPressed;
+        if (keyCode === 'KeyD') this.inputMovementState.dKeyPressed = isPressed;
+        if (keyCode === 'Space') this.inputMovementState.spaceKeyPressed = isPressed;
     }
 
-    public get inputStateReference(): InputState {
-        return this.inputState;
+    public get inputMovementStateReference(): InputMovementState {
+        return this.inputMovementState;
     }
 
     private handlePointerLockRequest = (): void => {
@@ -37,8 +40,8 @@ export class InputManager implements DisposableObject{
 
     private handleMouseMove = (mouseEvent: MouseEvent): void => {
         if (!this.mouseIsLockedOnScreen()) return;
-        this.inputState.mouseDeltaX += mouseEvent.movementX; 
-        this.inputState.mouseDeltaY += mouseEvent.movementY;
+        this.inputMouseState.mouseDeltaX += mouseEvent.movementX; 
+        this.inputMouseState.mouseDeltaY += mouseEvent.movementY;
     }
 
     private mouseIsLockedOnScreen = (): boolean => {
@@ -46,13 +49,14 @@ export class InputManager implements DisposableObject{
     };
 
     public resetDeltas(): void {
-        this.inputState.mouseDeltaX = 0;
-        this.inputState.mouseDeltaY = 0;
+        this.inputMouseState.mouseDeltaX = 0;
+        this.inputMouseState.mouseDeltaY = 0;
     }
     
-    public get mouseDeltaX(): number { return this.inputState.mouseDeltaX; }
-    public get mouseDeltaY(): number { return this.inputState.mouseDeltaY; }
-    public get mouseHasNotMoved(): boolean { return this.inputState.mouseDeltaX === 0 && this.inputState.mouseDeltaY === 0}
+    public get mouseDeltaX(): number { return this.inputMouseState.mouseDeltaX; }
+    public get mouseDeltaY(): number { return this.inputMouseState.mouseDeltaY; }
+    public get mouseHasMoved(): boolean { return Object.values(this.inputMouseState).some(delta => delta !== 0); }
+    public get playerHasMoved(): boolean { return Object.values(this.inputMovementState).some(isPressed => isPressed); }
 
     dispose(): void {
         this.domElement.removeEventListener('click', this.handlePointerLockRequest);

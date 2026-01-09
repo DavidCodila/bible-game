@@ -1,13 +1,16 @@
 import * as THREE from 'three';
 
-export interface InputState {
-    mouseDeltaX: number;
-    mouseDeltaY: number;
+export interface InputMovementState {
     wKeyPressed: boolean;
     sKeyPressed: boolean;
     aKeyPressed: boolean;
     dKeyPressed: boolean;
     spaceKeyPressed: boolean;
+}
+
+export interface InputMouseState {
+    mouseDeltaX: number;
+    mouseDeltaY: number;
 }
 
 export interface MeshGameObject {
