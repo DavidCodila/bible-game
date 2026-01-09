@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import type { DisposableObject } from '../app/types';
 import { SkyConstructor } from './SkyConstructor';
-import { FOG_COLOR, FOG_DENSITY, SUN_DIRECTION } from './Constants';
-
+import { SUN_DIRECTION } from './Constants';
 export class SceneController implements DisposableObject {
     private scene: THREE.Scene;
     private directionalLight: THREE.DirectionalLight;
+    
 
     constructor(scene : THREE.Scene) {
         this.scene = scene;
@@ -24,8 +24,6 @@ export class SceneController implements DisposableObject {
         this.directionalLight.color.setHSL(0.1, 0.8, 0.8); 
         
         this.scene.add(this.directionalLight);
-
-        this.scene.fog = new THREE.FogExp2(FOG_COLOR, FOG_DENSITY);
     }
 
     public get sceneInstance(): THREE.Scene { return this.scene; }
