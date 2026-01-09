@@ -9,6 +9,19 @@ export class RendererController {
     }
 
     public render(scene: THREE.Object3D, camera: THREE.Camera): void {
+        /*
+        if (this.renderer.info.render.frame % 100 === 0) {
+            const totalObjectsInScene = scene.children.length;
+            const objectsRendered = this.renderer.info.render.calls;
+            const culledObjects = totalObjectsInScene - objectsRendered;
+
+            console.log(`[Performance Report]`);
+            console.log(`Total Objects: ${totalObjectsInScene}`);
+            console.log(`Rendered (Visible): ${objectsRendered}`);
+            console.log(`Culled (Hidden): ${culledObjects}`);
+            console.log(`-------------------------`);
+        }
+            */
         this.renderer.render(scene, camera);
     }
 

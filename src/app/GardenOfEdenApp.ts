@@ -10,6 +10,9 @@ export class GardenOfEdenApp implements DisposableObject {
     private animationFrameId: number = 0;
     private isRunning: boolean = true;
 
+    private timeSinceLastFrame: number = 0;
+    private targetFrameInterval: number = 1 / 30;
+
     constructor() {
         this.registry = assembleSystemsRegistry();
 
@@ -23,9 +26,18 @@ export class GardenOfEdenApp implements DisposableObject {
         if (!this.isRunning) return;
     
         this.animationFrameId = requestAnimationFrame(this.animate);
-        const elapsedTime = this.clock.getElapsedTime();
+
+        const deltaTime = this.clock.getDelta();
+        this.timeSinceLastFrame += deltaTime;
     
-        this.registry.update(elapsedTime);
+        if (this.timeSinceLastFrame >= this.targetFrameInterval) {
+            const totalElapsedTime = this.clock.getElapsedTime();
+            
+            this.registry.update(totalElapsedTime);
+            
+            this.timeSinceLastFrame %= this.targetFrameInterval;
+        }
+    
     }
 
     private handleBeforeUnload = () => {

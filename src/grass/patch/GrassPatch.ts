@@ -26,6 +26,7 @@ export class GrassPatch implements MeshGameObject{
         GeometryUtils.assignInstancedAttributes(geometry, attributeData);
         
         BoundsHelper.computePatchBounds(this.mesh, config);
+        this.mesh.frustumCulled = true;
     }
 
     public update(elapsedTime: number): void {

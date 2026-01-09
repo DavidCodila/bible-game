@@ -21,10 +21,16 @@ export const smallGrassPatch = () => new GrassPatch({
 });
 
 export const brightGrassPatch = () => new GrassPatch({
-    sideLength: 10,
-    bladesPerRow: 150,
+    sideLength: 1,
+    bladesPerRow: 15,
     grassBladeConfig: defaultGrassBladeConfig,
     appearance: BRIGHT_GRASS_APPEARANCE
 });
 
 export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
+
+export const GRASS_GRID_CONFIG = {
+    patchSize: 1,       // The width/depth of one patch
+    patchesPerSide: 20,         // Number of patches per side (2x2 = 4 patches)
+    spacingMultiplier: 0.5 // Used to center the grid around (0,0)
+};
