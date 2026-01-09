@@ -3,7 +3,7 @@ import type { DisposableObject, InputState } from "./types";
 export class InputManager implements DisposableObject{
     private domElement : HTMLElement;
     private inputState: InputState = {
-        mouseDeltaX: 0, mouseDeltaY: 0, isWPressed: false, isSPressed: false,  isAPressed: false, isDPressed: false
+        mouseDeltaX: 0, mouseDeltaY: 0, wKeyPressed: false, sKeyPressed: false,  aKeyPressed: false, dKeyPressed: false, spaceKeyPressed: false
     };
 
     constructor(domElement: HTMLElement) {
@@ -14,6 +14,21 @@ export class InputManager implements DisposableObject{
     private setupEventListeners(domElement: HTMLElement): void {
         domElement.addEventListener('click', this.handlePointerLockRequest);
         document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('keydown', (event) => this.handleKeyUpdate(event.code, true));
+        document.addEventListener('keyup', (event) => this.handleKeyUpdate(event.code, false));
+    }
+
+    private handleKeyUpdate(keyCode: string, isPressed: boolean): void {
+        if (!this.mouseIsLockedOnScreen()) return;
+        if (keyCode === 'KeyW') this.inputState.wKeyPressed = isPressed;
+        if (keyCode === 'KeyS') this.inputState.sKeyPressed = isPressed;
+        if (keyCode === 'KeyA') this.inputState.aKeyPressed = isPressed;
+        if (keyCode === 'KeyD') this.inputState.dKeyPressed = isPressed;
+        if (keyCode === 'Space') this.inputState.spaceKeyPressed = isPressed;
+    }
+
+    public get inputStateReference(): InputState {
+        return this.inputState;
     }
 
     private handlePointerLockRequest = (): void => {
@@ -21,11 +36,14 @@ export class InputManager implements DisposableObject{
     }
 
     private handleMouseMove = (mouseEvent: MouseEvent): void => {
-        if (document.pointerLockElement === this.domElement) {
-            this.inputState.mouseDeltaX += mouseEvent.movementX; 
-            this.inputState.mouseDeltaY += mouseEvent.movementY;
-        }
+        if (!this.mouseIsLockedOnScreen()) return;
+        this.inputState.mouseDeltaX += mouseEvent.movementX; 
+        this.inputState.mouseDeltaY += mouseEvent.movementY;
     }
+
+    private mouseIsLockedOnScreen = (): boolean => {
+        return document.pointerLockElement === this.domElement;
+    };
 
     public resetDeltas(): void {
         this.inputState.mouseDeltaX = 0;
