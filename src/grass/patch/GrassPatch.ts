@@ -33,6 +33,10 @@ export class GrassPatch implements MeshGameObject{
         this.grassShader.update(elapsedTime);
     }
 
+    public setDissolve(scale: number): void {
+        this.grassShader.setDissolve(scale);
+    }
+
     dispose(): void {
         this.grassShader.dispose();
         ThreeUtils.disposeMesh(this.mesh);

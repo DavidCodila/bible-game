@@ -12,7 +12,11 @@ export class GrassShader implements DisposableObject {
         this.uniforms = {
             time: { value: 0 },
             sunDirection: { value: sunDirection.clone().normalize() },
-            inverseBladeHeight: { value: 1.0 / bladeHeight }
+            inverseBladeHeight: { value: 1.0 / bladeHeight },
+            uPatchScale: { value: 1.0 },
+            //uWindDirection: { value: new THREE.Vector2(1.0, 0.2).normalize() },
+            //uWindStrength: { value: 0.25 }, // Slightly higher since we are mostly leaning forward
+            //uWindSpeed: { value: 0.8 }
         };
 
         this.material = new THREE.ShaderMaterial({
@@ -23,6 +27,10 @@ export class GrassShader implements DisposableObject {
             depthWrite: true,
             depthTest: true
         });
+    }
+
+    public setDissolve(scale: number): void {
+        this.uniforms.uPatchScale.value = scale;
     }
 
     dispose(): void {

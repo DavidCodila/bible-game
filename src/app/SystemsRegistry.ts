@@ -12,7 +12,7 @@ export class SystemsRegistry {
 
     public buildWorld(): void {
         const controller = this.systems.gameObjectsController;
-        buildWorld(controller);
+        buildWorld(controller, this.systems.cameraController.camera);
     }
 
     public update(elapsedTime: number): void {

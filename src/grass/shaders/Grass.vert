@@ -6,8 +6,11 @@ attribute float instanceBendZ;
 attribute vec3 instanceColors;
 uniform float time;
 uniform float inverseBladeHeight;
+//uniform float uPatchScale;
 varying vec3 vColor;
 varying float vHeightProgress;
+//varying vec2 vUv;
+varying vec3 vWorldPosition;
 
 vec2 rotate2D(in vec2 point, in float angle){
     float sine = sin(angle);
@@ -16,6 +19,7 @@ vec2 rotate2D(in vec2 point, in float angle){
 }
 
 void main(){
+    //vUv = uv;
     vec3 transformedPosition = position;
 
     transformedPosition.y *= instanceScaleY;
@@ -36,6 +40,9 @@ void main(){
     vec4 worldPosition = modelMatrix * vec4(transformedPosition + instanceOffsets, 1.0);
     
     vColor = instanceColors;
+
+    vec4 worldPos = modelMatrix * vec4(transformedPosition + instanceOffsets, 1.0);
+    vWorldPosition = worldPos.xyz;
 
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
 }
