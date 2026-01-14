@@ -38,8 +38,7 @@ void main(){
     
     vColor = instanceColors;
 
-    vec4 worldPos = modelMatrix * vec4(transformedPosition + instanceOffsets, 1.0);
-    vWorldPosition = worldPos.xyz;
+    vWorldPosition = worldPosition.xyz;
 
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
 }
