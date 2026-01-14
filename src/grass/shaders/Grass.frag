@@ -3,7 +3,6 @@ precision highp float;
 varying vec3 vColor;
 varying float vHeightProgress;
 uniform vec3 sunDirection;
-//varying vec2 vUv;
 varying vec3 vWorldPosition;
 
 uniform float uPatchScale;

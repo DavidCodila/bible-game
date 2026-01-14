@@ -5,7 +5,6 @@ import { GrassGeometryFactory } from '../GrassGeometryFactory';
 import { GrassShader } from '../GrassShader';
 import { BoundsHelper } from "./BoundsHelper";
 import { ThreeUtils } from '../../tools/ThreeUtils';
-import { SUN_DIRECTION } from '../../scene/Constants';
 import type { MeshGameObject } from '../../app/types';
 import type { GrassPatchConfig } from "../types";
 
@@ -19,7 +18,7 @@ export class GrassPatch implements MeshGameObject{
         const geometry = GrassGeometryFactory.createBladeGeometry(bladeConfig);
         const attributeData = DataGenerator.generateAttributes(config);
 
-        this.grassShader = new GrassShader(bladeConfig.bladeHeight, SUN_DIRECTION);
+        this.grassShader = new GrassShader(bladeConfig.bladeHeight);
         
         this.mesh = new THREE.InstancedMesh(geometry, this.grassShader.material, totalBlades);
 

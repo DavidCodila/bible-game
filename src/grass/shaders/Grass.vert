@@ -6,10 +6,8 @@ attribute float instanceBendZ;
 attribute vec3 instanceColors;
 uniform float time;
 uniform float inverseBladeHeight;
-//uniform float uPatchScale;
 varying vec3 vColor;
 varying float vHeightProgress;
-//varying vec2 vUv;
 varying vec3 vWorldPosition;
 
 vec2 rotate2D(in vec2 point, in float angle){
@@ -19,7 +17,6 @@ vec2 rotate2D(in vec2 point, in float angle){
 }
 
 void main(){
-    //vUv = uv;
     vec3 transformedPosition = position;
 
     transformedPosition.y *= instanceScaleY;
