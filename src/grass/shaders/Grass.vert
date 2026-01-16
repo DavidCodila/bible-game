@@ -24,7 +24,7 @@ void main(){
     float heightProgress = position.y * inverseBladeHeight;
     vHeightProgress = heightProgress;
 
-    float windEffect = sin(time * 0.8 + instanceOffsets.x * 1.5 + instanceOffsets.z * 1.2) * 0.05;
+    float windEffect = sin(time * 0.8 + instanceOffsets.x * 1.5 + instanceOffsets.z * 1.2) * 0.1;
     float bendBias = pow(heightProgress, 1.6);
 
     transformedPosition.z += (instanceBendZ + windEffect) * bendBias;

@@ -43,7 +43,5 @@ export class GrassLODPatch implements MeshGameObject {
         this.currentPatch.update(elapsedTime);
     }
 
-    dispose(): void {
-        this.currentPatch.dispose();
-    }
+    dispose(): void {}
 }

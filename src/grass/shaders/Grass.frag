@@ -5,7 +5,7 @@ varying float vHeightProgress;
 uniform vec3 sunDirection;
 varying vec3 vWorldPosition;
 
-uniform float uPatchScale;
+uniform float uOpacity;
 
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(12.71, 31.17))) * 43758.5453123);
@@ -14,7 +14,7 @@ float hash(vec2 p) {
 void main(){
     float threshold = hash(vWorldPosition.xz * 100.0);
     
-    if (threshold > uPatchScale) {
+    if (threshold > uOpacity) {
         discard;
     }
     float sunExposure = 0.3 + 0.7 * vHeightProgress; 

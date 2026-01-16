@@ -14,7 +14,7 @@ export class GrassShader implements DisposableObject {
             time: { value: 0 },
             sunDirection: { value: SUN_DIRECTION.clone() },
             inverseBladeHeight: { value: 1.0 / bladeHeight },
-            uPatchScale: { value: 1.0 }
+            uOpacity: { value: 1.0 }
         };
 
         this.material = new THREE.ShaderMaterial({
@@ -27,8 +27,8 @@ export class GrassShader implements DisposableObject {
         });
     }
 
-    public setOpacity(scale: number): void {
-        this.uniforms.uPatchScale.value = scale;
+    public setOpacity(opacity: number): void {
+        this.uniforms.uOpacity.value = opacity;
     }
 
     dispose(): void {

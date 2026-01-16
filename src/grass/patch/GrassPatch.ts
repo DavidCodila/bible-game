@@ -32,8 +32,8 @@ export class GrassPatch implements MeshGameObject{
         this.grassShader.update(elapsedTime);
     }
 
-    public setOpacity(scale: number): void {
-        this.grassShader.setOpacity(scale);
+    public setOpacity(opacity: number): void {
+        this.grassShader.setOpacity(opacity);
     }
 
     dispose(): void {
