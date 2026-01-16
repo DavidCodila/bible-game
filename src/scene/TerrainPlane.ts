@@ -1,16 +1,14 @@
 import * as THREE from 'three';
 import { ThreeUtils } from '../tools/ThreeUtils'
-import type { MeshGameObject } from '../app/types';
+import type { SceneController } from './SceneController';
 
-export class TerrainPlane implements MeshGameObject{
+export class TerrainPlane {
     public mesh: THREE.Mesh;
 
-    constructor() {
+    constructor(sceneController: SceneController) {
         this.mesh = this.createGroundMesh();
+        sceneController.add(this.mesh);
     }
-
-    // added for overall code simplicity
-    update(_elapsedTime: number): void {}
 
     private createGroundMesh(): THREE.Mesh {
         const material = new THREE.MeshStandardMaterial({ 

@@ -18,7 +18,6 @@ export class GardenOfEdenApp implements DisposableObject {
 
         window.addEventListener('beforeunload', this.handleBeforeUnload);
         
-        this.registry.buildWorld();
         this.animate();
     }
 

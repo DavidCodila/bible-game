@@ -5,7 +5,6 @@ import { GrassLODProcessor } from './GrassLODProcessor';
 import { createGrassLODPatchesForGrid } from '../utils/GridCreator';
 import type { GameObjectsController } from '../../../app/GameObjectsController';
 import type { GrassLODPatch } from '../model/GrassLODPatch';
-import type { MeshGameObject } from '../../../app/types';
 
 export class GrassLODManager {
     private readonly lodPatches: GrassLODPatch[];

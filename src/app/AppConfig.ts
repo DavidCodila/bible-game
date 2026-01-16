@@ -30,6 +30,7 @@ export const UPDATE_ORDER = [
 export const DISPOSE_ORDER = [
     'windowController',
     'inputManager',
+    'terrainPlane',
     'grassLODManager',
     'gameObjectsController',
     'sceneController',
