@@ -1,6 +1,6 @@
-import type { GrassAppearanceConfig } from "../generator/AppearanceConfig";
-import type { GrassPatch } from "../patch/GrassPatch";
-import type { GrassBladeConfig } from "../types";
+import type { GrassAppearanceConfig } from "../../generator/AppearanceConfig";
+import type { GrassPatch } from "../../patch/GrassPatch";
+import type { GrassBladeConfig } from "../../types";
 import type { GrassLODPatch } from "./GrassLODPatch";
 
 export type LODLevel = 'high' | 'medium' | 'low';

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TerrainPlane } from '../scene/TerrainPlane';
-import { GrassLODManager } from '../grass/lod/GrassLODManager';
+import { GrassLODManager } from '../grass/lod/core/GrassLODManager';
 import type { GameObjectsController } from './GameObjectsController';
 
 export const buildWorld = (

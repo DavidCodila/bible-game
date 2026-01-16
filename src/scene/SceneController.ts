@@ -18,6 +18,10 @@ export class SceneController implements DisposableObject {
     public add(...objects: THREE.Object3D[]): void {
         this.scene.add(...objects);
     }
+    
+    public remove(...objects: THREE.Object3D[]): void {
+        this.scene.remove(...objects);
+    }
 
     private setupScene(): void {
         this.directionalLight.position.copy(SUN_DIRECTION);
