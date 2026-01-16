@@ -19,6 +19,7 @@
  */
 export const UPDATE_ORDER = [
     'cameraController',
+    'grassLODManager',
     'gameObjectsController'
 ] as const;
 
@@ -29,6 +30,7 @@ export const UPDATE_ORDER = [
 export const DISPOSE_ORDER = [
     'windowController',
     'inputManager',
+    'grassLODManager',
     'gameObjectsController',
     'sceneController',
     'cameraController',

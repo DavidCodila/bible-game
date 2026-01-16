@@ -8,12 +8,5 @@ export const buildWorld = (
     camera: THREE.Camera
 ): void => {
     gameObjectsController.add(new TerrainPlane());
-    
-    const lodManager = new GrassLODManager(
-        gameObjectsController,
-        camera
-    );
-    
-    gameObjectsController.add(lodManager);
 };
 

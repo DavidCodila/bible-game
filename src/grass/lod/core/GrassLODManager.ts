@@ -7,8 +7,7 @@ import type { GameObjectsController } from '../../../app/GameObjectsController';
 import type { GrassLODPatch } from '../model/GrassLODPatch';
 import type { MeshGameObject } from '../../../app/types';
 
-export class GrassLODManager implements MeshGameObject {
-    public mesh = new THREE.Mesh();
+export class GrassLODManager {
     private readonly lodPatches: GrassLODPatch[];
     private visiblePatches: GrassLODPatch[];
     private visibleCount = 0;
