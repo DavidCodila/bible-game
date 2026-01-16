@@ -9,7 +9,7 @@ export class GrassDistanceTracker {
             const patch = visiblePatches[i];
             const distanceSquared = cameraPos.distanceToSquared(patch.worldPosition);
 
-            patch.setDistanceSquared(distanceSquared);
+            patch.setDistanceMetric(distanceSquared);
         }
     }
 }

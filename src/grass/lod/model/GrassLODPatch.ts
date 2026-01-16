@@ -22,7 +22,7 @@ export class GrassLODPatch implements MeshGameObject {
         this.id = `patch_${this.worldPosition.x}_${this.worldPosition.z}`;
     }
 
-    public setDistanceSquared(distanceSquared: number) {
+    public setDistanceMetric(distanceSquared: number) {
         this.cachedDistanceSquared = distanceSquared; 
         this.mesh.renderOrder = distanceSquared;
     }

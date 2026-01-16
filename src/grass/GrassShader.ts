@@ -27,7 +27,7 @@ export class GrassShader implements DisposableObject {
         });
     }
 
-    public setDissolve(scale: number): void {
+    public setOpacity(scale: number): void {
         this.uniforms.uPatchScale.value = scale;
     }
 

@@ -1,17 +1,16 @@
 import * as THREE from 'three';
 import { GrassLODPatch } from '../model/GrassLODPatch';
-import { GrassCuller } from '../services/GrassCuller'; // Or merge the logic here
+import { GrassCuller } from '../services/GrassCuller';
 import { LODCalculator } from '../utils/LODCalculator';
 import { GrassLODOrchestrator } from './GrassLODOrchestrator';
 
 export class GrassLODProcessor {
     public static updateSpatialState(camera: THREE.Camera,  allPatches: GrassLODPatch[], outVisiblePatches: GrassLODPatch[]): number {
         const count = GrassCuller.cull(camera, allPatches, outVisiblePatches);
-        const cameraPos = camera.position;
 
         for (let i = 0; i < count; i++) {
             const patch = outVisiblePatches[i];
-            patch.setDistanceSquared(cameraPos.distanceToSquared(patch.worldPosition));
+            patch.setDistanceMetric(camera.position.distanceToSquared(patch.worldPosition));
         }
 
         return count;

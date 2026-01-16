@@ -6,11 +6,7 @@ const _cameraDirection = new THREE.Vector3();
 const _vectorToPatch = new THREE.Vector3();
 
 export const GrassCuller = {
-    cull(
-        camera: THREE.Camera, 
-        allPatches: GrassLODPatch[], 
-        outVisibleArray: GrassLODPatch[]
-    ): number { // Change return type to number
+    cull(camera: THREE.Camera, allPatches: GrassLODPatch[], outVisibleArray: GrassLODPatch[]): number { 
         camera.getWorldDirection(_cameraDirection);
         let count = 0;
 
@@ -27,6 +23,6 @@ export const GrassCuller = {
                 count++;
             }
         }
-        return count; // Return how many were actually found
+        return count;
     }
 };

@@ -18,7 +18,7 @@ export class GrassLODOrchestrator {
 
         const incomingPatch = GrassPool.getPatch(targetLevel);
         
-        incomingPatch.setDissolve(0.0); 
+        incomingPatch.setOpacity(0.0); 
         incomingPatch.mesh.position.copy(lodPatch.worldPosition);
         incomingPatch.mesh.renderOrder = lodPatch.mesh.renderOrder;
 
@@ -43,8 +43,8 @@ export class GrassLODOrchestrator {
             if (transition.progress >= 1.0) {
                 this.finalizeSwap(patchId, transition);
             } else {
-                transition.incoming.setDissolve(transition.progress);
-                transition.outgoing.setDissolve(1.0 - transition.progress);
+                transition.incoming.setOpacity(transition.progress);
+                transition.outgoing.setOpacity(1.0 - transition.progress);
             }
         });
     }
@@ -54,17 +54,13 @@ export class GrassLODOrchestrator {
     }
 
     private finalizeSwap(patchId: string, transition: Transition): void {
-        transition.incoming.setDissolve(1.0);
+        transition.incoming.setOpacity(1.0);
         transition.lodPatchRef.swapPatch(transition.incoming, transition.targetLevel);
         
-        this.removeOldPatch(transition.outgoing);
+        this.gameObjectsController.remove(transition.outgoing);
         
         GrassPool.returnPatch(transition.outgoing, transition.outgoingLevel);
         
         this.activeTransitions.delete(patchId);
-    }
-
-    private removeOldPatch(patch: GrassPatch): void {
-        this.gameObjectsController.remove(patch);
     }
 }
