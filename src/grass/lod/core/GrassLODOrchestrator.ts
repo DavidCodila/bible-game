@@ -1,6 +1,5 @@
 import GrassPool from '../services/GrassPool';
 import { GrassLODPatch } from '../model/GrassLODPatch';
-import { GrassPatch } from '../../patch/GrassPatch';
 import type { LODLevel, Transition } from '../model/types';
 import type { GameObjectsController } from '../../../app/GameObjectsController';
 

@@ -17,12 +17,6 @@ class GrassPool {
         }
     }
 
-    public getPool(lodLevel: LODLevel): GrassPatch[] {
-        if (lodLevel === 'high') return this.poolHigh;
-        if (lodLevel === 'medium') return this.poolMedium;
-        return this.poolLow;
-    }
-
     public getPatch(lodLevel: LODLevel): GrassPatch {
         const targetPool = this.getPool(lodLevel);
         const density = GRASS_GRID_CONFIG.lodDensities[lodLevel];
@@ -38,6 +32,12 @@ class GrassPool {
         } else {
             grassPatch.dispose();
         }
+    }
+
+    private getPool(lodLevel: LODLevel): GrassPatch[] {
+        if (lodLevel === 'high') return this.poolHigh;
+        if (lodLevel === 'medium') return this.poolMedium;
+        return this.poolLow;
     }
 
     public dispose(): void {
