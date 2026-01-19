@@ -1,5 +1,6 @@
 import { UPDATE_ORDER, DISPOSE_ORDER } from './AppConfig';
 import { validateSystems } from './SystemsValidator';
+import { buildWorld } from './WorldBuilder';
 
 export class SystemsRegistry {
     private readonly systems: Record<string, any>;
@@ -7,6 +8,7 @@ export class SystemsRegistry {
     constructor(systems: Record<string, any>) {
         validateSystems(systems);
         this.systems = systems;
+        this.buildWorld();
     }
 
     public update(elapsedTime: number): void {
@@ -15,6 +17,11 @@ export class SystemsRegistry {
         }
     
         this.render();
+    }
+
+    public buildWorld(): void {
+        const controller = this.systems.gameObjectsController;
+        buildWorld(controller);
     }
 
     public render(): void {

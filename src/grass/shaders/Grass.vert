@@ -9,6 +9,8 @@ uniform float inverseBladeHeight;
 varying vec3 vColor;
 varying float vHeightProgress;
 varying vec3 vWorldPosition;
+uniform sampler2D uHeightMap;
+uniform float uWorldSize;
 
 vec2 rotate2D(in vec2 point, in float angle){
     float sine = sin(angle);
@@ -24,6 +26,10 @@ void main(){
     float heightProgress = position.y * inverseBladeHeight;
     vHeightProgress = heightProgress;
 
+    vec3 rootWorldPos = instanceOffsets + modelMatrix[3].xyz;
+    vec2 terrainUV = (rootWorldPos.xz + (uWorldSize / 2.0)) / uWorldSize;
+    float terrainHeight = texture2D(uHeightMap, terrainUV).r;
+
     float windEffect = sin(time * 0.8 + instanceOffsets.x * 1.5 + instanceOffsets.z * 1.2) * 0.1;
     float bendBias = pow(heightProgress, 1.6);
 
@@ -34,11 +40,16 @@ void main(){
     transformedPosition.x = rotatedAroundYAxis.x;
     transformedPosition.z = rotatedAroundYAxis.y;
 
-    vec4 worldPosition = modelMatrix * vec4(transformedPosition + instanceOffsets, 1.0);
+    vec3 worldSpacePos = transformedPosition + rootWorldPos;
+    worldSpacePos.y += terrainHeight; // Add the fixed height
+
+    // Sample the height from the shared DataTexture
+
+    //worldSpacePos.y += terrainHeight;
     
     vColor = instanceColors;
 
-    vWorldPosition = worldPosition.xyz;
+    vWorldPosition = worldSpacePos;
 
-    gl_Position = projectionMatrix * viewMatrix * worldPosition;
+    gl_Position = projectionMatrix * viewMatrix * vec4(worldSpacePos, 1.0);
 }

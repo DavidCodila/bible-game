@@ -1,33 +1,38 @@
 import * as THREE from 'three';
-import { ThreeUtils } from '../tools/ThreeUtils'
+import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
 import type { SceneController } from './SceneController';
 
 export class TerrainPlane {
-    public mesh: THREE.Mesh;
+    private mesh: THREE.Mesh;
 
     constructor(sceneController: SceneController) {
-        this.mesh = this.createGroundMesh();
-        sceneController.add(this.mesh);
-    }
+        // Accessing the now-static WORLD_SIZE
+        const size = TerrainHeightService.WORLD_SIZE;
+        const segments = 128; 
 
-    private createGroundMesh(): THREE.Mesh {
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0x5c4033,
-            roughness: 1.0, 
-            metalness: 0.0
+        const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
+        geometry.rotateX(-Math.PI / 2);
+
+        const positionAttribute = geometry.getAttribute('position');
+
+        for (let i = 0; i < positionAttribute.count; i++) {
+            const x = positionAttribute.getX(i);
+            const z = positionAttribute.getZ(i);
+
+            // This now works because getHeight is static
+            const height = TerrainHeightService.getHeight(x, z);
+            positionAttribute.setY(i, height);
+        }
+
+        positionAttribute.needsUpdate = true;
+        geometry.computeVertexNormals();
+
+        const material = new THREE.MeshPhongMaterial({ 
+            color: 0x3d2b1f, 
+            side: THREE.DoubleSide 
         });
-        const ground = new THREE.Mesh(
-            new THREE.PlaneGeometry(5000, 5000),
-            material
-        );
-        
-        ground.rotation.x = -Math.PI / 2; 
-        
-        return ground;
-    }
 
-    dispose(): void {
-        ThreeUtils.disposeMesh(this.mesh);
-        console.log("TerrainPlane cleaned up via ThreeUtils.");
+        this.mesh = new THREE.Mesh(geometry, material);
+        sceneController.add(this.mesh);
     }
 }

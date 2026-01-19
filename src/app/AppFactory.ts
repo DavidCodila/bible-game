@@ -9,7 +9,6 @@ import { SystemsRegistry } from './SystemsRegistry';
 import { initialiseCamera } from './camera/CameraInitialiser';
 import { LookHandler } from './camera/LookHandler';
 import { MovementHandler } from './camera/MovementHandler';
-import { GrassLODManager } from '../grass/lod/core/GrassLODManager';
 import { TerrainPlane } from '../scene/TerrainPlane';
 
 export function assembleSystemsRegistry(): SystemsRegistry {
@@ -21,7 +20,6 @@ export function assembleSystemsRegistry(): SystemsRegistry {
     const gameObjectsController = new GameObjectsController(sceneController);
     const camera = initialiseCamera(new THREE.PerspectiveCamera());
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
-    const grassLODManager = new GrassLODManager(gameObjectsController, camera);
     const terrainPlane = new TerrainPlane(sceneController);
 
     return new SystemsRegistry({
@@ -31,7 +29,6 @@ export function assembleSystemsRegistry(): SystemsRegistry {
         inputManager,
         cameraController,
         windowController: new WindowController(rendererController, cameraController),
-        grassLODManager,
         terrainPlane
     });
 }
