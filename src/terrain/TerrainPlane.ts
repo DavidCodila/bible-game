@@ -10,8 +10,8 @@ export class TerrainPlane {
 
     constructor(sceneController: SceneController) {
         // Accessing the now-static WORLD_SIZE
-        const size = TerrainPlane.WORLD_SIZE;
-        const segments = TerrainPlane.RESOLUTION - 1; 
+        const size = TerrainHeightService.WORLD_SIZE;
+        const segments = TerrainHeightService.RESOLUTION - 1; 
 
         const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
         geometry.rotateX(-Math.PI / 2);

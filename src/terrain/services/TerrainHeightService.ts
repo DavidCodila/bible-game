@@ -6,9 +6,9 @@ export class TerrainHeightService {
     private static instance: TerrainHeightService;
     
     // Static keywords allow TerrainHeightService.WORLD_SIZE to work
-    public static readonly WORLD_SIZE = 200;
-    public static readonly RESOLUTION = 256;
-    public static readonly AMPLITUDE = 10.0; // Higher for more erratic hills
+    public static readonly WORLD_SIZE = 50;
+    public static readonly RESOLUTION = 50;
+    public static readonly AMPLITUDE = 2.0; // Higher for more erratic hills
     private static readonly SEED = 'the-garden-of-Eden'; 
 
     public heightTexture: THREE.DataTexture;
