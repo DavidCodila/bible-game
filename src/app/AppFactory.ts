@@ -9,7 +9,7 @@ import { SystemsRegistry } from './SystemsRegistry';
 import { initialiseCamera } from './camera/CameraInitialiser';
 import { LookHandler } from './camera/LookHandler';
 import { MovementHandler } from './camera/MovementHandler';
-import { TerrainPlane } from '../scene/TerrainPlane';
+import { TerrainPlane } from '../terrain/TerrainPlane';
 
 export function assembleSystemsRegistry(): SystemsRegistry {
     const rendererController = new RendererController(

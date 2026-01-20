@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise'; // Using the module you downloaded
+import { alea } from 'seedrandom';
 
 export class TerrainHeightService {
     private static instance: TerrainHeightService;
@@ -8,13 +9,15 @@ export class TerrainHeightService {
     public static readonly WORLD_SIZE = 200;
     public static readonly RESOLUTION = 256;
     public static readonly AMPLITUDE = 10.0; // Higher for more erratic hills
+    private static readonly SEED = 'the-garden-of-Eden'; 
 
     public heightTexture: THREE.DataTexture;
     private heightData: Float32Array;
 
     private constructor() {
         // 1. Initialize the noise function
-        const noise2D = createNoise2D(); 
+        const pseudoRNG = alea(TerrainHeightService.SEED);
+        const noise2D = createNoise2D(pseudoRNG); 
         this.heightData = new Float32Array(TerrainHeightService.RESOLUTION * TerrainHeightService.RESOLUTION);
 
         for (let i = 0; i < this.heightData.length; i++) {
