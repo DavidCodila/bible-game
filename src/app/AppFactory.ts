@@ -10,6 +10,7 @@ import { initialiseCamera } from './camera/CameraInitialiser';
 import { LookHandler } from './camera/LookHandler';
 import { MovementHandler } from './camera/MovementHandler';
 import { TerrainPlane } from '../terrain/TerrainPlane';
+import { AudioController } from './camera/AudioController';
 
 export function assembleSystemsRegistry(): SystemsRegistry {
     const rendererController = new RendererController(
@@ -18,7 +19,11 @@ export function assembleSystemsRegistry(): SystemsRegistry {
     const sceneController = new SceneController(new THREE.Scene());
     const inputManager = new InputManager(rendererController.instanceDomElement);
     const gameObjectsController = new GameObjectsController(sceneController);
-    const camera = initialiseCamera(new THREE.PerspectiveCamera());
+    const camera = new THREE.PerspectiveCamera();
+    const audioListener = new THREE.AudioListener();
+    initialiseCamera(camera, audioListener);
+    const audioController = new AudioController(audioListener);
+    audioController.loadBackgroundMusic('src/assets/audio/EVOE_Generations.mp3');
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
 
@@ -28,6 +33,7 @@ export function assembleSystemsRegistry(): SystemsRegistry {
         gameObjectsController,
         inputManager,
         cameraController,
+        audioController,
         windowController: new WindowController(rendererController, cameraController),
         terrainPlane
     });

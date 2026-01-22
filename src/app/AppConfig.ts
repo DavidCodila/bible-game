@@ -33,6 +33,7 @@ export const DISPOSE_ORDER = [
     'gameObjectsController',
     'sceneController',
     'cameraController',
+    'audioController',
     'rendererController'
 ] as const;
 
