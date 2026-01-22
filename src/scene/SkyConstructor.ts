@@ -4,7 +4,7 @@ import { SUN_DIRECTION } from './Constants';
 export class SkyConstructor {
     public static constructSky(): Sky { 
         const sky = new Sky();
-        sky.scale.setScalar(1000);
+        sky.scale.setScalar(500);
 
         const skyUniforms = sky.material.uniforms;
         

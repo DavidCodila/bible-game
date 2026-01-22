@@ -1,21 +1,19 @@
 import * as THREE from 'three';
-import { createNoise2D } from 'simplex-noise'; // Using the module you downloaded
+import { createNoise2D } from 'simplex-noise';
 import { alea } from 'seedrandom';
+import { clamp } from '../../tools/GeometryUtils';
 
 export class TerrainHeightService {
     private static instance: TerrainHeightService;
-    
-    // Static keywords allow TerrainHeightService.WORLD_SIZE to work
     public static readonly WORLD_SIZE = 50;
     public static readonly RESOLUTION = 50;
-    public static readonly AMPLITUDE = 2.0; // Higher for more erratic hills
+    public static readonly AMPLITUDE = 2.0;
     private static readonly SEED = 'the-garden-of-Eden'; 
 
     public heightTexture: THREE.DataTexture;
     private heightData: Float32Array;
 
     private constructor() {
-        // 1. Initialize the noise function
         const pseudoRNG = alea(TerrainHeightService.SEED);
         const noise2D = createNoise2D(pseudoRNG); 
         this.heightData = new Float32Array(TerrainHeightService.RESOLUTION * TerrainHeightService.RESOLUTION);
@@ -48,7 +46,6 @@ export class TerrainHeightService {
             THREE.FloatType
         );
         
-        // Ensure smooth interpolation between pixels
         this.heightTexture.magFilter = THREE.LinearFilter;
         this.heightTexture.minFilter = THREE.LinearFilter;
         this.heightTexture.needsUpdate = true;
@@ -60,15 +57,14 @@ export class TerrainHeightService {
     }
 
     public static getHeight(worldX: number, worldZ: number): number {
-        const inst = this.getInstance();
-        
-        // Map world coordinates to texture indices
-        const u = ((worldX + this.WORLD_SIZE / 2) / this.WORLD_SIZE) * (this.RESOLUTION - 1);
-        const v = ((worldZ + this.WORLD_SIZE / 2) / this.WORLD_SIZE) * (this.RESOLUTION - 1);
-        
-        const xIndex = Math.min(Math.max(Math.round(u), 0), this.RESOLUTION - 1);
-        const zIndex = Math.min(Math.max(Math.round(v), 0), this.RESOLUTION - 1);
-        
-        return inst.heightData[zIndex * this.RESOLUTION + xIndex];
+        const xIndex = this.worldPositionToCoordinateIndex(worldX);
+        const zIndex = this.worldPositionToCoordinateIndex(worldZ);
+        return this.getInstance().heightData[zIndex * this.RESOLUTION + xIndex];
+    }
+
+    private static worldPositionToCoordinateIndex(position: number) : number {
+        let index = ((position + this.WORLD_SIZE / 2) / this.WORLD_SIZE) * (this.RESOLUTION - 1);
+        index = clamp(Math.round(index), 0, this.RESOLUTION - 1);
+        return index;
     }
 }

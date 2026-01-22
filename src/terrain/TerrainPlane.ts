@@ -9,7 +9,6 @@ export class TerrainPlane {
     public static AMPLITUDE = 10;
 
     constructor(sceneController: SceneController) {
-        // Accessing the now-static WORLD_SIZE
         const size = TerrainHeightService.WORLD_SIZE;
         const segments = TerrainHeightService.RESOLUTION - 1; 
 
@@ -22,7 +21,6 @@ export class TerrainPlane {
             const x = positionAttribute.getX(i);
             const z = positionAttribute.getZ(i);
 
-            // This now works because getHeight is static
             const height = TerrainHeightService.getHeight(x, z);
             positionAttribute.setY(i, height);
         }
@@ -32,7 +30,7 @@ export class TerrainPlane {
 
         const material = new THREE.MeshPhongMaterial({ 
             color: 0x3d2b1f, 
-            side: THREE.DoubleSide 
+            side: THREE.FrontSide 
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
