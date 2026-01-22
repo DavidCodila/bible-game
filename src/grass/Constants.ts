@@ -1,7 +1,7 @@
 import { BRIGHT_GRASS_APPEARANCE } from './generator/AppearanceConfig';
 import type { GrassBladeConfig } from './types';
 import { GrassPatch } from './patch/GrassPatch';
-import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
+import { WORLD_SIZE } from '../terrain/Constants';
 
 export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
 
@@ -11,7 +11,7 @@ export const defaultGrassBladeConfig: GrassBladeConfig = {
 
 export const GRASS_GRID_CONFIG = {
     patchSize: 1,       // The width/depth of one patch
-    patchesPerSide: TerrainHeightService.WORLD_SIZE,         // Number of patches per side (2x2 = 4 patches)
+    patchesPerSide: WORLD_SIZE,         // Number of patches per side (2x2 = 4 patches)
     grassBladeConfig: defaultGrassBladeConfig,
     appearance: BRIGHT_GRASS_APPEARANCE,
 };

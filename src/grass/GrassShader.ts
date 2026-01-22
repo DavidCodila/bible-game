@@ -5,6 +5,7 @@ import { LOOP_TIME_IN_RADIANS } from './Constants';
 import type { DisposableObject } from '../app/types';
 import { SUN_DIRECTION } from '../scene/Constants';
 import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
+import { WORLD_SIZE } from '../terrain/Constants';
 
 export class GrassShader implements DisposableObject {
     public readonly material: THREE.ShaderMaterial;
@@ -18,7 +19,7 @@ export class GrassShader implements DisposableObject {
             inverseBladeHeight: { value: 1.0 / bladeHeight },
             uOpacity: { value: 1.0 },
             uHeightMap: { value: terrainService.heightTexture },
-            uWorldSize: { value: TerrainHeightService.WORLD_SIZE }
+            uWorldSize: { value: WORLD_SIZE }
         };
 
         this.material = new THREE.ShaderMaterial({
