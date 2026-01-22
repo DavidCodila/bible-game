@@ -42,7 +42,7 @@ export class BoundsHelper {
                 (verticalHalfSpan * verticalHalfSpan) // Y distance
             );
 
-            sphere.radius = radius + 1.0; // 1.0 safety buffer for wind/slopes
+            sphere.radius = radius + 2.0; // 2.0 safety buffer for wind/slopes
         }
     }
 }
