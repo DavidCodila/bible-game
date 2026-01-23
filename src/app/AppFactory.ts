@@ -11,8 +11,9 @@ import { LookHandler } from './camera/LookHandler';
 import { MovementHandler } from './camera/MovementHandler';
 import { TerrainPlane } from '../terrain/TerrainPlane';
 import { AudioController } from './camera/AudioController';
+import { TransitionController } from './TransitionController';
 
-export function assembleSystemsRegistry(): SystemsRegistry {
+export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const rendererController = new RendererController(
         new THREE.WebGLRenderer({ alpha: false, antialias: true, powerPreference: "high-performance", depth: true })
     );
@@ -23,9 +24,12 @@ export function assembleSystemsRegistry(): SystemsRegistry {
     const audioListener = new THREE.AudioListener();
     initialiseCamera(camera, audioListener);
     const audioController = new AudioController(audioListener);
-    audioController.loadBackgroundMusic('src/assets/audio/EVOE_Generations.mp3');
+    
+    await audioController.loadBackgroundMusic('src/assets/audio/EVOE_Generations.mp3');
+
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
+    TransitionController.getInstance().initialise(sceneController.sceneInstance);
 
     return new SystemsRegistry({
         rendererController,

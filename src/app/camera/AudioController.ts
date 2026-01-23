@@ -9,44 +9,36 @@ export class AudioController implements DisposableObject {
     constructor(audioListener: THREE.AudioListener) {
         this.audioListener = audioListener;
         this.audioLoader = new THREE.AudioLoader();
-        
-        this.setupUserInteractionHandler();
     }
 
-    private setupUserInteractionHandler(): void {
-        const startAudio = () => {
-            if (this.audioListener.context.state === 'suspended') {
-                this.audioListener.context.resume();
-            }
-            
-            if (this.backgroundMusic && !this.backgroundMusic.isPlaying) {
-                this.backgroundMusic.play();
-            }
-
-            window.removeEventListener('click', startAudio);
-        };
-
-        window.addEventListener('click', startAudio);
-    }
-
-    public loadBackgroundMusic(url: string, volume: number = 0.3): void {
-        this.audioLoader.load(
-            url, 
-            (buffer) => {
-                this.backgroundMusic = new THREE.Audio(this.audioListener);
-                this.backgroundMusic.setBuffer(buffer);
-                this.backgroundMusic.setLoop(true);
-                this.backgroundMusic.setVolume(volume);
-                if (this.audioListener.context.state === 'running') {
-                    this.backgroundMusic.play();
+    public async loadBackgroundMusic(url: string, volume: number = 0.3): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.audioLoader.load(
+                url, 
+                (buffer) => {
+                    this.backgroundMusic = new THREE.Audio(this.audioListener);
+                    this.backgroundMusic.setBuffer(buffer);
+                    this.backgroundMusic.setLoop(true);
+                    this.backgroundMusic.setVolume(volume);
+                    resolve(); // Signal that loading is complete
+                },
+                undefined,
+                (error) => {
+                    console.error(`An error occurred loading the audio file at ${url}:`, error);
+                    reject(error);
                 }
-            },
-            // Progress callback (required for load method)
-            undefined,
-            (error) => {
-                console.error(`An error occurred loading the audio file at ${url}:`, error);
-            }
-        );
+            );
+        });
+    }
+
+    public play(): void {
+        if (this.audioListener.context.state === 'suspended') {
+            this.audioListener.context.resume();
+        }
+        
+        if (this.backgroundMusic && !this.backgroundMusic.isPlaying) {
+            this.backgroundMusic.play();
+        }
     }
 
     public dispose(): void {

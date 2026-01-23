@@ -1,3 +1,4 @@
+import type { Scene } from 'three';
 import { UPDATE_ORDER, DISPOSE_ORDER } from './AppConfig';
 import { validateSystems } from './SystemsValidator';
 import { buildWorld } from './WorldBuilder';
@@ -30,6 +31,14 @@ export class SystemsRegistry {
         const camera = this.systems.cameraController.camera;
 
         renderer.render(scene, camera);
+    }
+
+    public startMusic(): void {
+        this.systems.audioController.play();
+    }
+
+    public getScene(): Scene {
+        return this.systems.sceneController.sceneInstance;
     }
 
     public dispose(): void {
