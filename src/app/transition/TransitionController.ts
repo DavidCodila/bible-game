@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { TransitionAssetFactory } from './TransitionAssetFactory';
+import { TransitionAnimator } from './TransitionAnimator';
 
 export class TransitionController {
     private static instance: TransitionController;
     private material!: THREE.ShaderMaterial;
     private mesh!: THREE.Mesh;
     private scene?: THREE.Scene;
-    private readonly duration: number = 8000; 
     private isInitialised: boolean = false;
 
     private constructor() {}
@@ -21,10 +21,8 @@ export class TransitionController {
     public initialise(scene: THREE.Scene): void {
         if (this.isInitialised) return;
         this.scene = scene;
-
         this.material = TransitionAssetFactory.createMaterial();
         this.mesh = TransitionAssetFactory.createMesh(this.material);
-        
         this.isInitialised = true;
     }
 
@@ -32,22 +30,10 @@ export class TransitionController {
         if (!this.isInitialised || !this.scene) return;
 
         this.scene.add(this.mesh);
-        const startTime = performance.now();
-
-        const step = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / this.duration, 1.0);
-
-            this.material.uniforms.uProgress.value = progress;
-
-            if (progress < 1.0) {
-                requestAnimationFrame(step);
-            } else {
-                this.dispose();
-            }
-        };
-
-        requestAnimationFrame(step);
+        
+        TransitionAnimator.start(this.material, () => {
+            this.dispose();
+        });
     }
 
     public onResize(width: number, height: number): void {
