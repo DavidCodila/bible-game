@@ -1,6 +1,6 @@
-import { GameObjectsController } from '../../../src/app/GameObjectsController';
-import { TerrainPlane } from '../../../src/terrain/TerrainPlane';
-import { buildWorld } from '../../../src/app/WorldBuilder';
+import { GameObjectsController } from '../../../src/world/logic/GameObjectsController';
+import { TerrainPlane } from '../../../src/world/terrain/TerrainPlane';
+import { buildWorld } from '../../../src/world/logic/WorldBuilder';
 
 vi.mock('@src/scene/TerrainPlane');
 

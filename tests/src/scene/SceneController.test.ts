@@ -1,6 +1,6 @@
 // @vitest-environment node
 import * as THREE from 'three';
-import { SceneController } from '../../../src/scene/SceneController';
+import { SceneController } from '../../../src/world/scene/SceneController';
 
 describe('SceneController', () => {
     let scene: THREE.Scene;

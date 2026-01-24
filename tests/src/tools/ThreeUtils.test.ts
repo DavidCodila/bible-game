@@ -1,6 +1,6 @@
 // @vitest-environment node
 import * as THREE from 'three';
-import { ThreeUtils } from '../../../src/tools/ThreeUtils'; 
+import { ThreeUtils } from '../../../src/utils/ThreeUtils'; 
 
 describe('ThreeUtils', () => {
     let geometry: THREE.BoxGeometry;

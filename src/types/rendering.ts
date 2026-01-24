@@ -1,4 +1,4 @@
-import type { GrassAttributeAccessor } from "../grass/generator/GrassAttributeAccessor";
+import type { GrassAttributeAccessor } from "../world/grass/generator/GrassAttributeAccessor";
 
 /**
  * Represents a single buffer for a WebGL attribute.

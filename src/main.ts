@@ -1,5 +1,5 @@
-import { GardenOfEdenApp } from './app/GardenOfEdenApp';
-import { OverlayController } from '../src/app/OverlayController';
+import { GardenOfEdenApp } from './engine/GardenOfEdenApp';
+import { OverlayController } from './ui/overlays/OverlayController';
 
 const initialiseApplication = (): void => {
     const gardenApp = new GardenOfEdenApp();

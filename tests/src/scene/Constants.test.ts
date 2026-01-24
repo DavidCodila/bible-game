@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { SUN_DIRECTION } from '../../../src/scene/Constants';
+import { SUN_DIRECTION } from '../../../src/world/scene/Constants';
 
 describe('Constants', () => {
     describe('SUN_DIRECTION', () => {

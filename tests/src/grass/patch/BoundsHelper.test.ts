@@ -1,7 +1,7 @@
 // @vitest-environment node
 import * as THREE from 'three';
-import { BoundsHelper } from '../../../../src/grass/patch/BoundsHelper';
-import type { GrassPatchConfig } from '../../../../src/grass/types';
+import { BoundsHelper } from '../../../../src/world/grass/patch/BoundsHelper';
+import type { GrassPatchConfig } from '../../../../src/world/grass/types';
 
 describe('BoundsHelper', () => {
     const MAX_NUMBER_OF_INSTANCES = 1;

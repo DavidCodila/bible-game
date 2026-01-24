@@ -1,9 +1,9 @@
-import { assembleSystemsRegistry } from '../../../src/app/AppFactory';
-import { SystemsRegistry } from '../../../src/app/SystemsRegistry';
-import { InputManager } from '../../../src/app/InputManager';
-import { GameObjectsController } from '../../../src/app/GameObjectsController';
-import { CameraController } from '../../../src/app/camera/CameraController';
-import { WindowController } from '../../../src/app/WindowController';
+import { assembleSystemsRegistry } from '../../../src/engine/AppFactory';
+import { SystemsRegistry } from '../../../src/engine/SystemsRegistry';
+import { InputManager } from '../../../src/systems/input/InputManager';
+import { GameObjectsController } from '../../../src/world/logic/GameObjectsController';
+import { CameraController } from '../../../src/systems/camera/CameraController';
+import { WindowController } from '../../../src/systems/window/WindowController';
 
 // Mock THREE module with MockWebGLRenderer defined INSIDE the factory
 vi.mock('three', async () => {

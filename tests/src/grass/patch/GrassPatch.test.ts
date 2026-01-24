@@ -1,15 +1,15 @@
 // @vitest-environment node
 import * as THREE from 'three';
-import { GrassPatch } from '../../../../src/grass/patch/GrassPatch';
-import { GrassGeometryFactory } from '../../../../src/grass/GrassGeometryFactory';
-import { DataGenerator } from '../../../../src/grass/generator/DataGenerator';
-import { GeometryUtils } from '../../../../src/tools/GeometryUtils';
-import { ThreeUtils } from '../../../../src/tools/ThreeUtils';
-import { GrassShader } from '../../../../src/grass/GrassShader';
-import { SUN_DIRECTION } from '../../../../src/scene/Constants';
-import { GRASS_BUFFER_LAYOUT } from '../../../../src/grass/generator/GrassConstants';
-import { GrassAttributeAccessor } from '../../../../src/grass/generator/GrassAttributeAccessor';
-import type { GrassPatchConfig } from '../../../../src/grass/types';
+import { GrassPatch } from '../../../../src/world/grass/patch/GrassPatch';
+import { GrassGeometryFactory } from '../../../../src/world/grass/GrassGeometryFactory';
+import { DataGenerator } from '../../../../src/world/grass/generator/DataGenerator';
+import { GeometryUtils } from '../../../../src/utils/GeometryUtils';
+import { ThreeUtils } from '../../../../src/utils/ThreeUtils';
+import { GrassShader } from '../../../../src/world/grass/GrassShader';
+import { SUN_DIRECTION } from '../../../../src/world/scene/Constants';
+import { GRASS_BUFFER_LAYOUT } from '../../../../src/world/grass/generator/GrassConstants';
+import { GrassAttributeAccessor } from '../../../../src/world/grass/generator/GrassAttributeAccessor';
+import type { GrassPatchConfig } from '../../../../src/world/grass/types';
 import type { AttributeBuffer, InstancedAttributeData } from '../../../../src/types/rendering';
 
 const mockShaderInstance = {
