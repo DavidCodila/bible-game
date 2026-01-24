@@ -13,9 +13,6 @@ export class GardenOfEdenApp implements DisposableObject {
     private isInitialized: boolean = false;
     private hasPressedPlay: boolean = false;
 
-    private timeSinceLastFrame: number = 0;
-    private targetFrameInterval: number = 1 / 30;
-
     constructor() {
         this.init();
         window.addEventListener('beforeunload', this.handleBeforeUnload);
@@ -35,8 +32,6 @@ export class GardenOfEdenApp implements DisposableObject {
     }
 
     public play(): void {
-        const overlay = document.getElementById('ui-overlay');
-        if (overlay) overlay.style.opacity = '0';
         this.hasPressedPlay = true;
         
         if (this.isInitialized) {
@@ -51,12 +46,13 @@ export class GardenOfEdenApp implements DisposableObject {
         const overlayElement = document.getElementById('ui-overlay');
         if (overlayElement) {
             // 1. Start Shader
-            TransitionController.getInstance().activate();
 
             // 2. Start CSS Fade
-            overlayElement.style.transition = 'opacity 1s ease-out';
+            overlayElement.style.transition = 'opacity 2s ease-out';
             overlayElement.style.opacity = '0';
             overlayElement.style.pointerEvents = 'none';
+
+            TransitionController.getInstance().activate();
 
             // 3. Physical Removal (after fade is done)
             setTimeout(() => {
