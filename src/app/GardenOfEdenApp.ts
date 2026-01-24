@@ -45,19 +45,14 @@ export class GardenOfEdenApp implements DisposableObject {
         this.animate();
         const overlayElement = document.getElementById('ui-overlay');
         if (overlayElement) {
-            // 1. Start Shader
-
-            // 2. Start CSS Fade
             overlayElement.style.transition = 'opacity 2s ease-out';
             overlayElement.style.opacity = '0';
             overlayElement.style.pointerEvents = 'none';
 
             TransitionController.getInstance().activate();
 
-            // 3. Physical Removal (after fade is done)
             setTimeout(() => {
                 overlayElement.remove();
-                // Now lock the screen
                 const canvas = document.querySelector('canvas');
                 canvas?.requestPointerLock();
             }, 1500);
@@ -67,7 +62,6 @@ export class GardenOfEdenApp implements DisposableObject {
     private animate = () => {
         if (!this.isRunning) return;
         this.animationFrameId = requestAnimationFrame(this.animate);
-
         this.registry?.tick();
     }
 

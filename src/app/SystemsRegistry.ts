@@ -6,14 +6,13 @@ import { buildWorld } from './WorldBuilder';
 export class SystemsRegistry {
     private readonly systems: Record<string, any>;
     private readonly clock = new THREE.Clock();
-
     private timeSinceLastUpdate: number = 0;
     private readonly targetInterval: number = 1 / 30;
 
     constructor(systems: Record<string, any>) {
         validateSystems(systems);
         this.systems = systems;
-        this.buildWorld();
+        buildWorld(this.systems.gameObjectsController);
     }
 
     public tick(): void {
@@ -31,11 +30,6 @@ export class SystemsRegistry {
         this.timeSinceLastUpdate %= this.targetInterval;
     }
 
-    public buildWorld(): void {
-        const controller = this.systems.gameObjectsController;
-        buildWorld(controller);
-    }
-
     public render(): void {
         const renderer = this.systems.rendererController;
         const scene = this.systems.sceneController.sceneInstance;
@@ -46,10 +40,6 @@ export class SystemsRegistry {
 
     public startMusic(): void {
         this.systems.audioController.play();
-    }
-
-    public getScene(): THREE.Scene {
-        return this.systems.sceneController.sceneInstance;
     }
 
     public dispose(): void {
