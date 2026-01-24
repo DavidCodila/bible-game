@@ -1,5 +1,5 @@
 import { RendererController } from './RendererController';
-import { TransitionController } from './TransitionController';
+import { TransitionController } from './transition/TransitionController';
 import { CameraController } from './camera/CameraController';
 import type { DisposableObject } from './types';
 

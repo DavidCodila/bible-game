@@ -1,4 +1,4 @@
-import { TransitionController } from "./TransitionController";
+import { TransitionController } from "./transition/TransitionController";
 
 export class OverlayController {
 

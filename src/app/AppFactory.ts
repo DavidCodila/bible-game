@@ -11,7 +11,7 @@ import { LookHandler } from './camera/LookHandler';
 import { MovementHandler } from './camera/MovementHandler';
 import { TerrainPlane } from '../terrain/TerrainPlane';
 import { AudioController } from './camera/AudioController';
-import { TransitionController } from './TransitionController';
+import { TransitionController } from './transition/TransitionController';
 
 export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const rendererController = new RendererController(
