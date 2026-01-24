@@ -1,14 +1,11 @@
 import * as THREE from 'three';
-import verttrexShader from './shaders/TransitionController.vert?raw';
-import fragmentShader from './shaders/TransitionController.frag?raw';
+import { TransitionAssetFactory } from './TransitionAssetFactory';
 
 export class TransitionController {
     private static instance: TransitionController;
-    
     private material!: THREE.ShaderMaterial;
     private mesh!: THREE.Mesh;
     private scene?: THREE.Scene;
-    
     private readonly duration: number = 8000; 
     private isInitialised: boolean = false;
 
@@ -25,22 +22,9 @@ export class TransitionController {
         if (this.isInitialised) return;
         this.scene = scene;
 
-        const geometry = new THREE.PlaneGeometry(2, 2);
-        this.material = new THREE.ShaderMaterial({
-            transparent: true,
-            depthTest: false,
-            depthWrite: false,
-            uniforms: {
-                uProgress: { value: 0.0 },
-                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-            },
-            vertexShader: verttrexShader,
-            fragmentShader: fragmentShader
-        });
-
-        this.mesh = new THREE.Mesh(geometry, this.material);
-        this.mesh.renderOrder = 9999;
-        this.mesh.frustumCulled = false;
+        this.material = TransitionAssetFactory.createMaterial();
+        this.mesh = TransitionAssetFactory.createMesh(this.material);
+        
         this.isInitialised = true;
     }
 
@@ -52,7 +36,6 @@ export class TransitionController {
 
         const step = (currentTime: number) => {
             const elapsed = currentTime - startTime;
-            // Use a normalized linear progress (0 to 1)
             const progress = Math.min(elapsed / this.duration, 1.0);
 
             this.material.uniforms.uProgress.value = progress;
