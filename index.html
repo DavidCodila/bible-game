@@ -12,43 +12,99 @@
             user-select: none; -webkit-user-select: none;
         }
 
+        /* The main container */
         #start-page {
-            position: fixed; inset: 0; z-index: 9999;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+            position: fixed; 
+            inset: 0; 
+            z-index: 9999;
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
             background-color: #000;
-            color: white; font-family: 'Segoe UI', sans-serif;
-            /* Match this time to your TS removeAndLock delay */
-            transition: opacity 2s ease-out; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: opacity 2s ease-out;
+            pointer-events: all; /* Ensures clicks aren't ignored */
         }
 
         h1 { 
             font-size: clamp(2rem, 10vw, 4.5rem); 
-            letter-spacing: 20px; font-weight: 200;
+            letter-spacing: 20px; 
+            font-weight: 200;
             margin-bottom: 3rem;
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            text-align: center;
         }
         
         #start-button {
-            padding: 16px 70px; font-size: 1rem;
-            background: transparent; color: white;
+            padding: 16px 70px; 
+            font-size: 1rem;
+            background: transparent; 
+            color: white;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            cursor: pointer; letter-spacing: 6px;
-            text-transform: uppercase; transition: 0.4s;
+            cursor: pointer; 
+            letter-spacing: 6px;
+            text-transform: uppercase; 
+            transition: all 0.4s ease;
         }
 
         #start-button:hover {
-            background: white; color: black;
+            background: white; 
+            color: black;
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
         }
 
-        canvas { display: block; }
+        /* Pulse animation for the splash text */
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.3; }
+        }
+        
+        #splash-prompt {
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            animation: pulse 3s infinite ease-in-out;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        /* The menu is hidden by default */
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
+        
+        #main-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Smooth fade-in for the menu reveal */
+        .fade-in {
+            animation: fadeIn 1.5s forwards ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
     </style>
 </head>
 <body>
     <div id="start-page">
-        <h1>GARDEN OF EDEN</h1>
-        <button id="start-button">ENTER</button>
+        <div id="splash-prompt">Click anywhere to begin the journey</div>
+
+        <div id="main-menu" class="hidden">
+            <h1>GARDEN OF EDEN</h1>
+            <button id="start-button">ENTER</button>
+        </div>
     </div>
     
     <script type="module" src="/src/main.ts"></script>

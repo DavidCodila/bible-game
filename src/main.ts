@@ -1,21 +1,17 @@
 import { GardenOfEdenApp } from './app/GardenOfEdenApp';
+import { OverlayController } from '../src/app/OverlayController';
 
 const initialiseApplication = (): void => {
-    const app = new GardenOfEdenApp();
+    const gardenApp = new GardenOfEdenApp();
 
-    const startButton = document.getElementById('start-button');
-    
-    if (startButton) {
-        startButton.addEventListener('click', () => {
-          app.play(); 
-        });
-    } else {
-      console.error("Could not find start-button in the HTML");
-    }
+    // Pass the play method as the callback for the OverlayController
+    OverlayController.init(() => {
+        gardenApp.play();
+    });
 };
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initialiseApplication);
+    document.addEventListener('DOMContentLoaded', initialiseApplication);
 } else {
-  initialiseApplication();
+    initialiseApplication();
 }
