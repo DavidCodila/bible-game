@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { SystemsRegistry } from './SystemsRegistry';
 import type { DisposableObject } from '../types/engine';
 import { OverlayController } from '../ui/overlays/OverlayController';
-import { AppBootstrapper } from './AppBootstrapper';
-import { AppLoop } from './AppLoop';
+import { AppBootstrapper } from './Bootstrapper';
+import { AppLoop } from './Loop';
 
 // To do: make hedge around garden with endless wilderness after hedge
 export class GardenOfEdenApp implements DisposableObject {

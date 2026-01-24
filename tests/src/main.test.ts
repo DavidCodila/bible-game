@@ -1,4 +1,4 @@
-import { GardenOfEdenApp } from '../../src/engine/GardenOfEdenApp';
+import { GardenOfEdenApp } from '../../src/engine/Engine';
 
 vi.mock('@src/app/GardenOfEdenApp', () => ({ GardenOfEdenApp: vi.fn() }));
 

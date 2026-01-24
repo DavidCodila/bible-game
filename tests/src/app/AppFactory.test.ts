@@ -1,4 +1,4 @@
-import { assembleSystemsRegistry } from '../../../src/engine/AppFactory';
+import { assembleSystemsRegistry } from '../../../src/engine/Factory';
 import { SystemsRegistry } from '../../../src/engine/SystemsRegistry';
 import { InputManager } from '../../../src/systems/input/InputManager';
 import { GameObjectsController } from '../../../src/world/logic/GameObjectsController';

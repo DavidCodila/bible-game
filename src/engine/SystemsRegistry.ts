@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { UPDATE_ORDER, DISPOSE_ORDER } from './AppConfig';
+import { UPDATE_ORDER, DISPOSE_ORDER } from './Config';
 import { validateSystems } from './SystemsValidator';
 import { buildWorld } from '../world/logic/WorldBuilder';
 

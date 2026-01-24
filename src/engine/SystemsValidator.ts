@@ -1,4 +1,4 @@
-import { ALL_KEYS } from "../engine/AppConfig";
+import { ALL_KEYS } from "./Config";
 
 export const validateSystems = (systems: Record<string, any>): void => {
     const systemKeys = Object.keys(systems);

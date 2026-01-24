@@ -1,5 +1,5 @@
 import { SystemsRegistry } from "../../../src/engine/SystemsRegistry";
-import { UPDATE_ORDER, DISPOSE_ORDER, ALL_KEYS } from "../../../src/engine/AppConfig";
+import { UPDATE_ORDER, DISPOSE_ORDER, ALL_KEYS } from "../../../src/engine/Config";
 import { buildWorld } from "../../../src/world/logic/WorldBuilder"; 
 
 vi.mock('../../../src/app/WorldBuilder', () => ({

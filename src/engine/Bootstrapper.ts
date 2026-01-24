@@ -1,4 +1,4 @@
-import { assembleSystemsRegistry } from './AppFactory';
+import { assembleSystemsRegistry } from './Factory';
 import { SystemsRegistry } from './SystemsRegistry';
 
 export class AppBootstrapper {
