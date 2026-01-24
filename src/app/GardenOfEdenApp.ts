@@ -1,64 +1,45 @@
 import * as THREE from 'three';
-import { assembleSystemsRegistry } from './AppFactory';
 import { SystemsRegistry } from './SystemsRegistry';
 import type { DisposableObject } from './types';
 import { OverlayController } from './OverlayController';
+import { AppBootstrapper } from './AppBootstrapper';
+import { AppLoop } from './AppLoop';
 
-//to do: make headge around garden with endless wilderness after hedge
+// To do: make hedge around garden with endless wilderness after hedge
 export class GardenOfEdenApp implements DisposableObject {
     private readonly clock = new THREE.Clock();
+    private readonly bootstrapper = new AppBootstrapper();
+    private readonly loop = new AppLoop();
     private registry?: SystemsRegistry;
-    private animationFrameId: number = 0;
-    private isRunning: boolean = true;
-    private isInitialized: boolean = false;
-    private hasPressedPlay: boolean = false;
 
     constructor() {
-        this.init();
+        this.bootstrapper.load(this.startGame);
         window.addEventListener('beforeunload', this.handleBeforeUnload);
     }
 
-    private async init(): Promise<void> {
-        try {
-            this.registry = await assembleSystemsRegistry();
-            this.isInitialized = true;
-            
-            if (this.hasPressedPlay) {
-                this.startGame();
-            }
-        } catch (error) {
-            console.error("Failed to initialize game systems:", error);
-        }
-    }
-
     public play(): void {
-        this.hasPressedPlay = true;
+        this.bootstrapper.play(this.startGame);
+    }
+
+    private startGame = (registry: SystemsRegistry): void => {
+        this.registry = registry;
         
-        if (this.isInitialized) {
-            this.startGame();
-        }
-    }
-
-    private startGame(): void {
         this.clock.start();
-        this.registry?.startMusic();
+        this.registry.startMusic();
+        
         OverlayController.startFadeSequence();
-        this.animate();
+
+        this.loop.start(() => {
+            registry.tick();
+        });
     }
 
-    private animate = () => {
-        if (!this.isRunning) return;
-        this.animationFrameId = requestAnimationFrame(this.animate);
-        this.registry?.tick();
-    }
-
-    private handleBeforeUnload = () => {
+    private handleBeforeUnload = (): void => {
         this.dispose();
     }
 
     public dispose(): void {
-        this.isRunning = false;
-        cancelAnimationFrame(this.animationFrameId);
+        this.loop.stop();
         this.registry?.dispose();
         window.removeEventListener('beforeunload', this.handleBeforeUnload);
     }
