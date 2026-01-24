@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { assembleSystemsRegistry } from './AppFactory';
 import { SystemsRegistry } from './SystemsRegistry';
 import type { DisposableObject } from './types';
-import { TransitionController } from './TransitionController';
+import { OverlayController } from './OverlayController';
 
 //to do: make headge around garden with endless wilderness after hedge
 export class GardenOfEdenApp implements DisposableObject {
@@ -42,21 +42,8 @@ export class GardenOfEdenApp implements DisposableObject {
     private startGame(): void {
         this.clock.start();
         this.registry?.startMusic();
+        OverlayController.startFadeSequence();
         this.animate();
-        const overlayElement = document.getElementById('ui-overlay');
-        if (overlayElement) {
-            overlayElement.style.transition = 'opacity 2s ease-out';
-            overlayElement.style.opacity = '0';
-            overlayElement.style.pointerEvents = 'none';
-
-            TransitionController.getInstance().activate();
-
-            setTimeout(() => {
-                overlayElement.remove();
-                const canvas = document.querySelector('canvas');
-                canvas?.requestPointerLock();
-            }, 1500);
-        }
     }
 
     private animate = () => {
