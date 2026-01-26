@@ -6,7 +6,7 @@ import { WORLD_SIZE } from '../terrain/Constants';
 export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
 
 export const defaultGrassBladeConfig: GrassBladeConfig = {
-    bladeHeight: 0.4, bladeWidth: 0.08, segmentsPerBlade: 3
+    bladeHeight: 0.4, bladeWidth: 0.08, segmentsPerBlade: 4
 };
 
 export const GRASS_GRID_CONFIG = {
