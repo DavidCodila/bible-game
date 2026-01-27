@@ -11,7 +11,8 @@ import { NoiseGenerator } from './Noise';
 export class GrassShader implements DisposableObject {
     public readonly material: THREE.ShaderMaterial;
     private readonly uniforms: { [key: string]: THREE.IUniform };
-    private readonly windDirection = new THREE.Vector2(1,2).normalize();
+    private readonly windDirection = new THREE.Vector2(-1,1).normalize();
+    private readonly gustSizeInMeters = 60.0;
 
     constructor(bladeHeight: number) {
         const terrainService = TerrainHeightService.getInstance();
@@ -24,9 +25,9 @@ export class GrassShader implements DisposableObject {
             uHeightMap: { value: terrainService.heightTexture },
             uWorldSize: { value: WORLD_SIZE },
             uWindDir: {value: this.windDirection},
-            uWindNoiseTexture: { value: noiseTexture }, // The new texture
-            uWindSpeed: { value: 0.15 },                // Speed of wind travel
-            uWindScale: { value: 0.05 }                 // "Zoom" level of the wind waves
+            uWindNoiseTexture: { value: noiseTexture },
+            uWindSpeed: { value: 8 },
+            uWindFrequency: { value: 1/this.gustSizeInMeters }
         };
 
         this.material = new THREE.ShaderMaterial({
@@ -48,8 +49,8 @@ export class GrassShader implements DisposableObject {
     }
 
     public update(elapsedTime: number): void {
-        const loopedTime = (elapsedTime % LOOP_TIME_IN_RADIANS);
-        this.uniforms.time.value = loopedTime;
+        //const loopedTime = (elapsedTime % LOOP_TIME_IN_RADIANS);
+        this.uniforms.time.value = elapsedTime;
         const angleShift = Math.sin(elapsedTime * 0.2) * 0.1;
         this.uniforms.uWindDir.value.set(
         Math.cos(angleShift + 0.5), // Base angle of ~30 degrees

@@ -11,7 +11,7 @@ uniform sampler2D uWindNoiseTexture;
 uniform float uWorldSize;
 uniform vec2 uWindDir;
 uniform float uWindSpeed;
-uniform float uWindScale;
+uniform float uWindFrequency;
 
 varying vec3 vColor;
 varying float vHeightProgress;
@@ -32,7 +32,9 @@ void main(){
     // 2. Height calculation for bending physics
     float heightProgress = position.y * inverseBladeHeight;
     vHeightProgress = heightProgress;
-    float bendBias = pow(heightProgress, 1.6);
+
+    float bendingStiffener = 2.0;
+    float bendBias = pow(heightProgress, bendingStiffener);
 
     // 3. APPLY LOCAL BEND (Natural Lean)
     // Applied before rotation so the lean is relative to the blade's face
@@ -48,21 +50,20 @@ void main(){
     // 5. UNIFIED WIND PROPAGATION
     vec3 rootWorldPosition = instanceOffsets + modelMatrix[3].xyz;
 
-    // We calculate a "Moving Coordinate System". 
-    // This shifts the world coordinates in the direction of the wind over time.
-    float windTravelDistance = time * uWindSpeed * 20.0; 
-    vec2 movingCoordinates = rootWorldPosition.xz - (uWindDir * windTravelDistance);
+    // Scroll the world-space coordinates to simulate a continuous wind front traveling across the field.
+    float windTravelDistance = time * uWindSpeed; 
+    vec2 windPropagation = rootWorldPosition.xz - (uWindDir * windTravelDistance);
 
     // Sample the noise using the moving coordinates
-    vec2 windUV = movingCoordinates * uWindScale;
+    vec2 windUV = windPropagation * uWindFrequency;
     float windNoiseSample = texture2D(uWindNoiseTexture, windUV).r;
 
     // Calculate a rolling sine wave using the same moving coordinates
     // This ensures the wave "crests" are perfectly in sync with the noise patches
-    float wavePhase = (movingCoordinates.x + movingCoordinates.y) * 0.2;
+    float wavePhase = dot(windPropagation, uWindDir) * (uWindFrequency * 6.28318);
     float rollingWave = sin(wavePhase);
 
-    // Combine noise and sine wave for the final force
+    // Combine
     float totalWindForce = (rollingWave * 0.3 + 0.7) * windNoiseSample;
 
     // 6. APPLY GLOBAL WIND DISPLACEMENT
