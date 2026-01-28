@@ -19,7 +19,7 @@ void main(){
     //}
     float ao = mix(0.2, 1.0, vHeightProgress);
 
-    float sunExposure = mix(0.4, 1.0, vHeightProgress); 
+    float sunExposure = 0.4 + 0.7 * vHeightProgress;
     float directionalLighting = 0.9 + 0.1 * sunDirection.x; 
     
     vec3 finalColor = vColor * sunExposure * directionalLighting * ao * vec3(0.7, 0.8, 1.0);
