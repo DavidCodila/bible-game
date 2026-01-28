@@ -12,15 +12,16 @@ float hash(vec2 p) {
 }
 
 void main(){
-    float threshold = hash(vWorldPosition.xz * 100.0);
+    //float threshold = hash(vWorldPosition.xz * 100.0);
     
-    if (threshold > uOpacity) {
-        discard;
-    }
-    float sunExposure = 0.3 + 0.7 * vHeightProgress; 
+    //if (threshold > uOpacity) {
+    //    discard;
+    //}
+    float ao = mix(0.2, 1.0, vHeightProgress);
+
+    float sunExposure = mix(0.4, 1.0, vHeightProgress); 
     float directionalLighting = 0.9 + 0.1 * sunDirection.x; 
-    float baseShading = mix(0.5, 1.0, vHeightProgress); 
     
-    vec3 finalColor = vColor * sunExposure * directionalLighting * baseShading * vec3(0.7, 0.8, 1.0);
+    vec3 finalColor = vColor * sunExposure * directionalLighting * ao * vec3(0.7, 0.8, 1.0);
     gl_FragColor = vec4(finalColor, 1.0);
 }

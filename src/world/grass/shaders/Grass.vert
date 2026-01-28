@@ -33,7 +33,7 @@ void main(){
     vHeightProgress = heightProgress;
 
     // Define the bend bias so the base stays stiff while the tip sways
-    float bendingStiffener = 2.0;
+    float bendingStiffener = 1.8;
     float bendBias = pow(heightProgress, bendingStiffener);
 
     // Apply unique natural lean to the blade face
@@ -62,7 +62,7 @@ void main(){
     float rollingWave = sin(wavePhase);
 
     // Combine
-    float totalWindForce = (rollingWave * 0.6 + 0.6) * windNoiseSample;
+    float totalWindForce = (rollingWave * 0.5 + 0.5) * windNoiseSample;
 
     // APPLY GLOBAL WIND DISPLACEMENT
     // Applied after rotation so all grass pushes in the same world direction
@@ -75,7 +75,7 @@ void main(){
     float terrainHeight = texture2D(uHeightMap, terrainUV).r;
 
     vec3 finalWorldPosition = transformedPosition + rootWorldPosition;
-    finalWorldPosition.y += terrainHeight - totalWindForce * 0.05; 
+    finalWorldPosition.y += terrainHeight - totalWindForce * 0.08; 
     // used to mitagate streached appearance when bent
 
     // INTERPOLATED VARYINGS
