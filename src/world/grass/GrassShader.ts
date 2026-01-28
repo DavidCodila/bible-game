@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import vertexShader from './shaders/Grass.vert?raw';
 import fragmentShader from './shaders/Grass.frag?raw';
-import { LOOP_TIME_IN_RADIANS } from './Constants';
 import type { DisposableObject } from '../../types/engine';
 import { SUN_DIRECTION } from '../scene/Constants';
 import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
@@ -11,8 +10,8 @@ import { NoiseGenerator } from './Noise';
 export class GrassShader implements DisposableObject {
     public readonly material: THREE.ShaderMaterial;
     private readonly uniforms: { [key: string]: THREE.IUniform };
-    private readonly windDirection = new THREE.Vector2(-1,1).normalize();
-    private readonly gustSizeInMeters = 60.0;
+    private readonly windDirection = new THREE.Vector2(-1, 0).normalize();
+    private readonly gustSizeInMeters = 25.0;
 
     constructor(bladeHeight: number) {
         const terrainService = TerrainHeightService.getInstance();
@@ -49,12 +48,6 @@ export class GrassShader implements DisposableObject {
     }
 
     public update(elapsedTime: number): void {
-        //const loopedTime = (elapsedTime % LOOP_TIME_IN_RADIANS);
         this.uniforms.time.value = elapsedTime;
-        const angleShift = Math.sin(elapsedTime * 0.2) * 0.1;
-        this.uniforms.uWindDir.value.set(
-        Math.cos(angleShift + 0.5), // Base angle of ~30 degrees
-        Math.sin(angleShift + 0.5)
-        ).normalize();
     }
 }

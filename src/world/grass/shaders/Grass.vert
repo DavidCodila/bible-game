@@ -24,30 +24,28 @@ vec2 rotate2D(in vec2 point, in float angle){
 }
 
 void main(){
+    // Initialize local position and apply random height scaling
     vec3 transformedPosition = position;
-
-    // 1. Vertical Scaling
     transformedPosition.y *= instanceScaleY;
 
-    // 2. Height calculation for bending physics
+    // Calculate height progress (0 at root, 1 at tip) for bending weight
     float heightProgress = position.y * inverseBladeHeight;
     vHeightProgress = heightProgress;
 
+    // Define the bend bias so the base stays stiff while the tip sways
     float bendingStiffener = 2.0;
     float bendBias = pow(heightProgress, bendingStiffener);
 
-    // 3. APPLY LOCAL BEND (Natural Lean)
-    // Applied before rotation so the lean is relative to the blade's face
+    // Apply unique natural lean to the blade face
     transformedPosition.x += instanceBendX * bendBias;
     transformedPosition.z += instanceBendZ * bendBias;
 
-    // 4. APPLY Y-AXIS ROTATION
-    // Orient the blade in the world
+    // Rotate the blade on its Y-axis for random orientation
     vec2 rotatedPosition = rotate2D(transformedPosition.xz, instanceYAxisRotation);
     transformedPosition.x = rotatedPosition.x;
     transformedPosition.z = rotatedPosition.y;
 
-    // 5. UNIFIED WIND PROPAGATION
+    // Calculate the absolute world position of the blade's root
     vec3 rootWorldPosition = instanceOffsets + modelMatrix[3].xyz;
 
     // Scroll the world-space coordinates to simulate a continuous wind front traveling across the field.
@@ -64,22 +62,23 @@ void main(){
     float rollingWave = sin(wavePhase);
 
     // Combine
-    float totalWindForce = (rollingWave * 0.3 + 0.7) * windNoiseSample;
+    float totalWindForce = (rollingWave * 0.6 + 0.6) * windNoiseSample;
 
-    // 6. APPLY GLOBAL WIND DISPLACEMENT
+    // APPLY GLOBAL WIND DISPLACEMENT
     // Applied after rotation so all grass pushes in the same world direction
     // Weighting Z (0.7) and X (0.3) as requested
     transformedPosition.x += uWindDir.x * totalWindForce * bendBias * 0.3;
     transformedPosition.z += uWindDir.y * totalWindForce * bendBias * 0.7;
 
-    // 7. TERRAIN CONFORMITY
+    // TERRAIN CONFORMITY
     vec2 terrainUV = (rootWorldPosition.xz + (uWorldSize / 2.0)) / uWorldSize;
     float terrainHeight = texture2D(uHeightMap, terrainUV).r;
 
     vec3 finalWorldPosition = transformedPosition + rootWorldPosition;
-    finalWorldPosition.y += terrainHeight;
+    finalWorldPosition.y += terrainHeight - totalWindForce * 0.05; 
+    // used to mitagate streached appearance when bent
 
-    // 8. INTERPOLATED VARYINGS
+    // INTERPOLATED VARYINGS
     vColor = instanceColors;
     vWorldPosition = finalWorldPosition;
 
