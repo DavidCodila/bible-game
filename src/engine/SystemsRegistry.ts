@@ -7,7 +7,7 @@ export class SystemsRegistry {
     private readonly systems: Record<string, any>;
     private readonly clock = new THREE.Clock();
     private timeSinceLastUpdate: number = 0;
-    private readonly targetInterval: number = 1 / 30;
+    private readonly targetInterval: number = 1 / 15;
 
     constructor(systems: Record<string, any>) {
         validateSystems(systems);

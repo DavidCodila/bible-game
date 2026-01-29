@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { TerrainHeightService } from '../../world/terrain/services/TerrainHeightService';
 
 export function initialiseCamera(camera : THREE.PerspectiveCamera, audioListener: THREE.AudioListener) : THREE.PerspectiveCamera {
-    const startX = 0;
+    const startX = 4;
     const startZ = 4;
     const groundHeight = TerrainHeightService.getHeight(startX, startZ);
     camera.fov = 75;

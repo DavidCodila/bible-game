@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
+import { CreditsManager } from '../../utils/CreditsManager';
 import type { SceneController } from '../scene/SceneController';
 import { WORLD_SIZE } from '../terrain/Constants';
 
@@ -13,6 +14,13 @@ export class TreeManager {
     }
 
     public async spawnTrees(modelPath: string, count: number): Promise<void> {
+        CreditsManager.registerAsset({
+            assetName: "Low Poly Tree Scene Free",
+            authorName: "Nicholas 3D",
+            licenseType: "Creative Commons Attribution (CC BY 4.0)",
+            sourceLink: "https://www.fab.com/listings/38e872cc-bb49-4f70-b063-68bc92bbb57e"
+        });
+        CreditsManager.printToConsole();
         // 1. Load the GLTF Model
         const gltf = await this.loader.loadAsync(modelPath);
         
@@ -32,25 +40,11 @@ export class TreeManager {
             if (child instanceof THREE.Mesh) {
                 console.log(`Mesh: ${child.name} | Polys: ${child.geometry.attributes.position.count / 3}`);
 
-                const material = child.material as THREE.MeshStandardMaterial;
-                if (material.map) {
-                    material.alphaTest = 0.5;      // Only render pixels stronger than 50% opacity
-                    material.transparent = false; // TURNING THIS OFF SAVES PERFORMANCE
-                    material.side = THREE.DoubleSide; 
-                    material.needsUpdate = true;
-                }
-
-                const testMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-                const instancedMesh = new THREE.InstancedMesh(child.geometry, testMaterial, count);     
-
-
-                /*
                 const instancedMesh = new THREE.InstancedMesh(
                     child.geometry,
                     child.material,
                     count
                 );
-                */
 
                 // Apply the pre-calculated matrices
                 for (let i = 0; i < count; i++) {
@@ -77,11 +71,11 @@ export class TreeManager {
     private randomizePositionOnTerrain(dummy: THREE.Object3D): void {
         const x = (Math.random() - 0.5) * WORLD_SIZE;
         const z = (Math.random() - 0.5) * WORLD_SIZE;
-        const y = TerrainHeightService.getHeight(x, z);
+        const y = TerrainHeightService.getHeight(0, 0);
 
-        dummy.position.set(x, y, z); // Use the random X and Z!
+        dummy.position.set(0, y, 0); // Use the random X and Z!
         dummy.rotation.y = Math.random() * Math.PI * 2;
-        const scale = 0.4;
+        const scale = 3;
         dummy.scale.set(scale, scale, scale);
     }
 }

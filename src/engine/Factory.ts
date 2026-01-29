@@ -31,7 +31,7 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
     const treeManager = new TreeManager(sceneController);
-    treeManager.spawnTrees('models/low_poly_tree_scene_free.glb', 1);
+    treeManager.spawnTrees('models/LowPolyTree.glb', 1);
     TransitionController.getInstance().initialise(sceneController.sceneInstance);
 
     return new SystemsRegistry({
