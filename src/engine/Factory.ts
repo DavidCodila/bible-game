@@ -26,7 +26,7 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     initialiseCamera(camera, audioListener);
     const audioController = new AudioController(audioListener);
     
-    await audioController.loadBackgroundMusic('src/assets/audio/EVOE_Generations.mp3');
+    await audioController.loadBackgroundMusic('public/audio/EVOE_Generations.mp3');
 
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
