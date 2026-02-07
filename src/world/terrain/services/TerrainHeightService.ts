@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
 import { alea } from 'seedrandom';
 import { clamp } from '../../../utils/GeometryUtils';
-import { AMPLITUDE, RESOLUTION, SEED, WORLD_SIZE } from '../Constants';
+import { HEIGHTMAP_RESOLUTION, WORLD_SIZE_METERS } from '../../WorldConfig';
 
 export class TerrainHeightService {
     private static instance: TerrainHeightService;
@@ -10,19 +10,21 @@ export class TerrainHeightService {
 
     public heightTexture: THREE.DataTexture;
     private heightData: Float32Array;
+    private readonly AMPLITUDE = 2.0;
+    private readonly SEED = 'the-garden-of-Eden';
 
     private constructor() {
-        const pseudoRNG = alea(SEED);
+        const pseudoRNG = alea(this.SEED);
         const noise2D = createNoise2D(pseudoRNG); 
-        this.heightData = new Float32Array(RESOLUTION * RESOLUTION);
+        this.heightData = new Float32Array(HEIGHTMAP_RESOLUTION * HEIGHTMAP_RESOLUTION);
 
         for (let i = 0; i < this.heightData.length; i++) {
-            const x = i % RESOLUTION;
-            const z = Math.floor(i / RESOLUTION);
+            const x = i % HEIGHTMAP_RESOLUTION;
+            const z = Math.floor(i / HEIGHTMAP_RESOLUTION);
             
             // Normalize coordinates to 0.0 - 1.0
-            const nx = x / RESOLUTION;
-            const nz = z / RESOLUTION;
+            const nx = x / HEIGHTMAP_RESOLUTION;
+            const nz = z / HEIGHTMAP_RESOLUTION;
 
             // 2. LAYER THE SIMPLEX NOISE (fBm)
             // Layer 1: Big landscape shapes
@@ -33,13 +35,13 @@ export class TerrainHeightService {
             noise += noise2D(nx * 20.0, nz * 20.0) * 0.05;
 
             // 3. Normalize the noise (simplex returns -1 to 1) and apply amplitude
-            this.heightData[i] = noise * AMPLITUDE;
+            this.heightData[i] = noise * this.AMPLITUDE;
         }
 
         this.heightTexture = new THREE.DataTexture(
             this.heightData,
-            RESOLUTION,
-            RESOLUTION,
+            HEIGHTMAP_RESOLUTION,
+            HEIGHTMAP_RESOLUTION,
             THREE.RedFormat,
             THREE.FloatType
         );
@@ -57,12 +59,12 @@ export class TerrainHeightService {
     public static getHeight(worldX: number, worldZ: number): number {
         const xIndex = this.worldPositionToCoordinateIndex(worldX);
         const zIndex = this.worldPositionToCoordinateIndex(worldZ);
-        return this.getInstance().heightData[zIndex * RESOLUTION + xIndex];
+        return this.getInstance().heightData[zIndex * HEIGHTMAP_RESOLUTION + xIndex];
     }
 
     private static worldPositionToCoordinateIndex(position: number) : number {
-        let index = ((position + WORLD_SIZE / 2) / WORLD_SIZE) * (RESOLUTION - 1);
-        index = clamp(Math.round(index), 0, RESOLUTION - 1);
+        let index = ((position + WORLD_SIZE_METERS / 2) / WORLD_SIZE_METERS) * (HEIGHTMAP_RESOLUTION - 1);
+        index = clamp(Math.round(index), 0, HEIGHTMAP_RESOLUTION - 1);
         return index;
     }
 }

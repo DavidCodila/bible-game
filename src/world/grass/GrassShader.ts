@@ -4,7 +4,7 @@ import fragmentShader from './shaders/Grass.frag?raw';
 import type { DisposableObject } from '../../types/engine';
 import { SUN_DIRECTION } from '../scene/Constants';
 import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
-import { WORLD_SIZE } from '../terrain/Constants';
+import { WORLD_SIZE_METERS  } from '../WorldConfig';
 import { NoiseGenerator } from './Noise';
 
 export class GrassShader implements DisposableObject {
@@ -13,7 +13,7 @@ export class GrassShader implements DisposableObject {
     private readonly windDirection = new THREE.Vector2(-1, 0).normalize();
     private readonly gustSizeInMeters = 25.0;
 
-    constructor(bladeHeight: number) {
+    constructor(bladeHeight: number) { //to add texture: https://ambientcg.com/view?id=Foliage006
         const terrainService = TerrainHeightService.getInstance();
         const noiseTexture = NoiseGenerator.createSeamlessNoise(128);
         this.uniforms = {
@@ -22,7 +22,7 @@ export class GrassShader implements DisposableObject {
             inverseBladeHeight: { value: 1.0 / bladeHeight },
             uOpacity: { value: 1.0 },
             uHeightMap: { value: terrainService.heightTexture },
-            uWorldSize: { value: WORLD_SIZE },
+            uWorldSize: { value: WORLD_SIZE_METERS },
             uWindDir: {value: this.windDirection},
             uWindNoiseTexture: { value: noiseTexture },
             uWindSpeed: { value: 8 },

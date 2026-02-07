@@ -1,16 +1,14 @@
 import * as THREE from 'three';
 import { TerrainHeightService } from './services/TerrainHeightService';
-import { RESOLUTION, WORLD_SIZE } from './Constants';
 import type { SceneController } from '../scene/SceneController';
+import { WORLD_SIZE_METERS, HEIGHTMAP_RESOLUTION } from '../WorldConfig';
 
 export class TerrainPlane {
     private mesh: THREE.Mesh;
-    public static WORLD_SIZE = 200;
-    public static RESOLUTION = 256;
 
     constructor(sceneController: SceneController) {
-        const size = WORLD_SIZE;
-        const segments = RESOLUTION - 1; 
+        const size = WORLD_SIZE_METERS;
+        const segments = HEIGHTMAP_RESOLUTION - 1; 
 
         const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
         geometry.rotateX(-Math.PI / 2);

@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
 import { CreditsManager } from '../../utils/CreditsManager';
 import type { SceneController } from '../scene/SceneController';
-import { WORLD_SIZE } from '../terrain/Constants';
+import { WORLD_SIZE_METERS } from '../WorldConfig';
 
 export class TreeManager {
     private loader = new GLTFLoader();
@@ -69,8 +69,8 @@ export class TreeManager {
     }
 
     private randomizePositionOnTerrain(dummy: THREE.Object3D): void {
-        const x = (Math.random() - 0.5) * WORLD_SIZE;
-        const z = (Math.random() - 0.5) * WORLD_SIZE;
+        const x = (Math.random() - 0.5) * WORLD_SIZE_METERS;
+        const z = (Math.random() - 0.5) * WORLD_SIZE_METERS;
         const y = TerrainHeightService.getHeight(0, 0);
 
         dummy.position.set(0, y, 0); // Use the random X and Z!
