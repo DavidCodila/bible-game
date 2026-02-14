@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
 import { alea } from 'seedrandom';
 import { clamp } from '../../../utils/GeometryUtils';
-import { HEIGHTMAP_RESOLUTION, WORLD_SIZE_METERS } from '../../WorldConfig';
+import { HEIGHTMAP_RESOLUTION, WORLD_SIZE_METERS, SEED } from '../../WorldConfig';
 
 export class TerrainHeightService {
     private static instance: TerrainHeightService;
@@ -11,10 +11,10 @@ export class TerrainHeightService {
     public heightTexture: THREE.DataTexture;
     private heightData: Float32Array;
     private readonly AMPLITUDE = 2.0;
-    private readonly SEED = 'the-garden-of-Eden';
+            
 
     private constructor() {
-        const pseudoRNG = alea(this.SEED);
+        const pseudoRNG = alea(SEED);
         const noise2D = createNoise2D(pseudoRNG); 
         this.heightData = new Float32Array(HEIGHTMAP_RESOLUTION * HEIGHTMAP_RESOLUTION);
 
