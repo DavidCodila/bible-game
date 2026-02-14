@@ -6,7 +6,7 @@ import { WORLD_SIZE_METERS } from '../WorldConfig';
 export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
 
 export const defaultGrassBladeConfig: GrassBladeConfig = {
-    bladeHeight: 0.4, bladeWidth: 0.06, segmentsPerBlade: 6
+    bladeHeight: 0.4, bladeWidth: 0.08, segmentsPerBlade: 6
 };
 
 export const GRASS_GRID_CONFIG = {
@@ -19,7 +19,7 @@ export const GRASS_GRID_CONFIG = {
 
 export const brightGrassPatch = () => new GrassPatch({
     sideLength: 1,
-    bladesPerRow: 20,
+    bladesPerRow: 10,
     grassBladeConfig: defaultGrassBladeConfig,
     appearance: BRIGHT_GRASS_APPEARANCE
 });
