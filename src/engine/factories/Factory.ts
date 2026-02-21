@@ -31,6 +31,7 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
 
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
+    const windowController = new WindowController(rendererController, cameraController);
     const treeManager = new TreeManager(sceneController);
     await treeManager.initialise();
    
@@ -45,7 +46,7 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
         inputManager,
         cameraController,
         audioController,
-        windowController: new WindowController(rendererController, cameraController),
+        windowController,
         terrainPlane
     });
 }
