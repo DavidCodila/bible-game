@@ -23,5 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+# Models
+*.glb
+
 # Testing
 tests/coverage/

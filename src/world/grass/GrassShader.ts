@@ -13,7 +13,7 @@ export class GrassShader implements DisposableObject {
     private readonly windDirection = new THREE.Vector2(-1, 0).normalize();
     private readonly gustSizeInMeters = 25.0;
 
-    constructor(bladeHeight: number) { //to add texture: https://ambientcg.com/view?id=Foliage006
+    constructor(bladeHeight: number) {
         const terrainService = TerrainHeightService.getInstance();
         const noiseTexture = NoiseGenerator.createSeamlessNoise(128);
         this.uniforms = {

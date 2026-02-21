@@ -15,10 +15,10 @@ export class TreeManager {
 
     public async spawnTrees(modelPath: string, count: number): Promise<void> {
         CreditsManager.registerAsset({
-            assetName: "Low Poly Tree Scene Free",
-            authorName: "Nicholas 3D",
-            licenseType: "Creative Commons Attribution (CC BY 4.0)",
-            sourceLink: "https://www.fab.com/listings/38e872cc-bb49-4f70-b063-68bc92bbb57e"
+            assetName: "Pine trees pack (lowpoly, game ready, LODs)",
+            authorName: "LOLIPOP",
+            licenseType: "CC BY 4.0",
+            sourceLink: "https://sketchfab.com/3d-models/pine-trees-pack-lowpoly-game-ready-lods-e1e9c07b8e2e445c943fec660beefba2"
         });
         CreditsManager.printToConsole();
         // 1. Load the GLTF Model
@@ -71,11 +71,9 @@ export class TreeManager {
     private randomizePositionOnTerrain(dummy: THREE.Object3D): void {
         const x = (Math.random() - 0.5) * WORLD_SIZE_METERS;
         const z = (Math.random() - 0.5) * WORLD_SIZE_METERS;
-        const y = TerrainHeightService.getHeight(0, 0);
+        const y = TerrainHeightService.getHeight(x, z);
 
-        dummy.position.set(0, y, 0); // Use the random X and Z!
+        dummy.position.set(x, y, z); // Use the random X and Z!
         dummy.rotation.y = Math.random() * Math.PI * 2;
-        const scale = 3;
-        dummy.scale.set(scale, scale, scale);
     }
 }
