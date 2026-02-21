@@ -25,6 +25,7 @@ dist-ssr
 
 # Models
 *.glb
+!Pine_Tree_Large_LOD0_v1.glb
 
 # Testing
 tests/coverage/
