@@ -27,6 +27,7 @@ dist-ssr
 *.glb
 !Pine_Tree_Large_LOD0_v1.glb
 !Pine_Tree_Small_LOD0_v1.glb
+!Pine_Tree_Small_LOD0_v2.glb
 
 # Testing
 tests/coverage/
