@@ -13,6 +13,7 @@ import { TerrainPlane } from '../world/terrain/TerrainPlane';
 import { AudioController } from '../systems/audio/AudioController';
 import { TransitionController } from '../ui/transition/TransitionController';
 import { TreeManager } from '../world/trees/TreeManager';
+import { CreditsManager } from '../utils/CreditsManager';
 
 export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const rendererController = new RendererController(
@@ -31,9 +32,11 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
     const treeManager = new TreeManager(sceneController);
-    treeManager.initialise();
+    await treeManager.initialise();
    
     TransitionController.getInstance().initialise(sceneController.sceneInstance);
+
+    CreditsManager.printToConsole();
 
     return new SystemsRegistry({
         rendererController,
