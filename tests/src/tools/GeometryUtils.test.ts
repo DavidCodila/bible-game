@@ -1,6 +1,6 @@
 // @vitest-environment node
 import * as THREE from 'three';
-import { GeometryUtils, clamp, defaultBladeTaper } from '../../../src/utils/GeometryUtils';
+import { GeometryUtils, clamp, defaultBladeTaper } from '../../../src/utils/math/GeometryUtils';
 import { GrassAttributeAccessor } from '../../../src/world/grass/generator/GrassAttributeAccessor';
 import type { InstancedAttributeData, AttributeBuffer } from "../../../src/types/rendering";
 

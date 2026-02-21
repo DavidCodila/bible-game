@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { clamp } from '../../utils/GeometryUtils';
+import { clamp } from '../../utils/math/GeometryUtils';
 import type { InputManager } from "../input/InputManager";
-import { assignForwardVector } from '../../utils/GeometryUtils';
+import { assignForwardVector } from '../../utils/math/GeometryUtils';
 
 const SENSITIVITY = 0.002;
 const DAMPING = 0.15;

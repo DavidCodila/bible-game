@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { SystemsRegistry } from './SystemsRegistry';
-import type { DisposableObject } from '../types/engine';
-import { OverlayController } from '../ui/overlays/OverlayController';
+import { SystemsRegistry } from '../registry/SystemsRegistry';
+import type { DisposableObject } from '../../types/engine';
+import { OverlayController } from '../../ui/overlays/OverlayController';
 import { AppBootstrapper } from './Bootstrapper';
 import { AppLoop } from './Loop';
 

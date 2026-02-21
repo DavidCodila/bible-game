@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { MatrixPlacer } from '../../engine/MatrixPlacer';
-import { InstancedMeshFactory } from '../../engine/InstancedMeshFactory';
+import { MatrixPlacer } from '../../utils/math/MatrixPlacer';
+import { InstancedMeshFactory } from '../../engine/factories/InstancedMeshFactory';
 import type { SceneController } from '../scene/SceneController';
-import { AssetRegistry } from '../../engine/AssetRegistry';
+import { AssetRegister } from '../../utils/copyright/AssetRegister';
 
 export class TreeManager {
     private loader = new GLTFLoader();
@@ -21,7 +21,7 @@ export class TreeManager {
     }
 
     public async spawnTrees(modelPath: string, count: number): Promise<void> {
-        AssetRegistry.registerByPath(modelPath);
+        AssetRegister.registerByPath(modelPath);
         const gltf = await this.loader.loadAsync(modelPath);
         const matrices = MatrixPlacer.generate(count);
 

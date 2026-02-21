@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { TerrainHeightService } from '../world/terrain/services/TerrainHeightService';
-import { WORLD_SIZE_METERS } from '../world/WorldConfig';
+import { TerrainHeightService } from '../../world/terrain/services/TerrainHeightService';
+import { WORLD_SIZE_METERS } from '../../world/WorldConfig';
 
 export class MatrixPlacer {
     public static generate(count: number): THREE.Matrix4[] {

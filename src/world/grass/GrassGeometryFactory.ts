@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { GrassBladeConfig } from './types';
-import { defaultBladeTaper } from '../../utils/GeometryUtils';
+import { defaultBladeTaper } from '../../utils/math/GeometryUtils';
 
 export class GrassGeometryFactory {
 

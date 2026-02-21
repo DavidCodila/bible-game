@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
 import { alea } from 'seedrandom';
-import { clamp } from '../../../utils/GeometryUtils';
+import { clamp } from '../../../utils/math/GeometryUtils';
 import { HEIGHTMAP_RESOLUTION, WORLD_SIZE_METERS, SEED } from '../../WorldConfig';
 
 export class TerrainHeightService {

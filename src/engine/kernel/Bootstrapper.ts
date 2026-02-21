@@ -1,5 +1,5 @@
-import { assembleSystemsRegistry } from './Factory';
-import { SystemsRegistry } from './SystemsRegistry';
+import { assembleSystemsRegistry } from '../factories/Factory';
+import { SystemsRegistry } from '../registry/SystemsRegistry';
 
 export class AppBootstrapper {
     private isInitialized: boolean = false;

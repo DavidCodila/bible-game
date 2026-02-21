@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { UPDATE_ORDER, DISPOSE_ORDER } from './Config';
-import { validateSystems } from './SystemsValidator';
-import { buildWorld } from '../world/logic/WorldBuilder';
+import { UPDATE_ORDER, DISPOSE_ORDER } from '../kernel/Config';
+import { validateSystems } from './SystemsRegistryValidator';
+import { buildWorld } from '../../world/logic/WorldBuilder';
 
 export class SystemsRegistry {
     private readonly systems: Record<string, any>;

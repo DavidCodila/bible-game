@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { GeometryUtils } from '../../../utils/GeometryUtils';
+import { GeometryUtils } from '../../../utils/math/GeometryUtils';
 import { DataGenerator } from '../generator/DataGenerator';
 import { GrassGeometryFactory } from '../GrassGeometryFactory'; 
 import { GrassShader } from '../GrassShader';
 import { BoundsHelper } from "./BoundsHelper";
-import { ThreeUtils } from '../../../utils/ThreeUtils';
+import { ThreeUtils } from '../../../utils/three/ThreeUtils';
 import type { MeshGameObject } from '../../../types/engine';
 import type { GrassPatchConfig } from "../types";
 

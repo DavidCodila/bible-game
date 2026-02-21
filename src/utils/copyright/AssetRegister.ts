@@ -1,8 +1,8 @@
-import { assetPaths } from '../data/AssetPaths';
-import { assetCredits } from '../data/AssetCredits';
-import { CreditsManager } from '../utils/CreditsManager';
+import { assetPaths } from '../../data/AssetPaths';
+import { assetCredits } from '../../data/AssetCredits';
+import { CreditsManager } from './CreditsManager';
 
-export class AssetRegistry {
+export class AssetRegister {
     public static registerByPath(path: string): void {
         const creditKey = assetPaths[path];
 

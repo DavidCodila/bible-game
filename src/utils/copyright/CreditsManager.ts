@@ -1,4 +1,4 @@
-import type { AssetAttribution } from "../types/AssetTypes";
+import type { AssetAttribution } from "../../types/AssetTypes";
 
 export class CreditsManager {
     private static attributions: AssetAttribution[] = [];

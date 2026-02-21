@@ -1,5 +1,5 @@
-import { assembleSystemsRegistry } from '../../../src/engine/Factory';
-import { SystemsRegistry } from '../../../src/engine/SystemsRegistry';
+import { assembleSystemsRegistry } from '../../../src/engine/factories/Factory';
+import { SystemsRegistry } from '../../../src/engine/registry/SystemsRegistry';
 import { InputManager } from '../../../src/systems/input/InputManager';
 import { GameObjectsController } from '../../../src/world/logic/GameObjectsController';
 import { CameraController } from '../../../src/systems/camera/CameraController';
