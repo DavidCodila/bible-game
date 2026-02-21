@@ -13,14 +13,15 @@ export class TreeManager {
         this.sceneController = sceneController;
     }
 
+    public async initialise() {
+        this.spawnTrees('models/Pine_Tree_Large_LOD0_v1.glb', 1);
+        this.spawnTrees('models/Pine_Tree_Small_LOD0_v2.glb', 5);
+        this.spawnTrees('models/Pine_Tree_Small_LOD0_v3.glb', 5);
+        this.spawnTrees('models/Pine_Tree_Small_LOD0_v3.glb', 5);
+        this.registerAssets();
+    }
+
     public async spawnTrees(modelPath: string, count: number): Promise<void> {
-        CreditsManager.registerAsset({
-            assetName: "Pine trees pack (lowpoly, game ready, LODs)",
-            authorName: "LOLIPOP",
-            licenseType: "CC BY 4.0",
-            sourceLink: "https://sketchfab.com/3d-models/pine-trees-pack-lowpoly-game-ready-lods-e1e9c07b8e2e445c943fec660beefba2"
-        });
-        CreditsManager.printToConsole();
         // 1. Load the GLTF Model
         const gltf = await this.loader.loadAsync(modelPath);
         
@@ -75,5 +76,15 @@ export class TreeManager {
 
         dummy.position.set(x, y, z); // Use the random X and Z!
         dummy.rotation.y = Math.random() * Math.PI * 2;
+    }
+
+    public async registerAssets() {
+        CreditsManager.registerAsset({
+            assetName: "Pine trees pack (lowpoly, game ready, LODs)",
+            authorName: "LOLIPOP",
+            licenseType: "CC BY 4.0",
+            sourceLink: "https://sketchfab.com/3d-models/pine-trees-pack-lowpoly-game-ready-lods-e1e9c07b8e2e445c943fec660beefba2"
+        });
+        CreditsManager.printToConsole();
     }
 }
