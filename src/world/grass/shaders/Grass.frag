@@ -12,11 +12,13 @@ float hash(vec2 p) {
 }
 
 void main(){
+    // === LOD DITHERING (DISABLED - Enable when implementing LOD system) ===
     //float threshold = hash(vWorldPosition.xz * 100.0);
     
     //if (threshold > uOpacity) {
     //    discard;
     //}
+    // === END LOD ===
     float ao = mix(0.2, 1.0, vHeightProgress);
 
     float sunExposure = 0.4 + 0.7 * vHeightProgress;

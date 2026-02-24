@@ -14,10 +14,10 @@ export class WindowController implements DisposableObject {
         this.rendererController = rendererController;
         this.cameraController = cameraController;
         
-        this.initialiseListerners();
+        this.initialiseListeners();
     }
 
-    private initialiseListerners(): void {
+    private initialiseListeners(): void {
         window.addEventListener('resize', this.handleResize);
     }
 

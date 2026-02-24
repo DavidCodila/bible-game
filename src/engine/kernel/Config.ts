@@ -19,7 +19,8 @@
  */
 export const UPDATE_ORDER = [
     'cameraController',
-    'gameObjectsController'
+    'gameObjectsController',
+    'windService'
 ] as const;
 
 /**

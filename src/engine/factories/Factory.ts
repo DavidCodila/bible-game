@@ -14,6 +14,7 @@ import { AudioController } from '../../systems/audio/AudioController';
 import { TransitionController } from '../../ui/transition/TransitionController';
 import { TreeManager } from '../../world/trees/TreeManager';
 import { CreditsManager } from '../../utils/copyright/CreditsManager';
+import { WindService } from '../../world/wind/WindService';
 
 export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const rendererController = new RendererController(
@@ -32,7 +33,8 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const cameraController = new CameraController(camera, new LookHandler(inputManager), new MovementHandler(inputManager));
     const terrainPlane = new TerrainPlane(sceneController);
     const windowController = new WindowController(rendererController, cameraController);
-    const treeManager = new TreeManager(sceneController);
+    const windService = new WindService();
+    const treeManager = new TreeManager(sceneController, windService);
     await treeManager.initialise();
    
     TransitionController.getInstance().initialise(sceneController.sceneInstance);
@@ -47,6 +49,7 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
         cameraController,
         audioController,
         windowController,
-        terrainPlane
+        terrainPlane,
+        windService
     });
 }
