@@ -1,3 +1,9 @@
+uniform float uTime;
+uniform vec2 uWindDirection;
+uniform sampler2D uWindNoiseTexture;
+uniform float uWindSpeed;
+uniform float uWindFrequency;
+
 // Unified Wind Calculation Logic
 float calculateWindForce(vec3 worldPosition, float time, vec2 windDirection, float speed, float frequency, sampler2D noiseTexture) {
     // Scroll the world-space coordinates to simulate a continuous wind front traveling across the field.

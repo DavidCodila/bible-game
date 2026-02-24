@@ -7,18 +7,19 @@ import { BoundsHelper } from "./BoundsHelper";
 import { ThreeUtils } from '../../../utils/three/ThreeUtils';
 import type { MeshGameObject } from '../../../types/engine';
 import type { GrassPatchConfig } from "../types";
+import type { WindService } from '../../wind/WindService';
 
 export class GrassPatch implements MeshGameObject{
     public mesh: THREE.InstancedMesh;  
     private grassShader: GrassShader; 
     
-    constructor(config: GrassPatchConfig) {
+    constructor(config: GrassPatchConfig, windService: WindService) {
         const totalBlades = config.bladesPerRow * config.bladesPerRow;
         const bladeConfig = config.grassBladeConfig;
         const geometry = GrassGeometryFactory.createBladeGeometry(bladeConfig);
         const attributeData = DataGenerator.generateAttributes(config);
 
-        this.grassShader = new GrassShader(bladeConfig.bladeHeight);
+        this.grassShader = new GrassShader(bladeConfig.bladeHeight, windService);
         
         this.mesh = new THREE.InstancedMesh(geometry, this.grassShader.material, totalBlades);
 
@@ -28,8 +29,8 @@ export class GrassPatch implements MeshGameObject{
         this.mesh.frustumCulled = true;
     }
 
-    public update(elapsedTime: number): void {
-        this.grassShader.update(elapsedTime);
+    public update(_elapsedTime: number): void {
+        //will be used later for LOD DITHERING
     }
 
     public setOpacity(opacity: number): void {

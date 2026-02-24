@@ -1,13 +1,14 @@
 import { GameObjectsController } from './GameObjectsController';
 import { brightGrassPatch, GRASS_GRID_CONFIG } from '../grass/Constants';
+import type { WindService } from '../wind/WindService';
 
-export const buildWorld = (gameObjectsController: GameObjectsController): void => {
+export const buildWorld = (gameObjectsController: GameObjectsController, windService: WindService): void => {
     const { patchSize, patchesPerSide } = GRASS_GRID_CONFIG;
     const halfSize = (patchesPerSide * patchSize) / 2;
 
     for (let x = 0; x < patchesPerSide; x++) {
         for (let z = 0; z < patchesPerSide; z++) {
-            const patch = brightGrassPatch();
+            const patch = brightGrassPatch(windService);
             const posX = (x * patchSize) - halfSize;
             const posZ = (z * patchSize) - halfSize;
 

@@ -12,7 +12,7 @@ export class SystemsRegistry {
     constructor(systems: Record<string, any>) {
         validateSystems(systems);
         this.systems = systems;
-        buildWorld(this.systems.gameObjectsController);
+        buildWorld(this.systems.gameObjectsController, this.systems.windService);
     }
 
     public tick(): void {

@@ -20,11 +20,6 @@ export class TreeShader {
 
         // 2. Prepend the logic to the TOP of the shader (Global scope)
         shader.vertexShader = `
-            uniform float uTime;
-            uniform vec2 uWindDirection;
-            uniform sampler2D uWindNoiseTexture;
-            uniform float uWindSpeed;
-            uniform float uWindFrequency;
             uniform float uTreeHeight;
             uniform float uBendingStiffener;
 

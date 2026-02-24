@@ -2,6 +2,7 @@ import { BRIGHT_GRASS_APPEARANCE } from './generator/AppearanceConfig';
 import type { GrassBladeConfig } from './types';
 import { GrassPatch } from './patch/GrassPatch';
 import { WORLD_SIZE_METERS } from '../WorldConfig';
+import type { WindService } from '../wind/WindService';
 
 export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
 
@@ -17,18 +18,9 @@ export const GRASS_GRID_CONFIG = {
 };
 
 
-export const brightGrassPatch = () => new GrassPatch({
+export const brightGrassPatch = (windService: WindService) => new GrassPatch({
     sideLength: 1,
     bladesPerRow: 10,
     grassBladeConfig: defaultGrassBladeConfig,
     appearance: BRIGHT_GRASS_APPEARANCE
-});
-
-export function createPatch(bladesPerRow: number): GrassPatch {
-    return new GrassPatch({
-        sideLength: GRASS_GRID_CONFIG.patchSize,
-        bladesPerRow: bladesPerRow,
-        grassBladeConfig: GRASS_GRID_CONFIG.grassBladeConfig,
-        appearance: GRASS_GRID_CONFIG.appearance
-    });
-}
+}, windService);

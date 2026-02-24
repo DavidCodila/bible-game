@@ -5,33 +5,34 @@ import type { DisposableObject } from '../../types/engine';
 import { SUN_DIRECTION } from '../scene/Constants';
 import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
 import { WORLD_SIZE_METERS  } from '../WorldConfig';
-import { NoiseGenerator } from './Noise';
+import type { WindService } from '../wind/WindService';
+import windEngineChunk from '../../shaders/WindEngine.glsl?raw'; // Import the raw code again
 
 export class GrassShader implements DisposableObject {
     public readonly material: THREE.ShaderMaterial;
     private readonly uniforms: { [key: string]: THREE.IUniform };
-    private readonly windDirection = new THREE.Vector2(-1, 0).normalize();
-    private readonly gustSizeInMeters = 25.0;
 
-    constructor(bladeHeight: number) {
+    constructor(bladeHeight: number, windService: WindService) {
         const terrainService = TerrainHeightService.getInstance();
-        const noiseTexture = NoiseGenerator.createSeamlessNoise(128);
         this.uniforms = {
-            time: { value: 0 },
+            uTime: windService.uniforms.uTime,
+            uWindDirection: windService.uniforms.uWindDirection,
+            uWindNoiseTexture: windService.uniforms.uWindNoiseTexture,
+            uWindSpeed: windService.uniforms.uWindSpeed,
+            uWindFrequency: windService.uniforms.uWindFrequency,
             sunDirection: { value: SUN_DIRECTION.clone() },
             inverseBladeHeight: { value: 1.0 / bladeHeight },
             uOpacity: { value: 1.0 },
             uHeightMap: { value: terrainService.heightTexture },
             uWorldSize: { value: WORLD_SIZE_METERS },
-            uWindDir: {value: this.windDirection},
-            uWindNoiseTexture: { value: noiseTexture },
-            uWindSpeed: { value: 8 },
-            uWindFrequency: { value: 1/this.gustSizeInMeters }
         };
 
         this.material = new THREE.ShaderMaterial({
             uniforms: this.uniforms,
-            vertexShader: vertexShader,
+            vertexShader: `
+                ${windEngineChunk}
+                ${vertexShader}
+            `,
             fragmentShader: fragmentShader,
             side: THREE.DoubleSide,
             depthWrite: true,
@@ -47,7 +48,4 @@ export class GrassShader implements DisposableObject {
         this.material.dispose();
     }
 
-    public update(elapsedTime: number): void {
-        this.uniforms.time.value = elapsedTime;
-    }
 }
