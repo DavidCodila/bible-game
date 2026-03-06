@@ -5,10 +5,10 @@ uniform float uWindSpeed;
 uniform float uWindFrequency;
 
 // Unified Wind Calculation Logic
-float calculateWindForce(vec3 worldPosition, float time, vec2 windDirection, float speed, float frequency, sampler2D noiseTexture) {
+float calculateWindForce(vec3 worldPosition, float time, float speed, float frequency, sampler2D noiseTexture) {
     // Scroll the world-space coordinates to simulate a continuous wind front traveling across the field.
     float windTravelDistance = time * speed;
-    vec2 windPropagation = worldPosition.xz - (windDirection * windTravelDistance);
+    vec2 windPropagation = worldPosition.xz - (uWindDirection * windTravelDistance);
     
     // Sample the noise using the moving coordinates
     vec2 windUV = windPropagation * frequency;
@@ -16,7 +16,7 @@ float calculateWindForce(vec3 worldPosition, float time, vec2 windDirection, flo
 
     // Calculate a rolling sine wave using the same moving coordinates
     // This ensures the wave "crests" are perfectly in sync with the noise patches
-    float wavePhase = dot(windPropagation, windDirection) * (frequency * 6.28318);
+    float wavePhase = dot(windPropagation, uWindDirection) * (frequency * 6.28318);
     float rollingWave = sin(wavePhase);
     
     // Combine for final force (0.0 to 1.0)

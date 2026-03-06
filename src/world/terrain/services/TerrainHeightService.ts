@@ -7,10 +7,9 @@ import { HEIGHTMAP_RESOLUTION, WORLD_SIZE_METERS, SEED } from '../../WorldConfig
 export class TerrainHeightService {
     private static instance: TerrainHeightService;
    
-
     public heightTexture: THREE.DataTexture;
     private heightData: Float32Array;
-    private readonly AMPLITUDE = 2.0;
+    private readonly AMPLITUDE = 1.2;
             
 
     private constructor() {

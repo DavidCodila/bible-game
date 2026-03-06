@@ -15,6 +15,7 @@ import { TransitionController } from '../../ui/transition/TransitionController';
 import { TreeManager } from '../../world/trees/TreeManager';
 import { CreditsManager } from '../../utils/copyright/CreditsManager';
 import { WindService } from '../../world/wind/WindService';
+import { HedgeManager } from '../../world/hedge/HedgeManager';
 
 export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const rendererController = new RendererController(
@@ -36,6 +37,8 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const windService = new WindService();
     const treeManager = new TreeManager(sceneController, windService);
     await treeManager.initialise();
+    const hedgeManager = new HedgeManager(sceneController);
+    await hedgeManager.initialise();
    
     TransitionController.getInstance().initialise(sceneController.sceneInstance);
 

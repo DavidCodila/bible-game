@@ -46,7 +46,6 @@ void main(){
     float windForce = calculateWindForce(
         rootWorldPosition, 
         uTime, 
-        uWindDirection, 
         uWindSpeed, 
         uWindFrequency, 
         uWindNoiseTexture

@@ -6,15 +6,15 @@ vec3 worldPos = (modelMatrix * worldPosition4).xyz;
 
 // 2. WIND SENSING
 float windForce = calculateWindForce(
-    worldPos, uTime, uWindDirection, uWindSpeed, uWindFrequency, uWindNoiseTexture
+    worldPos, uTime, uWindSpeed, uWindFrequency, uWindNoiseTexture
 );
 
 // 3. TRUNK LEAN
 float heightProgress = clamp(position.y / uTreeHeight, 0.0, 1.0);
 float trunkLeanMask = pow(heightProgress, uBendingStiffener);
 
-transformed.x -= uWindDirection.x * windForce * trunkLeanMask * 1.5;
-transformed.z -= uWindDirection.y * windForce * trunkLeanMask * 1.5;
+transformed.x += uWindDirection.x * windForce * trunkLeanMask * 1.5;
+transformed.z += uWindDirection.y * windForce * trunkLeanMask * 1.5;
 
 // 4. BRANCH MOVEMENT (The "Paper" Flex)
 float distFromCenter = length(position.xz);
