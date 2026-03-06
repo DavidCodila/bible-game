@@ -4,6 +4,18 @@ import type { DisposableObject } from '../../types/engine';
 import { OverlayController } from '../../ui/overlays/OverlayController';
 import { AppBootstrapper } from './Bootstrapper';
 import { AppLoop } from './Loop';
+// In GardenOfEdenApp or after SystemsRegistry is created
+import { WindDebugUI } from '../../ui/debug/WindDebugUI';
+
+// Inside startGame callback or after registry is ready:
+
+let  windDebug: WindDebugUI;
+// Toggle with key (e.g. `~` key)
+window.addEventListener('keydown', (e) => {
+  if (e.key === '`' || e.key === '~') {
+    windDebug.toggle();
+  }
+});
 
 // To do: make hedge around garden with endless wilderness after hedge
 export class GardenOfEdenApp implements DisposableObject {
@@ -23,6 +35,7 @@ export class GardenOfEdenApp implements DisposableObject {
 
     private startGame = (registry: SystemsRegistry): void => {
         this.registry = registry;
+        windDebug = new WindDebugUI(registry.getWindService());
         
         this.clock.start();
         this.registry.startMusic();

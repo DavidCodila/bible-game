@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { UPDATE_ORDER, DISPOSE_ORDER } from '../kernel/Config';
 import { validateSystems } from './SystemsRegistryValidator';
 import { buildWorld } from '../../world/logic/WorldBuilder';
+import type { WindService } from '../../world/wind/WindService';
 
 export class SystemsRegistry {
     private readonly systems: Record<string, any>;
@@ -40,6 +41,10 @@ export class SystemsRegistry {
 
     public startMusic(): void {
         this.systems.audioController.play();
+    }
+
+    public getWindService(): WindService {
+    return this.systems.windService as WindService;
     }
 
     public dispose(): void {

@@ -96,6 +96,30 @@
 
         canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
     </style>
+
+    <div id="wind-debug-panel" style="display:none; position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.75); color:#eee; padding:16px; border-radius:8px; font-family:Arial, sans-serif; z-index:9999; user-select:none; min-width:340px;">
+        <h3 style="margin:0 0 14px 0; font-size:15px; text-align:center;">Wind Tuning (real-time)</h3>
+
+        <label style="display:block; margin:12px 0 4px;">Wind Speed (overall strength of gusts): <span id="val-speed">12.5</span></label>
+        <input type="range" id="slider-speed" min="0" max="60" step="0.25" value="12.5" style="width:300px;"><br>
+
+        <label style="display:block; margin:12px 0 4px;">Wind Frequency (how often gusts occur / gust size): <span id="val-freq">0.095</span></label>
+        <input type="range" id="slider-freq" min="0.005" max="1.0" step="0.005" value="0.095" style="width:300px;"><br>
+
+        <label style="display:block; margin:12px 0 4px;">Noise Scale (detail size / turbulence scale): <span id="val-scale">1.6</span></label>
+        <input type="range" id="slider-scale" min="0.1" max="8.0" step="0.05" value="1.6" style="width:300px;"><br>
+
+        <label style="display:block; margin:12px 0 4px;">Octaves (number of noise layers / complexity): <span id="val-octaves">5</span></label>
+        <input type="range" id="slider-octaves" min="1" max="12" step="1" value="5" style="width:300px;"><br>
+
+        <label style="display:block; margin:12px 0 4px;">Persistence (balance between big vs small details): <span id="val-persist">0.48</span></label>
+        <input type="range" id="slider-persist" min="0.1" max="0.9" step="0.01" value="0.48" style="width:300px;"><br>
+
+        <label style="display:block; margin:12px 0 4px;">Lacunarity (how quickly detail frequency increases): <span id="val-lac">2.35</span></label>
+        <input type="range" id="slider-lac" min="1.2" max="4.0" step="0.05" value="2.35" style="width:300px;"><br>
+
+        <small style="display:block; margin-top:12px; opacity:0.7; text-align:center;">Press ~ or F1 to toggle</small>
+    </div>
 </head>
 <body>
     <div id="start-page">
