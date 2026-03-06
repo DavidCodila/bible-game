@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { MatrixPlacer } from '../../utils/math/MatrixPlacer';
 import { InstancedMeshFactory } from '../../engine/factories/InstancedMeshFactory';
 import type { SceneController } from '../scene/SceneController';
 import { AssetRegister } from '../../utils/copyright/AssetRegister';
+import { perimeterPlacementGenerate } from '../../utils/math/PerimeterMatrixGenerater';
 
 export class HedgeManager {
     private loader = new GLTFLoader();
@@ -20,7 +20,7 @@ export class HedgeManager {
     public async spawnTrees(modelPath: string): Promise<void> {
         AssetRegister.registerByPath(modelPath);
         const gltf = await this.loader.loadAsync(modelPath);
-        const matrices = MatrixPlacer.perimeterPlacementGenerate();
+        const matrices = perimeterPlacementGenerate();
 
         gltf.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {

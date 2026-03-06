@@ -28,7 +28,7 @@ export class TreeManager {
     public async spawnTrees(modelPath: string, count: number): Promise<void> {
         AssetRegister.registerByPath(modelPath);
         const gltf = await this.loader.loadAsync(modelPath);
-        const matrices = this.matrixPlacer.generate(count);
+        const matrices = this.matrixPlacer.generateRandomPlacement(count);
 
         gltf.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {
