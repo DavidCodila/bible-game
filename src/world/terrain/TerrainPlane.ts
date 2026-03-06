@@ -26,8 +26,8 @@ export class TerrainPlane {
         positionAttribute.needsUpdate = true;
         geometry.computeVertexNormals();
 
-        const material = new THREE.MeshPhongMaterial({ 
-            color: 0x3d2b1f, 
+        const material = new THREE.MeshLambertMaterial({ 
+            color: 0x000000, 
             side: THREE.FrontSide 
         });
 
