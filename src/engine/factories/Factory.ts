@@ -37,8 +37,8 @@ export async function assembleSystemsRegistry(): Promise<SystemsRegistry> {
     const windService = new WindService();
     const treeManager = new TreeManager(sceneController, windService);
     await treeManager.initialise();
-    const hedgeManager = new HedgeManager(sceneController);
-    await hedgeManager.initialise();
+    //const hedgeManager = new HedgeManager(sceneController);
+    //await hedgeManager.initialise();
    
     TransitionController.getInstance().initialise(sceneController.sceneInstance);
 

@@ -7,11 +7,11 @@ export class NoiseGenerator {
    * Lower persistence = finer details dominate
    */
   public static createSeamlessNoise(
-    size: number = 256,           // 128 is ok, 256 gives noticeably better detail
-    octaves: number = 3,
-    persistence: number = 0.5,
-    lacunarity: number = 2.2,
-    baseScale: number = 0.8       // global frequency multiplier
+    size: number = 128,           // 128 is ok, 256 gives noticeably better detail
+    octaves: number = 6,
+    persistence: number = 0.30,
+    lacunarity: number = 1.95,
+    baseScale: number = 1.0       // global frequency multiplier
   ): THREE.DataTexture {
     const pixelCount = size * size;
     const data = new Uint8Array(pixelCount);
