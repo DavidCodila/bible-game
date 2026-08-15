@@ -26,6 +26,7 @@ export class SceneController implements DisposableObject {
     private setupScene(): void {
         this.directionalLight.position.copy(SUN_DIRECTION);
         this.directionalLight.color.setHSL(0.1, 0.8, 0.8); 
+        this.directionalLight.intensity = 2;
         const light2 : THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
         const opositeLight = new THREE.Vector3();
         const light3 : THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -36,6 +37,10 @@ export class SceneController implements DisposableObject {
         opositeRightLight.set(SUN_DIRECTION.x,SUN_DIRECTION.y,-SUN_DIRECTION.z);
         opositeLight.set(-SUN_DIRECTION.x,-SUN_DIRECTION.y,-SUN_DIRECTION.z);
         light2.position.copy(opositeLight)
+        this.directionalLight.castShadow = false;
+        light2.castShadow = false;
+        light3.castShadow = false;
+        light4.castShadow = false;
         this.scene.add(this.directionalLight);
         this.scene.add(light2);
         this.scene.add(light3);

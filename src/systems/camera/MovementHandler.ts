@@ -16,7 +16,7 @@ export class MovementHandler {
         const input = this.inputManager.inputMovementStateReference;
         
         let movementSpeed = input.spaceKeyPressed 
-        ? this.movementSpeed * 1.8
+        ? this.movementSpeed * 3
         : this.movementSpeed;
         
         forwardVector.y = 0;

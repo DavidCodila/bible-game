@@ -15,4 +15,5 @@ export interface AttributeBuffer {
 export interface InstancedAttributeData {
     attributeList: AttributeBuffer[];
     accessor: GrassAttributeAccessor;
+    count: number;
 }

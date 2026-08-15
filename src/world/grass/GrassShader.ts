@@ -13,7 +13,7 @@ export class GrassShader implements DisposableObject {
     private readonly uniforms: { [key: string]: THREE.IUniform };
 
     constructor(bladeHeight: number, windService: WindService) {
-        const terrainService = TerrainHeightService.getInstance();
+        //const terrainService = TerrainHeightService.getInstance();
         this.uniforms = {
             uTime: windService.uniforms.uTime,
             uWindDirection: windService.uniforms.uWindDirection,
@@ -23,7 +23,7 @@ export class GrassShader implements DisposableObject {
             sunDirection: { value: SUN_DIRECTION.clone() },
             inverseBladeHeight: { value: 1.0 / bladeHeight },
             uOpacity: { value: 1.0 },
-            uHeightMap: { value: terrainService.heightTexture },
+            //uHeightMap: { value: terrainService.heightTexture },
             uWorldSize: { value: WORLD_SIZE_METERS },
         };
 

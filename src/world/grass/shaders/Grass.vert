@@ -5,7 +5,6 @@ attribute float instanceBendX;
 attribute float instanceBendZ;
 attribute vec3 instanceColors;
 uniform float inverseBladeHeight;
-uniform sampler2D uHeightMap;
 uniform float uWorldSize;
 
 varying vec3 vColor;
@@ -52,17 +51,12 @@ void main(){
     );
 
     // APPLY GLOBAL WIND DISPLACEMENT
-    // Applied after rotation so all grass pushes in the same world direction
-    // Weighting Z (0.7) and X (0.3) as requested
     transformedPosition.x += uWindDirection.x * windForce * bendBias * 0.3;
     transformedPosition.z += uWindDirection.y * windForce * bendBias * 0.7;
 
     // TERRAIN CONFORMITY
-    vec2 terrainUV = (rootWorldPosition.xz + (uWorldSize / 2.0)) / uWorldSize;
-    float terrainHeight = texture2D(uHeightMap, terrainUV).r;
-
     vec3 finalWorldPosition = transformedPosition + rootWorldPosition;
-    finalWorldPosition.y += terrainHeight - windForce * 0.08; 
+    finalWorldPosition.y -= windForce * 0.08; 
     // used to mitagate streached appearance when bent
 
     // INTERPOLATED VARYINGS

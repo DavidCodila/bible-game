@@ -5,6 +5,7 @@ export interface GrassPatchConfig {
     bladesPerRow: number;
     grassBladeConfig: GrassBladeConfig;
     appearance?: GrassAppearanceConfig;
+    densityFilter?: (worldX: number, worldZ: number) => number;
 }
 
 export interface GrassBladeConfig {

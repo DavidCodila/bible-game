@@ -15,8 +15,8 @@ export class TreeShader {
         shader.uniforms.uWindNoiseTexture = this.windService.uniforms.uWindNoiseTexture;
         shader.uniforms.uWindSpeed = this.windService.uniforms.uWindSpeed;
         shader.uniforms.uWindFrequency = this.windService.uniforms.uWindFrequency;
-        shader.uniforms.uTreeHeight = { value: 5.0 };
-        shader.uniforms.uBendingStiffener = { value: 3.5 };
+        shader.uniforms.uTreeHeight = { value: 5.8 };
+        shader.uniforms.uBendingStiffener = { value: 3.1 };
 
         // 2. Prepend the logic to the TOP of the shader (Global scope)
         shader.vertexShader = `

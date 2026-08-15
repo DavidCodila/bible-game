@@ -14,19 +14,21 @@ export class GrassPatch implements MeshGameObject{
     private grassShader: GrassShader; 
     
     constructor(config: GrassPatchConfig, windService: WindService) {
-        const totalBlades = config.bladesPerRow * config.bladesPerRow;
-        const bladeConfig = config.grassBladeConfig;
-        const geometry = GrassGeometryFactory.createBladeGeometry(bladeConfig);
-        const attributeData = DataGenerator.generateAttributes(config);
-
-        this.grassShader = new GrassShader(bladeConfig.bladeHeight, windService);
+        const geometry = GrassGeometryFactory.createBladeGeometry(config.grassBladeConfig);
+        const attributeData = DataGenerator.generateAttributes(config);   // now has .count
+    
+        this.grassShader = new GrassShader(config.grassBladeConfig.bladeHeight, windService);
         
-        this.mesh = new THREE.InstancedMesh(geometry, this.grassShader.material, totalBlades);
-
+        // Use real blade count instead of theoretical max
+        this.mesh = new THREE.InstancedMesh(
+            geometry,
+            this.grassShader.material,
+            attributeData.count          // ← CHANGED
+        );
+    
         GeometryUtils.assignInstancedAttributes(geometry, attributeData);
         
-        BoundsHelper.computePatchBounds(this.mesh, config);
-        this.mesh.frustumCulled = true;
+        this.mesh.frustumCulled = false;
     }
 
     public update(_elapsedTime: number): void {

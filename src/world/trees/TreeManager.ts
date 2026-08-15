@@ -20,15 +20,16 @@ export class TreeManager {
     }
 
     public async initialise(): Promise<void> {
-        await this.spawnTrees('models/Pine_Tree_Small_LOD0_v1.glb', 3);
-        await this.spawnTrees('models/Pine_Tree_Small_LOD0_v2.glb', 3);
-        await this.spawnTrees('models/Pine_Tree_Small_LOD0_v3.glb', 3);
+        //await this.spawnTrees('models/Pine_Tree_Small_LOD0_v1.glb', 3);
+        //await this.spawnTrees('models/Pine_Tree_Small_LOD0_v2.glb', 3);
+        await this.spawnTrees('models/Pine_Tree_Small_LOD0_v3.glb', 9);
     }
 
     public async spawnTrees(modelPath: string, count: number): Promise<void> {
         AssetRegister.registerByPath(modelPath);
         const gltf = await this.loader.loadAsync(modelPath);
         const matrices = this.matrixPlacer.generateRandomPlacement(count);
+        const instancedMeshes: THREE.InstancedMesh[] = [];
 
         gltf.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {
@@ -40,7 +41,9 @@ export class TreeManager {
 
                 const instancedMesh = InstancedMeshFactory.create(child, matrices);
                 this.sceneController.add(instancedMesh);
+                instancedMeshes.push(instancedMesh);
             }
         });
+        console.log(`Loaded ${modelPath} → created ${instancedMeshes.length} InstancedMeshes (${count} trees)`);
     }
 }

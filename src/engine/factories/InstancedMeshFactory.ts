@@ -14,8 +14,8 @@ export class InstancedMeshFactory {
             instancedMesh.setMatrixAt(i, matrices[i]);
         }
 
-        instancedMesh.castShadow = true;
-        instancedMesh.receiveShadow = true;
+        instancedMesh.castShadow = false;
+        instancedMesh.receiveShadow = false;
         instancedMesh.frustumCulled = false;
         instancedMesh.instanceMatrix.needsUpdate = true;
 

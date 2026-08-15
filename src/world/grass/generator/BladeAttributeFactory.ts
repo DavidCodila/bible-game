@@ -2,6 +2,7 @@ import type { BladeData } from "../types";
 import { GrassAttributeAccessor } from "./GrassAttributeAccessor";
 import { JITTER_BUFFER, VECTOR_OFFSETS, COLOR_INDICES } from "./GrassConstants";
 import { DEFAULT_GRASS_APPEARANCE, type GrassAppearanceConfig } from "./AppearanceConfig";
+import { TerrainHeightService } from "../../terrain/services/TerrainHeightService";
 
 export class BladeAttributeFactory {
     public static calculateBlade(
@@ -13,16 +14,17 @@ export class BladeAttributeFactory {
         const bladeIndex = bladeData.bladeIndex;
         const baseIndex = bladeIndex * VECTOR_OFFSETS.ARRAY_3D_OFFSET;
 
-        accessor.offsets[baseIndex + VECTOR_OFFSETS.X_OFFSET] = 
-            (bladeData.gridX * bladeData.gridSpacing) - halfSideLength + 
+        const posX = (bladeData.gridX * bladeData.gridSpacing) - halfSideLength + 
             (Math.random() - 0.5) * bladeData.gridSpacing * JITTER_BUFFER;
-        
-        accessor.offsets[baseIndex + VECTOR_OFFSETS.Y_OFFSET] = 
-            0; // Ground level (will add terrain elevation later)
-        
-        accessor.offsets[baseIndex + VECTOR_OFFSETS.Z_OFFSET] = 
-            (bladeData.gridZ * bladeData.gridSpacing) - halfSideLength + 
+
+        const posZ = (bladeData.gridZ * bladeData.gridSpacing) - halfSideLength + 
             (Math.random() - 0.5) * bladeData.gridSpacing * JITTER_BUFFER;
+
+        const posY = TerrainHeightService.getHeight(posX, posZ);
+
+        accessor.offsets[baseIndex + VECTOR_OFFSETS.X_OFFSET] = posX;
+        accessor.offsets[baseIndex + VECTOR_OFFSETS.Z_OFFSET] = posZ;
+        accessor.offsets[baseIndex + VECTOR_OFFSETS.Y_OFFSET] = posY;
 
         accessor.yAxisRotation[bladeIndex] = 
             (Math.random() - 0.5) * appearance.rotationRange;
