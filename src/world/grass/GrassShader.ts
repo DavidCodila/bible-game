@@ -3,7 +3,6 @@ import vertexShader from './shaders/Grass.vert?raw';
 import fragmentShader from './shaders/Grass.frag?raw';
 import type { DisposableObject } from '../../types/engine';
 import { SUN_DIRECTION } from '../scene/Constants';
-import { TerrainHeightService } from '../terrain/services/TerrainHeightService';
 import { WORLD_SIZE_METERS  } from '../WorldConfig';
 import type { WindService } from '../wind/WindService';
 import windEngineChunk from '../../shaders/WindEngine.glsl?raw'; // Import the raw code again

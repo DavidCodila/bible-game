@@ -1,7 +1,6 @@
 import { GameObjectsController } from './GameObjectsController';
-import { brightGrassPatch, GRASS_GRID_CONFIG } from '../grass/Constants';
+import { brightGrassPatch } from '../grass/Constants';
 import type { WindService } from '../wind/WindService';
-import { HALF_WORLD_SIZE_METERS } from '../WorldConfig';
 
 export const buildWorld = (gameObjectsController: GameObjectsController, windService: WindService): void => {
     gameObjectsController.add(brightGrassPatch(windService));

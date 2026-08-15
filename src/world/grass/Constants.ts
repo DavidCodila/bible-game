@@ -1,7 +1,7 @@
 import { BRIGHT_GRASS_APPEARANCE } from './generator/AppearanceConfig';
 import type { GrassBladeConfig } from './types';
 import { GrassPatch } from './patch/GrassPatch';
-import { HALF_WORLD_SIZE_METERS, WORLD_SIZE_METERS } from '../WorldConfig';
+import { WORLD_SIZE_METERS } from '../WorldConfig';
 import type { WindService } from '../wind/WindService';
 
 export const LOOP_TIME_IN_RADIANS = 20 * Math.PI;
