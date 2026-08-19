@@ -1,7 +1,9 @@
 <H1>The Garden of Eden</H1>
 <p>The aim of this project was to create an emersive game where users could step into and interace with a biblicaly accurate repersentation of the Garden of Eden</p>
-![Alt text](Garden of Eden Game Page.PNG?raw=true "Game Page")
-![Alt text](Garden of Eden Intro Page.PNG?raw=true "Intro Page")
+<img src="Garden_of_Eden_Game_Page.png" alt="Game Page" style="width: 300px; height: 200px;">
+<img src="Garden_of_Eden_Intro_Page.PNG" alt="Intro Page">
+![Alt text](Garden_of_Eden_Game_Page.png)
+![Alt text](Garden_of_Eden_Intro_Page.png?raw=true "Intro Page")
 <p>For this project Typescript, Three.js, Vite, Bun, Vitest and AI was used</p>
 <p>To use: </p>
 <ul>
